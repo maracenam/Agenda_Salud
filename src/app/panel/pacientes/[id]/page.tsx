@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FlechaAtras } from "@/components/marca";
 import { notFound } from "next/navigation";
 import { Aviso, EstadoCita } from "@/components/aviso";
 import { formatoFechaCorta, formatoFechaHora, hoyChile } from "@/lib/fechas";
@@ -65,7 +66,7 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/panel/pacientes" className="enlace text-sm">← Pacientes</Link>
+        <Link href="/panel/pacientes" className="enlace inline-flex items-center gap-1"><FlechaAtras className="size-4" />Pacientes</Link>
         <h1 className="titulo mt-2">{paciente.nombre}</h1>
         <p className="text-sm text-slate-600">
           {[paciente.rut, años != null ? `${años} años` : null, paciente.telefono, paciente.email].filter(Boolean).join(" · ")}
@@ -76,9 +77,9 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
       <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
         <div className="space-y-6">
           <section className="tarjeta">
-            <h2 className="mb-1 font-semibold">Registrar atención</h2>
+            <h2 className="mb-1 font-senal text-2xl font-bold">Registrar atención</h2>
             <p className="mb-4 text-sm text-slate-600">
-              {citaActual ? <>Cita del <span className="capitalize">{formatoFechaHora(citaActual.inicio)}</span>. Al guardar se marca como atendida.</> : "Queda en el historial con la fecha de hoy."}
+              {citaActual ? <>Cita del <span className="mayus">{formatoFechaHora(citaActual.inicio)}</span>. Al guardar se marca como atendida.</> : "Queda en el historial con la fecha de hoy."}
             </p>
             <form action={registrarAtencion} className="space-y-3">
               <input type="hidden" name="paciente" value={pacienteId} />
@@ -104,15 +105,15 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
           </section>
 
           <section>
-            <h2 className="mb-3 font-semibold">Historial de atenciones</h2>
+            <h2 className="mb-3 font-senal text-2xl font-bold">Historial de atenciones</h2>
             {(atenciones ?? []).length === 0 ? (
               <p className="tarjeta text-sm text-slate-600">Todavía no hay atenciones registradas.</p>
             ) : (
-              <ol className="space-y-3 border-l-2 border-marca-100 pl-4">
+              <ol className="ml-2 space-y-3 border-l-[6px] border-marca-700 pl-5">
                 {atenciones!.map((a) => (
                   <li key={a.id} className="tarjeta relative text-sm">
-                    <span className="absolute top-6 -left-[23px] h-3 w-3 rounded-full border-2 border-white bg-marca-600" />
-                    <p className="font-medium capitalize">{formatoFechaHora(a.fecha)}{a.motivo ? ` · ${a.motivo}` : ""}</p>
+                    <span aria-hidden="true" className="absolute top-5 -left-[33px] size-5 rounded-full border-[5px] border-marca-700 bg-white" />
+                    <p className="font-medium mayus">{formatoFechaHora(a.fecha)}{a.motivo ? ` · ${a.motivo}` : ""}</p>
                     {a.diagnostico && <p className="mt-2"><span className="text-slate-500">Diagnóstico:</span> {a.diagnostico}</p>}
                     {a.indicaciones && <p className="mt-1 whitespace-pre-line"><span className="text-slate-500">Indicaciones:</span> {a.indicaciones}</p>}
                     {a.notas && <p className="mt-1 whitespace-pre-line text-slate-700">{a.notas}</p>}
@@ -124,14 +125,14 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
         </div>
 
         <div className="space-y-6">
-          <form action={guardarFicha} className="tarjeta space-y-4">
+          <form action={guardarFicha} className="tarjeta space-y-4 overflow-hidden pt-0">
             <input type="hidden" name="paciente" value={pacienteId} />
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Ficha clínica</h2>
-              {ficha && <span className="text-xs text-slate-500">Actualizada {formatoFechaCorta(ficha.actualizado_en)}</span>}
+            <div className="-mx-5 flex items-center justify-between gap-3 bg-tinta px-5 py-2.5 text-white">
+              <h2 className="font-senal text-xl font-bold tracking-wide uppercase">Ficha clínica</h2>
+              {ficha && <span className="text-sm text-white/70">Actualizada {formatoFechaCorta(ficha.actualizado_en)}</span>}
             </div>
             <fieldset className="space-y-3">
-              <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-marca-700">Gineco-obstétrico</legend>
+              <legend className="mb-2 w-full border-b-2 border-marca-700 pb-1 font-senal text-lg font-bold text-tinta">Gineco-obstétrico</legend>
               <div className="grid grid-cols-4 gap-2">
                 <Numero name="gestas" label="G" f={f} />
                 <Numero name="partos" label="P" f={f} />
@@ -159,13 +160,13 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
               </div>
             </fieldset>
             <fieldset className="space-y-3">
-              <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-marca-700">Antecedentes</legend>
+              <legend className="mb-2 w-full border-b-2 border-marca-700 pb-1 font-senal text-lg font-bold text-tinta">Antecedentes</legend>
               <Texto name="antecedentes" label="Antecedentes mórbidos y quirúrgicos" f={f} />
               <Texto name="alergias" label="Alergias" f={f} rows={1} />
               <Texto name="medicamentos" label="Medicamentos en uso" f={f} rows={1} />
             </fieldset>
             <fieldset className="space-y-3">
-              <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-marca-700">Estado actual</legend>
+              <legend className="mb-2 w-full border-b-2 border-marca-700 pb-1 font-senal text-lg font-bold text-tinta">Estado actual</legend>
               <Texto name="diagnostico" label="Diagnóstico" f={f} />
               <Texto name="tratamiento" label="Tratamiento" f={f} />
               <Texto name="observaciones" label="Observaciones" f={f} />
@@ -174,11 +175,11 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
           </form>
 
           <section className="tarjeta">
-            <h2 className="mb-3 font-semibold">Citas</h2>
+            <h2 className="mb-3 font-senal text-2xl font-bold">Citas</h2>
             <ul className="space-y-2 text-sm">
               {citas.map((c) => (
                 <li key={c.id} className="flex items-center justify-between gap-2">
-                  <span className="capitalize">{formatoFechaCorta(c.inicio)} · {(c.servicio as unknown as { nombre: string } | null)?.nombre}</span>
+                  <span className="mayus">{formatoFechaCorta(c.inicio)} · {(c.servicio as unknown as { nombre: string } | null)?.nombre}</span>
                   <EstadoCita estado={c.estado} />
                 </li>
               ))}

@@ -1,42 +1,172 @@
 @import "tailwindcss";
 
+/*
+  Identidad "Señalética": paneles esmaltados sobre hormigón frío, tinta azul noche,
+  una línea de color por vista (burdeos = paciente, cobalto = profesional)
+  y amarillo señal solo para la próxima hora y la acción principal.
+*/
 @theme {
-  --color-marca-50: #f0fdfa;
-  --color-marca-100: #ccfbf1;
-  --color-marca-600: #0d9488;
-  --color-marca-700: #0f766e;
-  --color-marca-800: #115e59;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Línea paciente (burdeos). Se mantiene el nombre "marca" que usan las pantallas. */
+  --color-marca-50: #f9eef1;
+  --color-marca-100: #f1d5dd;
+  --color-marca-600: #a3264d;
+  --color-marca-700: #8e1b3f;
+  --color-marca-800: #6f1431;
+
+  /* Línea profesional (cobalto). */
+  --color-pro-50: #edf2fb;
+  --color-pro-100: #d3e0f5;
+  --color-pro-600: #2a5cb8;
+  --color-pro-700: #1f4fa3;
+  --color-pro-800: #173c7d;
+
+  /* Tinta y señal. */
+  --color-tinta: #0e1a2b;
+  --color-tinta-suave: #1b2a40;
+  --color-senal: #f5b700;
+  --color-senal-claro: #fff1c2;
+  --color-hormigon: #e9ecf0;
+
+  /* Neutros teñidos hacia la tinta (reemplazan el slate de Tailwind). */
+  --color-slate-50: #f5f7f9;
+  --color-slate-100: #e9edf1;
+  --color-slate-200: #d6dce3;
+  --color-slate-300: #b9c2cd;
+  --color-slate-400: #8c98a8;
+  --color-slate-500: #5f6b7c;
+  --color-slate-600: #475263;
+  --color-slate-700: #333d4d;
+  --color-slate-800: #1f2938;
+  --color-slate-900: #0e1a2b;
+
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-senal: var(--font-barlow-condensed), var(--font-barlow), ui-sans-serif, sans-serif;
+
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+}
+
+:root {
+  --linea: var(--color-marca-700);
+  --linea-oscura: var(--color-marca-800);
+  --linea-clara: var(--color-marca-50);
+  color-scheme: light;
+  accent-color: var(--linea);
+}
+
+/* La vista profesional cambia de línea: todo lo que usa --linea pasa a cobalto. */
+.linea-pro {
+  --linea: var(--color-pro-700);
+  --linea-oscura: var(--color-pro-800);
+  --linea-clara: var(--color-pro-50);
+  /* Las pantallas usan clases "marca-*": dentro de la vista profesional apuntan al cobalto. */
+  --color-marca-50: var(--color-pro-50);
+  --color-marca-100: var(--color-pro-100);
+  --color-marca-600: var(--color-pro-600);
+  --color-marca-700: var(--color-pro-700);
+  --color-marca-800: var(--color-pro-800);
+  accent-color: var(--linea);
 }
 
 body {
-  background: #f8fafc;
-  color: #1e293b;
+  background: var(--color-hormigon);
+  color: var(--color-tinta);
+  font-feature-settings: "lnum" 1;
+}
+
+::selection {
+  background: var(--color-senal);
+  color: var(--color-tinta);
+}
+
+input,
+textarea {
+  caret-color: var(--linea);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-senal);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+html {
+  scrollbar-color: var(--color-slate-400) var(--color-hormigon);
+}
+
+a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+
+/* Movimiento firma: las horas entran como en un tablero de salidas, una tras otra.
+   El texto es visible desde el primer cuadro; solo se desliza y enfoca. */
+@keyframes tablero {
+  from {
+    transform: translateY(45%);
+    filter: blur(3px);
+  }
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+
+.tablero-cifra {
+  display: inline-block;
+  animation: tablero 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tablero-cifra {
+    animation: none;
+  }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-marca-700 px-4 py-2 text-sm font-medium text-white hover:bg-marca-800 disabled:opacity-50 cursor-pointer;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-(--linea-oscura) disabled:opacity-50 cursor-pointer;
+  }
+  /* Acción principal de la página: amarillo señal con tinta. */
+  .btn-senal {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-senal px-5 py-2.5 text-base font-bold text-tinta transition-colors duration-150 hover:bg-[#ffc81f] cursor-pointer;
   }
   .btn-sec {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-2 border-tinta/15 bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-colors duration-150 hover:border-tinta/40 cursor-pointer;
   }
   .btn-peligro {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 cursor-pointer;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-2 border-red-200 bg-white px-3 py-1.5 text-[15px] font-semibold text-red-800 transition-colors duration-150 hover:border-red-400 hover:bg-red-50 cursor-pointer;
   }
   .campo {
-    @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-xs focus:border-marca-600 focus:outline-none focus:ring-2 focus:ring-marca-100;
+    @apply block min-h-10 w-full rounded-lg border-2 border-tinta/15 bg-white px-3 py-2 text-[15px] text-tinta placeholder:text-slate-500 focus:border-(--linea) focus:outline-none;
   }
   .etiqueta {
-    @apply mb-1 block text-sm font-medium text-slate-700;
+    @apply mb-1 block text-sm font-semibold text-slate-700;
   }
+  /* Panel esmaltado. */
   .tarjeta {
-    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-xs;
+    @apply rounded-lg border-2 border-tinta/10 bg-white p-5 shadow-[0_1px_2px_rgb(14_26_43/0.06),0_4px_12px_-6px_rgb(14_26_43/0.12)];
   }
   .titulo {
-    @apply text-2xl font-semibold text-slate-900;
+    @apply font-senal text-4xl leading-none font-bold tracking-[-0.01em] text-tinta;
   }
   .enlace {
-    @apply text-marca-700 underline-offset-2 hover:underline;
+    @apply font-medium text-(--linea) underline-offset-3 hover:underline;
+  }
+  /* Numerales de tablero. */
+  .cifra {
+    @apply font-senal font-semibold tabular-nums tracking-tight;
+  }
+  /* Solo la primera letra en mayúscula: "Jueves, 26 de noviembre". */
+  .mayus {
+    display: inline-block;
+  }
+  .mayus::first-letter {
+    text-transform: uppercase;
+  }
+  /* Insignia de línea, como las de Metro. */
+  .insignia {
+    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-(--linea) font-senal text-sm font-bold text-white;
   }
 }

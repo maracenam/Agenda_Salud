@@ -7,6 +7,7 @@ import { esFechaValida, formatoPrecio, hoyChile } from "@/lib/fechas";
 import { obtenerSesion } from "@/lib/sesion";
 import { crearClienteServidor } from "@/lib/supabase/server";
 import { reservar } from "./acciones";
+import { FlechaAtras } from "@/components/marca";
 
 export const metadata = { title: "Reservar hora" };
 
@@ -22,15 +23,15 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link href={`/profesionales/${id}`} className="enlace text-sm">← Volver</Link>
-      <h1 className="titulo mt-2">Reservar: {servicio.nombre}</h1>
-      <p className="mb-6 text-sm text-slate-600">
+      <Link href={`/profesionales/${id}`} className="enlace inline-flex items-center gap-1"><FlechaAtras className="size-4" />Volver</Link>
+      <h1 className="titulo mt-3">{servicio.nombre}</h1>
+      <p className="mt-2 mb-6 text-lg text-slate-700">
         Con {pro.perfil?.nombre} · {servicio.duracion_min} min{servicio.precio != null ? ` · ${formatoPrecio(servicio.precio)}` : ""}
       </p>
       <Aviso error={sp.error} />
       {!sesion ? (
         <div className="tarjeta space-y-3">
-          <p className="text-sm text-slate-700">Para reservar necesitas una cuenta. Así podrás cambiar o cancelar tu hora y recibir recordatorios.</p>
+          <p className="text-slate-700">Para reservar necesitas una cuenta. Así podrás cambiar o cancelar tu hora y recibir recordatorios.</p>
           <div className="flex gap-2">
             <Link className="btn" href={`/registro?siguiente=${encodeURIComponent(rutaBase)}`}>Crear cuenta</Link>
             <Link className="btn-sec" href={`/ingresar?siguiente=${encodeURIComponent(rutaBase)}`}>Ya tengo cuenta</Link>
@@ -39,7 +40,9 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
       ) : sesion.id === pro.id ? (
         <p className="tarjeta text-sm text-slate-600">Esta es tu propia página de reservas. Así la ven tus pacientes.</p>
       ) : null}
-      <div className="tarjeta mt-4">
+      <div className="tarjeta mt-4 overflow-hidden p-0">
+        <p className="bg-tinta px-5 py-2.5 font-senal text-lg font-bold tracking-wide text-white uppercase sm:px-7">Horas disponibles</p>
+        <div className="p-5 sm:p-7">
         <SelectorBloques
           supabase={await crearClienteServidor()}
           servicioId={servicio.id}
@@ -50,6 +53,7 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
           ocultos={{ servicio: servicio.id, profesional: pro.id, fecha }}
           conMotivo
         />
+        </div>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
       <Aviso error={sp.error} ok={sp.ok} />
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="tarjeta">
-          <h2 className="mb-3 font-semibold">Semana tipo</h2>
+          <h2 className="mb-3 font-senal text-2xl font-bold">Semana tipo</h2>
           <ul className="divide-y divide-slate-100">
             {ORDEN.map((d) => {
               const delDia = (horarios ?? []).filter((h) => h.dia_semana === d);
@@ -38,7 +38,7 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
                       <form key={h.id} action={eliminarHorario} className="inline-flex items-center gap-1 rounded-full bg-marca-50 px-3 py-1 text-marca-800">
                         <input type="hidden" name="id" value={h.id} />
                         {h.hora_inicio.slice(0, 5)}–{h.hora_fin.slice(0, 5)}
-                        <button aria-label="Eliminar bloque" className="ml-1 cursor-pointer text-marca-700 hover:text-red-700">×</button>
+                        <button aria-label="Eliminar bloque" className="ml-1 cursor-pointer rounded-full p-0.5 text-marca-700 hover:bg-white hover:text-red-700"><svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg></button>
                       </form>
                     ))
                   )}
@@ -48,7 +48,7 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
           </ul>
         </section>
         <section className="tarjeta">
-          <h2 className="mb-3 font-semibold">Agregar bloque</h2>
+          <h2 className="mb-3 font-senal text-2xl font-bold">Agregar bloque</h2>
           <form action={agregarHorario} className="space-y-4">
             <fieldset>
               <legend className="etiqueta">Días</legend>
@@ -76,7 +76,7 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
         </section>
       </div>
       <section className="tarjeta">
-        <h2 className="mb-1 font-semibold">Vacaciones y días bloqueados</h2>
+        <h2 className="mb-1 font-senal text-2xl font-bold">Vacaciones y días bloqueados</h2>
         <p className="mb-4 text-sm text-slate-600">Esos días no se podrá reservar.</p>
         {(bloqueos ?? []).length > 0 && (
           <ul className="mb-4 space-y-2 text-sm">

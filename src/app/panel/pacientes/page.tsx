@@ -46,18 +46,18 @@ export default async function Pacientes({ searchParams }: PageProps<"/panel/paci
       {pacientes.length === 0 ? (
         <p className="tarjeta text-sm text-slate-600">{q ? "Sin resultados." : "Aún no tienes pacientes. Aparecerán aquí cuando reserven contigo."}</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+        <div className="tarjeta overflow-x-auto p-0">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+            <thead className="bg-tinta font-senal text-[15px] tracking-wide text-white uppercase">
               <tr>
-                <th className="px-4 py-3 font-medium">Nombre</th>
-                <th className="px-4 py-3 font-medium">RUT</th>
-                <th className="px-4 py-3 font-medium">Teléfono</th>
-                <th className="px-4 py-3 font-medium">Última atención</th>
-                <th className="px-4 py-3 font-medium">Próxima cita</th>
+                <th className="px-4 py-2.5 font-semibold">Nombre</th>
+                <th className="px-4 py-2.5 font-semibold">RUT</th>
+                <th className="px-4 py-2.5 font-semibold">Teléfono</th>
+                <th className="px-4 py-2.5 font-semibold">Última atención</th>
+                <th className="px-4 py-2.5 font-semibold">Próxima cita</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-tinta/10 text-[15px]">
               {pacientes.map(({ p, ultima, proxima }) => (
                 <tr key={p.id} className="hover:bg-slate-50">
                   <td className="px-4 py-3"><Link className="font-medium text-marca-700 hover:underline" href={`/panel/pacientes/${p.id}`}>{p.nombre}</Link></td>

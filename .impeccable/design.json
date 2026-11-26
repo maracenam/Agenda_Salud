@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-26T12:19:02.205864Z",
+  "title": "Design System: Agenda Salud",
+  "extensions": {
+    "colorMeta": {
+      "burdeos": {
+        "role": "primary",
+        "displayName": "Burdeos de línea paciente",
+        "canonical": "#8e1b3f",
+        "tonalRamp": [
+          "#3a0a1a",
+          "#561127",
+          "#6f1431",
+          "#8e1b3f",
+          "#a3264d",
+          "#c96b87",
+          "#f1d5dd",
+          "#f9eef1"
+        ]
+      },
+      "cobalto": {
+        "role": "secondary",
+        "displayName": "Cobalto de línea profesional",
+        "canonical": "#1f4fa3",
+        "tonalRamp": [
+          "#0c1f42",
+          "#122e60",
+          "#173c7d",
+          "#1f4fa3",
+          "#2a5cb8",
+          "#6f93d3",
+          "#d3e0f5",
+          "#edf2fb"
+        ]
+      },
+      "amarillo-senal": {
+        "role": "tertiary",
+        "displayName": "Amarillo señal",
+        "canonical": "#f5b700",
+        "tonalRamp": [
+          "#5c4400",
+          "#8a6600",
+          "#b88900",
+          "#f5b700",
+          "#ffc81f",
+          "#ffd966",
+          "#ffe9a3",
+          "#fff1c2"
+        ]
+      },
+      "tinta": {
+        "role": "neutral",
+        "displayName": "Tinta azul noche",
+        "canonical": "#0e1a2b",
+        "tonalRamp": [
+          "#0e1a2b",
+          "#1b2a40",
+          "#333d4d",
+          "#475263",
+          "#5f6b7c",
+          "#8c98a8",
+          "#d6dce3",
+          "#f5f7f9"
+        ]
+      },
+      "hormigon": {
+        "role": "neutral",
+        "displayName": "Hormigón frío",
+        "canonical": "#e9ecf0",
+        "tonalRamp": [
+          "#5f6b7c",
+          "#8c98a8",
+          "#b9c2cd",
+          "#d6dce3",
+          "#e9ecf0",
+          "#eef1f4",
+          "#f5f7f9",
+          "#ffffff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Titular de la landing."
+      },
+      "headline": {
+        "displayName": "Título de pantalla",
+        "purpose": "Clase .titulo."
+      },
+      "cifra": {
+        "displayName": "Cifra de tablero",
+        "purpose": "Horas, fechas y códigos clínicos."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel",
+        "value": "0 1px 2px rgb(14 26 43 / 0.06), 0 4px 12px -6px rgb(14 26 43 / 0.12)",
+        "purpose": "Toda superficie .tarjeta."
+      },
+      {
+        "name": "cartel",
+        "value": "0 2px 4px rgb(14 26 43 / 0.1), 0 20px 40px -20px rgb(14 26 43 / 0.45)",
+        "purpose": "Panel principal de la landing."
+      }
+    ],
+    "motion": [
+      {
+        "name": "estado",
+        "value": "150ms ease (color)",
+        "purpose": "Cambios de color en hover."
+      },
+      {
+        "name": "tablero",
+        "value": "700ms cubic-bezier(0.16, 1, 0.3, 1), 70ms stagger",
+        "purpose": "Entrada de las horas en un tablero; visible desde el inicio; desactivada con prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción en el color de línea.",
+      "html": "<button class=\"ds-btn\">Reservar</button>",
+      "css": ".ds-btn{background:#8e1b3f;color:#fff;font:600 15px/1.2 Barlow,sans-serif;min-height:40px;padding:8px 16px;border:0;border-radius:6px;cursor:pointer;transition:background .15s}.ds-btn:hover{background:#6f1431}.ds-btn:focus-visible{outline:3px solid #f5b700;outline-offset:2px}"
+    },
+    {
+      "name": "Botón señal",
+      "kind": "button",
+      "refersTo": "button-senal",
+      "description": "Acción principal de la pantalla.",
+      "html": "<button class=\"ds-btn-senal\">Confirmar reserva</button>",
+      "css": ".ds-btn-senal{background:#f5b700;color:#0e1a2b;font:700 16px/1.2 Barlow,sans-serif;min-height:44px;padding:10px 20px;border:0;border-radius:6px;cursor:pointer;transition:background .15s}.ds-btn-senal:hover{background:#ffc81f}.ds-btn-senal:focus-visible{outline:3px solid #0e1a2b;outline-offset:2px}"
+    },
+    {
+      "name": "Botón secundario",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acciones de apoyo.",
+      "html": "<button class=\"ds-btn-sec\">Cambiar hora</button>",
+      "css": ".ds-btn-sec{background:#fff;color:#0e1a2b;font:600 15px/1.2 Barlow,sans-serif;min-height:40px;padding:6px 16px;border:2px solid rgb(14 26 43/.15);border-radius:6px;cursor:pointer}.ds-btn-sec:hover{border-color:rgb(14 26 43/.4)}.ds-btn-sec:focus-visible{outline:3px solid #f5b700;outline-offset:2px}"
+    },
+    {
+      "name": "Campo",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de formulario.",
+      "html": "<input class=\"ds-campo\" placeholder=\"Filtrar por comuna\">",
+      "css": ".ds-campo{background:#fff;color:#0e1a2b;font:400 15px/1.4 Barlow,sans-serif;min-height:40px;padding:8px 12px;border:2px solid rgb(14 26 43/.15);border-radius:6px;caret-color:#8e1b3f}.ds-campo:focus{outline:none;border-color:#8e1b3f}.ds-campo::placeholder{color:#5f6b7c}"
+    },
+    {
+      "name": "Estado de cita",
+      "kind": "chip",
+      "description": "Chip de estado.",
+      "html": "<span class=\"ds-estado\">Confirmada</span>",
+      "css": ".ds-estado{display:inline-block;border:1px solid #8e1b3f;background:#f9eef1;color:#6f1431;border-radius:4px;padding:1px 6px;font:600 13px/1.4 'Barlow Condensed',sans-serif;letter-spacing:.025em;text-transform:uppercase}"
+    },
+    {
+      "name": "Tablero de horas",
+      "kind": "custom",
+      "description": "Firma: horas como tablero de salidas.",
+      "html": "<div class=\"ds-tablero\"><label class=\"ds-hora\">09:00</label><label class=\"ds-hora ds-hora-sel\">09:45</label><label class=\"ds-hora\">10:30</label></div>",
+      "css": ".ds-tablero{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#0e1a2b;padding:6px;border-radius:6px}.ds-hora{background:#1b2a40;color:#fff;text-align:center;padding:10px 0;border:2px solid transparent;border-radius:6px;font:600 24px/1 'Barlow Condensed',sans-serif;font-variant-numeric:tabular-nums;cursor:pointer}.ds-hora:hover{border-color:rgb(255 255 255/.4)}.ds-hora-sel{background:#f5b700;border-color:#f5b700;color:#0e1a2b}"
+    },
+    {
+      "name": "Navegación del panel",
+      "kind": "nav",
+      "description": "Barra cobalto de la vista profesional.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-a ds-activo\">Agenda</a><a class=\"ds-nav-a\">Pacientes</a><a class=\"ds-nav-a\">Horarios</a></nav>",
+      "css": ".ds-nav{display:flex;gap:4px;background:#1f4fa3;padding:6px;border-radius:8px;font:600 15px/1.2 Barlow,sans-serif}.ds-nav-a{color:rgb(255 255 255/.85);padding:6px 12px;border-radius:6px;cursor:pointer}.ds-nav-a:hover{background:rgb(255 255 255/.15);color:#fff}.ds-activo{background:#fff;color:#173c7d}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Señal Clara",
+    "overview": "Agenda Salud se lee como la señalética pública chilena: los paneles del Metro y del CESFAM, que dicen dónde ir y a qué hora sin que nadie tenga que preguntar. Paneles blancos esmaltados sobre un suelo de hormigón frío, cabeceras en tinta azul noche, números grandes y tabulares, y un color por \"línea\": burdeos para la vista de pacientes, cobalto para la vista de matronas y matrones.\n\nLa densidad es de información pública: poca decoración, jerarquía evidente, contraste alto. La calidez viene del burdeos y del lenguaje, nunca del rosado maternal ni del teal de clínica, que son los dos clichés que este sistema rechaza.",
+    "keyCharacteristics": [
+      "Un color de línea por vista, aplicado con la variable `--linea`.",
+      "Las horas siempre en numerales grandes y tabulares (Barlow Condensed), como un tablero de salidas.",
+      "El amarillo señal marca solo \"lo siguiente\": la próxima hora y la acción principal.",
+      "Cabeceras en banda de tinta con texto condensado en mayúsculas, como placas de señalización.",
+      "Recorridos dibujados como líneas de Metro con estaciones."
+    ],
+    "rules": [
+      {
+        "name": "La Regla de la Línea",
+        "body": "Cada vista tiene un solo color de línea. Pacientes en burdeos, profesionales en cobalto; nunca se mezclan en un mismo componente.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla de lo Siguiente",
+        "body": "El amarillo señal aparece una vez por zona: la próxima hora o la acción principal. Si hay dos cosas amarillas compitiendo, una sobra.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla del Tablero",
+        "body": "Toda hora visible se escribe con `.cifra`: numerales tabulares, condensados, grandes. Nunca una hora en texto corrido pequeño cuando es el dato principal.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "**Do** usar `.linea-pro` en todo contenedor de la vista profesional para que los componentes pasen a cobalto.",
+      "**Do** escribir horas, fechas y códigos clínicos (FUR, PAP) con `.cifra`.",
+      "**Do** dibujar íconos en SVG de trazo 2.25 y puntas redondeadas, como los de `src/components/marca.tsx`.",
+      "**Do** rotular como ejemplo cualquier dato de muestra."
+    ],
+    "donts": [
+      "**Don't** usar rosado pastel ni teal de clínica: son los clichés que este sistema reemplazó.",
+      "**Don't** usar el amarillo señal como decoración o en más de un elemento compitiendo por zona.",
+      "**Don't** usar glifos de texto (←, ×) como íconos.",
+      "**Don't** armar páginas con grillas de tarjetas iguales de ícono, título y texto."
+    ]
+  }
+}

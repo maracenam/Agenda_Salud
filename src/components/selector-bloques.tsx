@@ -23,10 +23,10 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
   const sep = rutaBase.includes("?") ? "&" : "?";
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-7">
       <div>
-        <p className="etiqueta">1. Elige el día</p>
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <p className="mb-2 flex items-center gap-2 font-senal text-xl font-bold"><span className="insignia size-6 text-[13px]">1</span>Elige el día</p>
+        <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pt-1 pb-3">
           {dias.map((d) => {
             const atiende = diasConHorario.includes(diaSemana(d));
             const activo = d === fecha;
@@ -36,40 +36,49 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
                 href={`${rutaBase}${sep}fecha=${d}`}
                 scroll={false}
                 aria-disabled={!atiende}
-                className={`flex min-w-16 flex-col items-center rounded-lg border px-2 py-2 text-xs ${
+                aria-current={activo ? "date" : undefined}
+                className={`flex min-w-[4.25rem] flex-col items-center rounded-lg border-2 px-2 py-2 text-[13px] font-medium transition-colors ${
                   activo
-                    ? "border-marca-600 bg-marca-700 text-white"
+                    ? "border-tinta bg-tinta text-white"
                     : atiende
-                      ? "border-slate-300 bg-white hover:border-marca-600"
-                      : "pointer-events-none border-slate-100 bg-slate-50 text-slate-300"
+                      ? "border-tinta/15 bg-white text-tinta hover:border-(--linea)"
+                      : "pointer-events-none border-transparent bg-slate-100 text-slate-400"
                 }`}
               >
-                <span className="capitalize">{formatoDia(d, { weekday: "short", day: undefined, month: undefined })}</span>
-                <span className="text-lg font-semibold">{Number(d.slice(8))}</span>
+                <span className="mayus">{formatoDia(d, { weekday: "short", day: undefined, month: undefined })}</span>
+                <span className={`cifra text-[26px] leading-tight ${activo ? "text-senal" : ""}`}>{Number(d.slice(8))}</span>
                 <span>{formatoDia(d, { month: "short", weekday: undefined, day: undefined })}</span>
               </Link>
             );
           })}
         </div>
       </div>
-      <form action={accion} className="space-y-4">
+      <form action={accion} className="space-y-6">
         {Object.entries(ocultos).map(([k, v]) => (
           <input key={k} type="hidden" name={k} value={v} />
         ))}
         <fieldset>
-          <legend className="etiqueta">2. Elige la hora · <span className="capitalize">{formatoDia(fecha)}</span></legend>
+          <legend className="mb-2 flex items-center gap-2 font-senal text-xl font-bold">
+            <span className="insignia size-6 text-[13px]">2</span>Elige la hora
+            <span className="font-sans text-base font-medium text-slate-600">· <span className="mayus">{formatoDia(fecha)}</span></span>
+          </legend>
           {error ? (
-            <p className="text-sm text-red-700">No se pudieron cargar las horas.</p>
+            <p className="text-[15px] font-medium text-red-800">No se pudieron cargar las horas. Recarga la página o prueba en un momento.</p>
           ) : lista.length === 0 ? (
-            <p className="text-sm text-slate-600">No quedan horas disponibles este día. Prueba con otro.</p>
+            <p className="rounded-lg bg-slate-100 px-4 py-3 text-[15px] text-slate-700">No quedan horas disponibles este día. Prueba con otro.</p>
           ) : (
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              {lista.map((b) => (
-                <label key={b.inicio} className="cursor-pointer rounded-lg border border-slate-300 bg-white py-2 text-center text-sm has-checked:border-marca-600 has-checked:bg-marca-50 has-checked:font-semibold">
-                  <input type="radio" name="inicio" value={b.inicio} required className="sr-only" />
-                  {formatoHora(b.inicio)}
-                </label>
-              ))}
+            <div className="overflow-hidden rounded-lg bg-tinta p-1.5" key={fecha}>
+              <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 md:grid-cols-6">
+                {lista.map((b, i) => (
+                  <label
+                    key={b.inicio}
+                    className="cursor-pointer overflow-hidden rounded-md border-2 border-transparent bg-tinta-suave py-2.5 text-center text-white transition-colors hover:border-white/40 has-checked:border-senal has-checked:bg-senal has-checked:text-tinta has-focus-visible:outline-3 has-focus-visible:outline-senal"
+                  >
+                    <input type="radio" name="inicio" value={b.inicio} required className="sr-only" />
+                    <span className="cifra tablero-cifra text-2xl" style={{ "--i": i } as React.CSSProperties}>{formatoHora(b.inicio)}</span>
+                  </label>
+                ))}
+              </div>
             </div>
           )}
         </fieldset>
@@ -79,7 +88,7 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
             <textarea className="campo" id="motivo" name="motivo" rows={2} maxLength={500} placeholder="Ej: control de embarazo, 12 semanas" />
           </div>
         )}
-        {lista.length > 0 && <button className="btn">{textoBoton}</button>}
+        {lista.length > 0 && <button className="btn-senal">{textoBoton}</button>}
       </form>
     </div>
   );

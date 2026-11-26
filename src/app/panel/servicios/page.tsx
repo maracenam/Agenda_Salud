@@ -82,7 +82,7 @@ export default async function Servicios({ searchParams }: PageProps<"/panel/serv
         </ul>
       )}
       <section className="tarjeta space-y-4">
-        <h2 className="font-semibold">Agregar prestación</h2>
+        <h2 className="font-senal text-2xl font-bold">Agregar prestación</h2>
         <FormServicio />
         {sugerencias.length > 0 && (
           <div className="border-t border-slate-100 pt-4">
