@@ -7,7 +7,9 @@ export type TipoAviso = "confirmacion" | "cancelacion" | "reprogramacion" | "rec
 
 type Email = { para: string; asunto: string; html: string };
 
-const SITIO = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const SITIO =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
 
 async function enviar({ para, asunto, html }: Email): Promise<{ ok: boolean; error?: string }> {
   const key = process.env.RESEND_API_KEY;
