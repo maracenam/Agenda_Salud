@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { iniciales } from "@/lib/iniciales";
 import { notFound } from "next/navigation";
 import { cargarProfesional } from "@/lib/consultas";
 import { DIAS, formatoPrecio } from "@/lib/fechas";
+import { Flecha, Reloj, Ubicacion } from "@/components/marca";
 
 export default async function PerfilProfesional({ params }: PageProps<"/profesionales/[id]">) {
   const { id } = await params;
@@ -11,54 +13,69 @@ export default async function PerfilProfesional({ params }: PageProps<"/profesio
   const horarios = [...pro.horarios].sort((a, b) => ((a.dia_semana + 6) % 7) - ((b.dia_semana + 6) % 7) || a.hora_inicio.localeCompare(b.hora_inicio));
 
   return (
-    <div className="grid gap-6 md:grid-cols-3">
-      <div className="md:col-span-2 space-y-4">
-        <div>
-          <h1 className="titulo">{pro.perfil?.nombre}</h1>
-          <p className="text-marca-700">{pro.titulo || "Matrona"}</p>
-          {pro.registro_sis && <p className="text-xs text-slate-500">Registro Superintendencia de Salud: {pro.registro_sis}</p>}
-        </div>
-        {pro.bio && <p className="whitespace-pre-line text-slate-700">{pro.bio}</p>}
-        <h2 className="pt-2 text-lg font-semibold">Elige una prestación</h2>
-        {servicios.length === 0 ? (
-          <p className="tarjeta text-sm text-slate-600">Esta profesional aún no tiene prestaciones disponibles.</p>
-        ) : (
-          <ul className="space-y-3">
-            {servicios.map((s) => (
-              <li key={s.id} className="tarjeta flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="font-medium">{s.nombre}</p>
-                  <p className="text-sm text-slate-500">
-                    {s.duracion_min} min{s.precio != null ? ` · ${formatoPrecio(s.precio)}` : ""}
-                  </p>
-                  {s.descripcion && <p className="mt-1 text-sm text-slate-600">{s.descripcion}</p>}
-                </div>
-                <Link href={`/profesionales/${pro.id}/reservar?servicio=${s.id}`} className="btn">Reservar</Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <aside className="tarjeta h-fit space-y-3 text-sm">
-        {(pro.direccion || pro.comuna) && (
+    <div className="grid gap-6 md:grid-cols-[1fr_20rem]">
+      <div className="space-y-8">
+        <div className="flex items-start gap-4">
+          <span className="insignia size-14 text-xl">{iniciales(pro.perfil?.nombre)}</span>
           <div>
-            <p className="font-medium">Dirección</p>
-            <p className="text-slate-600">{[pro.direccion, pro.comuna].filter(Boolean).join(", ")}</p>
+            <h1 className="titulo">{pro.perfil?.nombre}</h1>
+            <p className="mt-1 text-lg font-medium text-marca-700">{pro.titulo || "Matrona"}</p>
+            {pro.registro_sis && <p className="mt-1 text-sm text-slate-600">Registro Superintendencia de Salud: <span className="cifra text-base">{pro.registro_sis}</span></p>}
           </div>
-        )}
-        <div>
-          <p className="font-medium">Horario de atención</p>
-          {horarios.length === 0 ? (
-            <p className="text-slate-600">Sin horario publicado.</p>
+        </div>
+        {pro.bio && <p className="max-w-[65ch] text-lg whitespace-pre-line text-slate-700">{pro.bio}</p>}
+        <section>
+          <h2 className="mb-3 text-xl font-bold">Elige una prestación</h2>
+          {servicios.length === 0 ? (
+            <p className="tarjeta text-slate-600">Esta profesional aún no tiene prestaciones disponibles.</p>
           ) : (
-            <ul className="text-slate-600">
-              {horarios.map((h, i) => (
-                <li key={i}>{DIAS[h.dia_semana]}: {h.hora_inicio.slice(0, 5)} a {h.hora_fin.slice(0, 5)}</li>
+            <ul className="tarjeta divide-y divide-slate-200 p-0">
+              {servicios.map((s) => (
+                <li key={s.id} className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[17px] font-semibold">{s.nombre}</p>
+                    <p className="mt-0.5 flex flex-wrap items-center gap-x-3 text-slate-600">
+                      <span className="inline-flex items-center gap-1"><Reloj className="size-4" />{s.duracion_min} min</span>
+                      {s.precio != null && <span className="cifra text-base text-tinta">{formatoPrecio(s.precio)}</span>}
+                    </p>
+                    {s.descripcion && <p className="mt-1 text-slate-600">{s.descripcion}</p>}
+                  </div>
+                  <Link href={`/profesionales/${pro.id}/reservar?servicio=${s.id}`} className="btn">
+                    Reservar <Flecha className="size-4" />
+                  </Link>
+                </li>
               ))}
             </ul>
           )}
+        </section>
+      </div>
+      <aside className="tarjeta h-fit overflow-hidden p-0 text-[15px]">
+        <p className="border-b border-slate-200 px-5 py-3.5 font-semibold">Consulta</p>
+        <div className="space-y-5 p-5">
+          {(pro.direccion || pro.comuna) && (
+            <div>
+              <p className="flex items-center gap-1.5 font-semibold"><Ubicacion className="size-4" />Dirección</p>
+              <p className="mt-1 text-slate-700">{[pro.direccion, pro.comuna].filter(Boolean).join(", ")}</p>
+            </div>
+          )}
+          <div>
+            <p className="flex items-center gap-1.5 font-semibold"><Reloj className="size-4" />Horario de atención</p>
+            {horarios.length === 0 ? (
+              <p className="mt-1 text-slate-700">Sin horario publicado.</p>
+            ) : (
+              <ul className="mt-1 divide-y divide-slate-200">
+                {horarios.map((h, i) => (
+                  <li key={i} className="flex justify-between gap-3 py-1.5">
+                    <span className="text-slate-700">{DIAS[h.dia_semana]}</span>
+                    <span className="cifra text-base">{h.hora_inicio.slice(0, 5)}–{h.hora_fin.slice(0, 5)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       </aside>
     </div>
   );
 }
+

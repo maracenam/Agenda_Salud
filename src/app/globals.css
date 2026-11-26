@@ -1,42 +1,162 @@
 @import "tailwindcss";
 
+/*
+  Identidad "Consulta clara": software de agenda de salud, sereno y legible.
+  Ciruela = marca y acciones; salvia = disponibilidad y confirmación;
+  tinta ciruela casi negra para el texto, sobre un blanco tibio.
+*/
 @theme {
-  --color-marca-50: #f0fdfa;
-  --color-marca-100: #ccfbf1;
-  --color-marca-600: #0d9488;
-  --color-marca-700: #0f766e;
-  --color-marca-800: #115e59;
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Ciruela (marca). Las pantallas usan las clases "marca-*". */
+  --color-marca-50: #f7eff5;
+  --color-marca-100: #ecdae7;
+  --color-marca-600: #7b3a6c;
+  --color-marca-700: #66305a;
+  --color-marca-800: #4f2446;
+
+  /* Vista profesional: misma marca; la diferencia la da su barra lateral. */
+  --color-pro-50: #f7eff5;
+  --color-pro-100: #ecdae7;
+  --color-pro-600: #7b3a6c;
+  --color-pro-700: #66305a;
+  --color-pro-800: #4f2446;
+
+  /* Salvia: horas disponibles, confirmaciones, "siguiente". */
+  --color-acento: #3f6b55;
+  --color-acento-claro: #e4efe8;
+  --color-acento-suave: #cfe2d6;
+
+  /* Tinta y fondos. */
+  --color-tinta: #261a23;
+  --color-tinta-suave: #3a2b36;
+  --color-hormigon: #f6f5f3;
+
+  /* Neutros tibios teñidos hacia la ciruela (reemplazan el slate de Tailwind). */
+  --color-slate-50: #faf9f8;
+  --color-slate-100: #f1eeee;
+  --color-slate-200: #e4dfe1;
+  --color-slate-300: #cbc3c7;
+  --color-slate-400: #9d9298;
+  --color-slate-500: #6e6369;
+  --color-slate-600: #574d53;
+  --color-slate-700: #41383e;
+  --color-slate-800: #2f272c;
+  --color-slate-900: #261a23;
+
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-titulo: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+}
+
+:root {
+  --linea: var(--color-marca-700);
+  --linea-oscura: var(--color-marca-800);
+  --linea-clara: var(--color-marca-50);
+  color-scheme: light;
+  accent-color: var(--linea);
+}
+
+/* Se conserva como gancho de la vista profesional. */
+.linea-pro {
+  --linea: var(--color-pro-700);
+  --linea-oscura: var(--color-pro-800);
+  --linea-clara: var(--color-pro-50);
 }
 
 body {
-  background: #f8fafc;
-  color: #1e293b;
+  background: var(--color-hormigon);
+  color: var(--color-tinta);
+  font-feature-settings: "tnum" 1;
+}
+
+::selection {
+  background: var(--color-marca-100);
+  color: var(--color-tinta);
+}
+
+input,
+textarea {
+  caret-color: var(--linea);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-marca-600);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+html {
+  scrollbar-color: var(--color-slate-300) var(--color-hormigon);
+}
+
+a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* Entrada sutil de las horas: visibles desde el primer cuadro, solo se asientan. */
+@keyframes asentar {
+  from {
+    transform: translateY(6px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.tablero-cifra {
+  display: inline-block;
+  animation: asentar 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tablero-cifra {
+    animation: none;
+  }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-marca-700 px-4 py-2 text-sm font-medium text-white hover:bg-marca-800 disabled:opacity-50 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-(--linea-oscura) disabled:opacity-50 cursor-pointer;
+  }
+  /* Acción de avanzar con una hora: salvia. */
+  .btn-acento {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-acento px-5 py-2.5 text-base font-semibold text-white transition-colors duration-150 hover:bg-[#335a47] cursor-pointer;
   }
   .btn-sec {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-colors duration-150 hover:border-slate-400 hover:bg-slate-50 cursor-pointer;
   }
   .btn-peligro {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-[15px] font-semibold text-red-800 transition-colors duration-150 hover:border-red-300 hover:bg-red-50 cursor-pointer;
   }
   .campo {
-    @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-xs focus:border-marca-600 focus:outline-none focus:ring-2 focus:ring-marca-100;
+    @apply block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-tinta placeholder:text-slate-500 focus:border-(--linea) focus:ring-3 focus:ring-marca-100 focus:outline-none;
   }
   .etiqueta {
-    @apply mb-1 block text-sm font-medium text-slate-700;
+    @apply mb-1.5 block text-sm font-semibold text-slate-700;
   }
   .tarjeta {
-    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-xs;
+    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgb(38_26_35/0.04),0_8px_24px_-12px_rgb(38_26_35/0.10)];
   }
   .titulo {
-    @apply text-2xl font-semibold text-slate-900;
+    @apply font-titulo text-3xl leading-tight font-bold tracking-[-0.02em] text-tinta sm:text-[2.125rem];
   }
   .enlace {
-    @apply text-marca-700 underline-offset-2 hover:underline;
+    @apply font-semibold text-(--linea) underline-offset-3 hover:underline;
+  }
+  .cifra {
+    @apply font-titulo font-semibold tabular-nums tracking-[-0.01em];
+  }
+  .insignia {
+    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-marca-50 font-titulo text-sm font-bold text-marca-700;
+  }
+  /* Solo la primera letra en mayúscula: "Jueves, 26 de noviembre". */
+  .mayus {
+    display: inline-block;
+  }
+  .mayus::first-letter {
+    text-transform: uppercase;
   }
 }

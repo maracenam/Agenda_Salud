@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FlechaAtras } from "@/components/marca";
 import { notFound } from "next/navigation";
 import { Aviso } from "@/components/aviso";
 import { SelectorBloques } from "@/components/selector-bloques";
@@ -41,11 +42,11 @@ export default async function Reprogramar({ params, searchParams }: PageProps<"/
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link href={volverA} className="enlace text-sm">← Volver</Link>
+      <Link href={volverA} className="enlace inline-flex items-center gap-1"><FlechaAtras className="size-4" />Volver</Link>
       <h1 className="titulo mt-2">Cambiar hora</h1>
       <p className="mb-6 text-sm text-slate-600">
         {cita.servicio?.nombre} · {volverA === "/panel" ? cita.paciente?.nombre : cita.profesional?.perfil?.nombre}
-        <br />Hora actual: <span className="capitalize">{formatoFechaHora(cita.inicio)}</span>
+        <br />Hora actual: <span className="mayus">{formatoFechaHora(cita.inicio)}</span>
       </p>
       <Aviso error={sp.error} />
       <div className="tarjeta">

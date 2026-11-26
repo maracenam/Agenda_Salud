@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-26T18:00:00Z",
+  "title": "Design System: Agenda Salud (Consulta clara)",
+  "extensions": {
+    "colorMeta": {
+      "ciruela": {
+        "role": "primary",
+        "displayName": "Ciruela de marca",
+        "canonical": "#66305a",
+        "tonalRamp": [
+          "#4f2446",
+          "#66305a",
+          "#7b3a6c",
+          "#ecdae7",
+          "#f7eff5"
+        ]
+      },
+      "salvia": {
+        "role": "secondary",
+        "displayName": "Salvia de disponibilidad",
+        "canonical": "#3f6b55",
+        "tonalRamp": [
+          "#335a47",
+          "#3f6b55",
+          "#cfe2d6",
+          "#e4efe8"
+        ]
+      },
+      "tinta": {
+        "role": "neutral",
+        "displayName": "Tinta ciruela",
+        "canonical": "#261a23"
+      },
+      "fondo": {
+        "role": "neutral",
+        "displayName": "Blanco tibio",
+        "canonical": "#f6f5f3"
+      }
+    },
+    "typography": {
+      "family": "Figtree",
+      "weights": [
+        400,
+        500,
+        600,
+        700
+      ],
+      "numerals": "tabular"
+    },
+    "radii": {
+      "control": "10px",
+      "tarjeta": "14px",
+      "banda": "24px"
+    }
+  }
+}
