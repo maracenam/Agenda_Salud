@@ -24,7 +24,7 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
       <Aviso error={sp.error} ok={sp.ok} />
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="tarjeta">
-          <h2 className="mb-3 font-senal text-2xl font-bold">Semana tipo</h2>
+          <h2 className="mb-3 text-xl font-bold">Semana tipo</h2>
           <ul className="divide-y divide-slate-100">
             {ORDEN.map((d) => {
               const delDia = (horarios ?? []).filter((h) => h.dia_semana === d);
@@ -48,7 +48,7 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
           </ul>
         </section>
         <section className="tarjeta">
-          <h2 className="mb-3 font-senal text-2xl font-bold">Agregar bloque</h2>
+          <h2 className="mb-3 text-xl font-bold">Agregar bloque</h2>
           <form action={agregarHorario} className="space-y-4">
             <fieldset>
               <legend className="etiqueta">Días</legend>
@@ -76,7 +76,7 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
         </section>
       </div>
       <section className="tarjeta">
-        <h2 className="mb-1 font-senal text-2xl font-bold">Vacaciones y días bloqueados</h2>
+        <h2 className="mb-1 text-xl font-bold">Vacaciones y días bloqueados</h2>
         <p className="mb-4 text-sm text-slate-600">Esos días no se podrá reservar.</p>
         {(bloqueos ?? []).length > 0 && (
           <ul className="mb-4 space-y-2 text-sm">

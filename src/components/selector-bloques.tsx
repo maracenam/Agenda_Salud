@@ -25,7 +25,7 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
   return (
     <div className="space-y-7">
       <div>
-        <p className="mb-2 flex items-center gap-2 font-senal text-xl font-bold"><span className="insignia size-6 text-[13px]">1</span>Elige el día</p>
+        <p className="mb-3 flex items-center gap-2.5 text-lg font-semibold"><span className="insignia size-7 bg-marca-700 text-white">1</span>Elige el día</p>
         <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pt-1 pb-3">
           {dias.map((d) => {
             const atiende = diasConHorario.includes(diaSemana(d));
@@ -37,16 +37,16 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
                 scroll={false}
                 aria-disabled={!atiende}
                 aria-current={activo ? "date" : undefined}
-                className={`flex min-w-[4.25rem] flex-col items-center rounded-lg border-2 px-2 py-2 text-[13px] font-medium transition-colors ${
+                className={`flex min-w-[4.25rem] flex-col items-center rounded-xl border px-2 py-2 text-[13px] font-medium transition-colors ${
                   activo
-                    ? "border-tinta bg-tinta text-white"
+                    ? "border-marca-700 bg-marca-700 text-white"
                     : atiende
-                      ? "border-tinta/15 bg-white text-tinta hover:border-(--linea)"
-                      : "pointer-events-none border-transparent bg-slate-100 text-slate-400"
+                      ? "border-slate-300 bg-white text-tinta hover:border-marca-600"
+                      : "pointer-events-none border-transparent bg-slate-100 text-slate-400 line-through decoration-slate-300"
                 }`}
               >
                 <span className="mayus">{formatoDia(d, { weekday: "short", day: undefined, month: undefined })}</span>
-                <span className={`cifra text-[26px] leading-tight ${activo ? "text-senal" : ""}`}>{Number(d.slice(8))}</span>
+                <span className="cifra text-[24px] leading-tight">{Number(d.slice(8))}</span>
                 <span>{formatoDia(d, { month: "short", weekday: undefined, day: undefined })}</span>
               </Link>
             );
@@ -58,8 +58,8 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
           <input key={k} type="hidden" name={k} value={v} />
         ))}
         <fieldset>
-          <legend className="mb-2 flex items-center gap-2 font-senal text-xl font-bold">
-            <span className="insignia size-6 text-[13px]">2</span>Elige la hora
+          <legend className="mb-3 flex flex-wrap items-center gap-2.5 text-lg font-semibold">
+            <span className="insignia size-7 bg-marca-700 text-white">2</span>Elige la hora
             <span className="font-sans text-base font-medium text-slate-600">· <span className="mayus">{formatoDia(fecha)}</span></span>
           </legend>
           {error ? (
@@ -67,15 +67,15 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
           ) : lista.length === 0 ? (
             <p className="rounded-lg bg-slate-100 px-4 py-3 text-[15px] text-slate-700">No quedan horas disponibles este día. Prueba con otro.</p>
           ) : (
-            <div className="overflow-hidden rounded-lg bg-tinta p-1.5" key={fecha}>
-              <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 md:grid-cols-6">
+            <div key={fecha}>
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-6">
                 {lista.map((b, i) => (
                   <label
                     key={b.inicio}
-                    className="cursor-pointer overflow-hidden rounded-md border-2 border-transparent bg-tinta-suave py-2.5 text-center text-white transition-colors hover:border-white/40 has-checked:border-senal has-checked:bg-senal has-checked:text-tinta has-focus-visible:outline-3 has-focus-visible:outline-senal"
+                    className="cursor-pointer overflow-hidden rounded-lg border border-acento-suave bg-acento-claro/50 py-3 text-center text-acento transition-colors hover:border-acento has-checked:border-acento has-checked:bg-acento has-checked:text-white has-focus-visible:outline-3 has-focus-visible:outline-marca-600"
                   >
                     <input type="radio" name="inicio" value={b.inicio} required className="sr-only" />
-                    <span className="cifra tablero-cifra text-2xl" style={{ "--i": i } as React.CSSProperties}>{formatoHora(b.inicio)}</span>
+                    <span className="cifra tablero-cifra text-xl" style={{ "--i": i } as React.CSSProperties}>{formatoHora(b.inicio)}</span>
                   </label>
                 ))}
               </div>
@@ -88,7 +88,7 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
             <textarea className="campo" id="motivo" name="motivo" rows={2} maxLength={500} placeholder="Ej: control de embarazo, 12 semanas" />
           </div>
         )}
-        {lista.length > 0 && <button className="btn-senal">{textoBoton}</button>}
+        {lista.length > 0 && <button className="btn-acento w-full sm:w-auto">{textoBoton}</button>}
       </form>
     </div>
   );

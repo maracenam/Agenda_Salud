@@ -33,14 +33,14 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="titulo">Mis citas</h1>
-        <Link href="/profesionales" className="btn-senal">Reservar nueva hora</Link>
+        <Link href="/profesionales" className="btn-acento">Reservar nueva hora</Link>
       </div>
       <Aviso error={sp.error} ok={sp.ok} />
       {perfil.rol === "profesional" && (
         <p className="text-sm text-slate-600">Estas son las citas que reservaste como paciente. Tu agenda profesional está en <Link className="enlace" href="/panel">Mi agenda</Link>.</p>
       )}
       <section>
-        <h2 className="mb-3 font-senal text-2xl font-bold">Próximas</h2>
+        <h2 className="mb-3 text-xl font-bold">Próximas</h2>
         {proximas.length === 0 ? (
           <p className="tarjeta text-sm text-slate-600">No tienes citas próximas.</p>
         ) : (
@@ -51,7 +51,7 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
               return (
                 <li key={c.id} className="tarjeta flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <p className="font-senal text-2xl leading-tight font-bold mayus">{formatoFechaHora(c.inicio)}</p>
+                    <p className="text-lg leading-tight font-bold mayus">{formatoFechaHora(c.inicio)}</p>
                     <p className="mt-0.5 text-slate-700">{c.servicio?.nombre} con {c.profesional?.perfil?.nombre}</p>
                     {(c.profesional?.direccion || c.profesional?.comuna) && (
                       <p className="text-sm text-slate-500">{[c.profesional?.direccion, c.profesional?.comuna].filter(Boolean).join(", ")}</p>
@@ -79,8 +79,8 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
       </section>
       {pasadas.length > 0 && (
         <section>
-          <h2 className="mb-3 font-senal text-2xl font-bold">Historial</h2>
-          <ul className="tarjeta divide-y divide-tinta/10 p-0">
+          <h2 className="mb-3 text-xl font-bold">Historial</h2>
+          <ul className="tarjeta divide-y divide-slate-200 p-0">
             {pasadas.map((c) => (
               <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 text-sm">
                 <span className="mayus">{formatoFechaHora(c.inicio)} · {c.servicio?.nombre} · {c.profesional?.perfil?.nombre}</span>

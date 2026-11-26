@@ -21,7 +21,7 @@ export default async function Registro({ searchParams }: PageProps<"/registro">)
             { v: "paciente", t: "Paciente", d: "Quiero reservar horas", c: "" },
             { v: "profesional", t: "Matrona / Matrón", d: "Quiero recibir reservas", c: "linea-pro" },
           ].map((o) => (
-            <label key={o.v} className={`${o.c} flex cursor-pointer flex-col rounded-lg border-2 border-tinta/15 p-3 has-checked:border-marca-700 has-checked:bg-marca-50`}>
+            <label key={o.v} className={`${o.c} flex cursor-pointer flex-col rounded-lg border border-slate-300 p-3 has-checked:border-marca-700 has-checked:bg-marca-50`}>
               <span className="flex items-center gap-2 text-sm font-medium">
                 <input type="radio" name="rol" value={o.v} defaultChecked={rol === o.v} />
                 {o.t}

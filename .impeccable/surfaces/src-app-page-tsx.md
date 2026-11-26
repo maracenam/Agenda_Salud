@@ -15,14 +15,14 @@ Restricciones: sin testimonios, cifras de clientes ni precios inventados. Españ
 
 ## Direction contract
 
-THESIS: Agenda Salud se lee como la señalética pública chilena (paneles de Metro y CESFAM): saber dónde ir y a qué hora, sin preguntar. Rechaza la landing SaaS de héroe centrado y grilla de tarjetas iguales en teal.
+THESIS: Agenda Salud se lee primero como software de agenda de salud confiable ("Consulta clara"), no como anuncio. La reserva misma es la protagonista. Rechaza la landing SaaS genérica en teal y la estética de señalética de transporte (ronda 1, descartada por el usuario).
 
-OWN-WORLD: paneles esmaltados blancos sobre suelo gris hormigón frío, banda de tinta azul noche (#0E1A2B) como cabecera de panel, dos colores de línea: burdeos para la vista paciente, cobalto para la vista profesional; amarillo señal (#F5B700) solo para "la próxima hora" y la acción principal. Barlow / Barlow Condensed, numerales tabulares grandes, insignias de línea circulares, flechas pictográficas SVG de trazo grueso. Esquinas de 6px, bordes de 2px.
+OWN-WORLD: ciruela #66305a (marca, acciones, día elegido) y salvia #3F6B55 (disponible, confirmar, siguiente) sobre blanco tibio #F6F5F3, tinta ciruela #261A23, neutros reteñidos a ciruela. Figtree 400-700, cifras tabulares. Esquinas 10/14px, bordes de 1px, sombras suaves.
 
-STORY: la paciente entiende que reserva sola con una matrona real, ve horas y entra a reservar; la matrona entiende que su día queda ordenado y crea su agenda.
+STORY: la paciente ve una reserva real en la portada (profesional, días, horas libres, confirmación) y busca por comuna; la matrona ve su día ordenado en una banda ciruela y crea su agenda.
 
-FIRST VIEWPORT: a la izquierda, gran panel burdeos con el titular en Barlow Condensed y el buscador por comuna (acción primaria amarilla). A la derecha, un tablero de "Próximas horas" en tinta: filas con hora en numerales grandes, prestación, matrona y comuna (datos de muestra rotulados). Debajo, franja de dos líneas: Paciente (burdeos) y Profesional (cobalto) con su ruta.
+FIRST VIEWPORT: izquierda, titular "Tu hora con la matrona, sin llamadas." con buscador por comuna (botón salvia) y tres señales de confianza. Derecha, tarjeta de reserva rotulada "Ejemplo".
 
-FORM: señalética de transporte y salud pública, candidato 4 de 7 de la lista propia; seed:4479ea3102dc9a4a. Movimiento firma: las horas como tablero de salidas, también en el selector de reserva y en la agenda del día.
+FORM: registro seguro, re-roll 1 sobre seed:4479ea3102dc9a4a. Movimiento firma: las horas se asientan (translateY 6px, 420ms, escalonado), sin movimiento con prefers-reduced-motion.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

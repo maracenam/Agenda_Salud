@@ -7,7 +7,7 @@ import { esFechaValida, formatoPrecio, hoyChile } from "@/lib/fechas";
 import { obtenerSesion } from "@/lib/sesion";
 import { crearClienteServidor } from "@/lib/supabase/server";
 import { reservar } from "./acciones";
-import { FlechaAtras } from "@/components/marca";
+import { Calendario, FlechaAtras } from "@/components/marca";
 
 export const metadata = { title: "Reservar hora" };
 
@@ -41,7 +41,7 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
         <p className="tarjeta text-sm text-slate-600">Esta es tu propia página de reservas. Así la ven tus pacientes.</p>
       ) : null}
       <div className="tarjeta mt-4 overflow-hidden p-0">
-        <p className="bg-tinta px-5 py-2.5 font-senal text-lg font-bold tracking-wide text-white uppercase sm:px-7">Horas disponibles</p>
+        <p className="flex items-center gap-2 border-b border-slate-200 px-5 py-3.5 font-semibold sm:px-7"><Calendario className="size-5 text-marca-700" />Horas disponibles</p>
         <div className="p-5 sm:p-7">
         <SelectorBloques
           supabase={await crearClienteServidor()}

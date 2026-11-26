@@ -47,7 +47,7 @@ export default async function Profesionales({ searchParams }: PageProps<"/profes
       </div>
       {lista.length === 0 ? (
         <div className="tarjeta text-center">
-          <p className="font-senal text-2xl font-bold">Sin matronas publicadas{q ? ` en ${q}` : " todavía"}</p>
+          <p className="text-xl font-bold">Sin matronas publicadas{q ? ` en ${q}` : " todavía"}</p>
           <p className="mt-1 text-slate-600">{q ? "Prueba con otra comuna o quita el filtro." : "Vuelve pronto: las profesionales están armando sus agendas."}</p>
           {q && <Link href="/profesionales" className="btn-sec mt-4">Ver todas</Link>}
         </div>
@@ -55,19 +55,18 @@ export default async function Profesionales({ searchParams }: PageProps<"/profes
         <ul className="grid gap-4 md:grid-cols-2">
           {lista.map((p) => (
             <li key={p.id} className="tarjeta flex flex-col gap-4 overflow-hidden p-0">
-              <p className="flex items-center gap-1.5 bg-marca-700 px-5 py-2 font-senal text-[17px] font-bold tracking-wide text-white uppercase">
-                <Ubicacion className="size-4" />
-                {p.comuna || "Sin comuna"}
-              </p>
-              <div className="flex items-start gap-4 px-5">
-                <span className="insignia size-12 text-xl">{iniciales(p.perfil?.nombre)}</span>
+              <div className="flex items-start gap-4 px-5 pt-5">
+                <span className="insignia size-12 text-lg">{iniciales(p.perfil?.nombre)}</span>
                 <div className="min-w-0">
-                  <h2 className="font-senal text-2xl leading-tight font-bold">{p.perfil?.nombre}</h2>
+                  <h2 className="text-xl leading-tight font-bold">{p.perfil?.nombre}</h2>
                   <p className="font-medium text-marca-700">{p.titulo || p.especialidad?.nombre}</p>
+                  {p.comuna && (
+                    <p className="mt-1 flex items-center gap-1 text-slate-600"><Ubicacion className="size-4" />{p.comuna}</p>
+                  )}
                 </div>
               </div>
               {p.bio && <p className="line-clamp-3 px-5 text-slate-700">{p.bio}</p>}
-              <div className="mt-auto flex items-center justify-between gap-3 border-t border-tinta/10 px-5 py-3">
+              <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-200 bg-slate-50 px-5 py-3">
                 <span className="text-sm font-medium text-slate-600">
                   {p.servicios.length} {p.servicios.length === 1 ? "prestación" : "prestaciones"}
                 </span>

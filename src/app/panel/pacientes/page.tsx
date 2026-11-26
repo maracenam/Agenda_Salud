@@ -48,7 +48,7 @@ export default async function Pacientes({ searchParams }: PageProps<"/panel/paci
       ) : (
         <div className="tarjeta overflow-x-auto p-0">
           <table className="w-full text-left text-sm">
-            <thead className="bg-tinta font-senal text-[15px] tracking-wide text-white uppercase">
+            <thead className="border-b border-slate-200 bg-slate-50 text-sm text-slate-600">
               <tr>
                 <th className="px-4 py-2.5 font-semibold">Nombre</th>
                 <th className="px-4 py-2.5 font-semibold">RUT</th>
@@ -57,7 +57,7 @@ export default async function Pacientes({ searchParams }: PageProps<"/panel/paci
                 <th className="px-4 py-2.5 font-semibold">Próxima cita</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-tinta/10 text-[15px]">
+            <tbody className="divide-y divide-slate-200 text-[15px]">
               {pacientes.map(({ p, ultima, proxima }) => (
                 <tr key={p.id} className="hover:bg-slate-50">
                   <td className="px-4 py-3"><Link className="font-medium text-marca-700 hover:underline" href={`/panel/pacientes/${p.id}`}>{p.nombre}</Link></td>

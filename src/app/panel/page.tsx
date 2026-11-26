@@ -58,13 +58,13 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex">
-            <Link className="btn-sec rounded-r-none px-2.5" href={ruta(sumarDias(fecha, -paso))} aria-label={semana ? "Semana anterior" : "Día anterior"}><FlechaAtras /></Link>
-            <Link className="btn-sec -ml-0.5 rounded-none" href={ruta(hoy)}>Hoy</Link>
-            <Link className="btn-sec -ml-0.5 rounded-l-none px-2.5" href={ruta(sumarDias(fecha, paso))} aria-label={semana ? "Semana siguiente" : "Día siguiente"}><Flecha /></Link>
+            <Link className="btn-sec rounded-r-none px-3" href={ruta(sumarDias(fecha, -paso))} aria-label={semana ? "Semana anterior" : "Día anterior"}><FlechaAtras /></Link>
+            <Link className="btn-sec -ml-px rounded-none" href={ruta(hoy)}>Hoy</Link>
+            <Link className="btn-sec -ml-px rounded-l-none px-3" href={ruta(sumarDias(fecha, paso))} aria-label={semana ? "Semana siguiente" : "Día siguiente"}><Flecha /></Link>
           </div>
-          <div className="flex rounded-lg border-2 border-tinta/15 bg-white p-0.5 text-[15px] font-semibold">
-            <Link href={ruta(fecha, "dia")} aria-current={!semana ? "page" : undefined} className={`rounded-md px-3 py-1 ${!semana ? "bg-tinta text-white" : "text-slate-700 hover:text-tinta"}`}>Día</Link>
-            <Link href={ruta(fecha, "semana")} aria-current={semana ? "page" : undefined} className={`rounded-md px-3 py-1 ${semana ? "bg-tinta text-white" : "text-slate-700 hover:text-tinta"}`}>Semana</Link>
+          <div className="flex rounded-lg border border-slate-300 bg-white p-1 text-[15px] font-semibold">
+            <Link href={ruta(fecha, "dia")} aria-current={!semana ? "page" : undefined} className={`rounded-md px-3 py-1.5 ${!semana ? "bg-marca-50 text-marca-700" : "text-slate-600 hover:text-tinta"}`}>Día</Link>
+            <Link href={ruta(fecha, "semana")} aria-current={semana ? "page" : undefined} className={`rounded-md px-3 py-1.5 ${semana ? "bg-marca-50 text-marca-700" : "text-slate-600 hover:text-tinta"}`}>Semana</Link>
           </div>
         </div>
       </div>
@@ -76,17 +76,17 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
             const delDia = citas.filter((c) => fechaISO(c.inicio) === d && c.estado !== "cancelada");
             const esHoy = d === hoy;
             return (
-              <div key={d} className={`overflow-hidden rounded-lg border-2 ${esHoy ? "border-tinta bg-white" : delDia.length ? "border-tinta/10 bg-white" : "border-dashed border-tinta/15 bg-transparent"}`}>
+              <div key={d} className={`overflow-hidden rounded-xl border ${esHoy ? "border-marca-600 bg-white ring-2 ring-marca-100" : delDia.length ? "border-slate-200 bg-white" : "border-dashed border-slate-300 bg-transparent"}`}>
                 <Link
                   href={ruta(d, "dia")}
-                  className={`block px-2 py-1.5 text-center font-senal text-[15px] font-bold mayus ${esHoy ? "bg-tinta text-senal" : "bg-slate-100 text-tinta hover:bg-slate-200"}`}
+                  className={`block px-2 py-1.5 text-center text-sm font-semibold mayus ${esHoy ? "bg-marca-700 text-white" : "text-slate-700 hover:bg-slate-100"}`}
                 >
                   {formatoDia(d, { month: undefined })}
                 </Link>
                 <ul className="space-y-1 p-1.5">
                   {delDia.map((c) => (
                     <li key={c.id}>
-                      <Link href={c.paciente ? `/panel/pacientes/${c.paciente.id}?cita=${c.id}` : ruta(d, "dia")} className="block rounded-md bg-marca-50 px-2 py-1 text-sm hover:bg-marca-100">
+                      <Link href={c.paciente ? `/panel/pacientes/${c.paciente.id}?cita=${c.id}` : ruta(d, "dia")} className="block rounded-lg bg-marca-50 px-2 py-1.5 text-sm hover:bg-marca-100">
                         <span className="cifra text-base">{formatoHora(c.inicio)}</span> {c.paciente?.nombre.split(" ")[0]}
                         <span className="block truncate text-[13px] text-slate-600">{c.servicio?.nombre}</span>
                       </Link>
@@ -100,26 +100,26 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
         </div>
       ) : citas.length === 0 ? (
         <div className="tarjeta text-center">
-          <p className="font-senal text-2xl font-bold">Día libre</p>
+          <p className="text-xl font-bold">Día libre</p>
           <p className="mt-1 text-slate-600">No hay citas agendadas. Cuando una paciente reserve, aparecerá aquí.</p>
         </div>
       ) : (
-        <ol className="tarjeta divide-y divide-tinta/10 overflow-hidden p-0">
+        <ol className="tarjeta divide-y divide-slate-200 overflow-hidden p-0">
           {citas.map((c, i) => {
             const pasada = new Date(c.inicio).getTime() < ahora;
             const esProxima = c.id === proxima;
             return (
               <li
                 key={c.id}
-                className={`grid gap-x-5 gap-y-3 px-4 py-4 sm:grid-cols-[5.5rem_1fr_auto] sm:items-center sm:px-5 ${c.estado === "cancelada" ? "bg-slate-50 text-slate-500" : ""} ${esProxima ? "bg-senal-claro" : ""}`}
+                className={`grid gap-x-5 gap-y-3 px-4 py-4 sm:grid-cols-[5.5rem_1fr_auto] sm:items-center sm:px-5 ${c.estado === "cancelada" ? "bg-slate-50 text-slate-500" : ""} ${esProxima ? "bg-acento-claro/60" : ""}`}
               >
                 <div className="flex items-baseline gap-2 overflow-hidden sm:block">
-                  <p style={{ "--i": i } as React.CSSProperties} className={`cifra tablero-cifra text-[34px] leading-none ${c.estado === "cancelada" ? "text-slate-400 line-through" : "text-tinta"}`}>{formatoHora(c.inicio)}</p>
+                  <p style={{ "--i": i } as React.CSSProperties} className={`cifra tablero-cifra text-[28px] leading-none ${c.estado === "cancelada" ? "text-slate-400 line-through" : "text-tinta"}`}>{formatoHora(c.inicio)}</p>
                   <p className="text-sm text-slate-600 sm:mt-1">hasta {formatoHora(c.fin)}</p>
                 </div>
                 <div className="min-w-0">
                   <p className="flex flex-wrap items-center gap-2 text-[17px] font-semibold">
-                    {esProxima && <span className="rounded-[4px] bg-tinta px-1.5 py-px font-senal text-[13px] tracking-wide text-senal uppercase">Siguiente</span>}
+                    {esProxima && <span className="rounded-full bg-acento px-2.5 py-0.5 text-[13px] font-semibold text-white">Siguiente</span>}
                     {c.paciente ? <Link className="hover:text-marca-700 hover:underline" href={`/panel/pacientes/${c.paciente.id}`}>{c.paciente.nombre}</Link> : "Paciente"}
                     <EstadoCita estado={c.estado} />
                   </p>

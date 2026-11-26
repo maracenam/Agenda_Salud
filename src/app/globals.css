@@ -1,49 +1,52 @@
 @import "tailwindcss";
 
 /*
-  Identidad "Señalética": paneles esmaltados sobre hormigón frío, tinta azul noche,
-  una línea de color por vista (burdeos = paciente, cobalto = profesional)
-  y amarillo señal solo para la próxima hora y la acción principal.
+  Identidad "Consulta clara": software de agenda de salud, sereno y legible.
+  Ciruela = marca y acciones; salvia = disponibilidad y confirmación;
+  tinta ciruela casi negra para el texto, sobre un blanco tibio.
 */
 @theme {
-  /* Línea paciente (burdeos). Se mantiene el nombre "marca" que usan las pantallas. */
-  --color-marca-50: #f9eef1;
-  --color-marca-100: #f1d5dd;
-  --color-marca-600: #a3264d;
-  --color-marca-700: #8e1b3f;
-  --color-marca-800: #6f1431;
+  /* Ciruela (marca). Las pantallas usan las clases "marca-*". */
+  --color-marca-50: #f7eff5;
+  --color-marca-100: #ecdae7;
+  --color-marca-600: #7b3a6c;
+  --color-marca-700: #66305a;
+  --color-marca-800: #4f2446;
 
-  /* Línea profesional (cobalto). */
-  --color-pro-50: #edf2fb;
-  --color-pro-100: #d3e0f5;
-  --color-pro-600: #2a5cb8;
-  --color-pro-700: #1f4fa3;
-  --color-pro-800: #173c7d;
+  /* Vista profesional: misma marca; la diferencia la da su barra lateral. */
+  --color-pro-50: #f7eff5;
+  --color-pro-100: #ecdae7;
+  --color-pro-600: #7b3a6c;
+  --color-pro-700: #66305a;
+  --color-pro-800: #4f2446;
 
-  /* Tinta y señal. */
-  --color-tinta: #0e1a2b;
-  --color-tinta-suave: #1b2a40;
-  --color-senal: #f5b700;
-  --color-senal-claro: #fff1c2;
-  --color-hormigon: #e9ecf0;
+  /* Salvia: horas disponibles, confirmaciones, "siguiente". */
+  --color-acento: #3f6b55;
+  --color-acento-claro: #e4efe8;
+  --color-acento-suave: #cfe2d6;
 
-  /* Neutros teñidos hacia la tinta (reemplazan el slate de Tailwind). */
-  --color-slate-50: #f5f7f9;
-  --color-slate-100: #e9edf1;
-  --color-slate-200: #d6dce3;
-  --color-slate-300: #b9c2cd;
-  --color-slate-400: #8c98a8;
-  --color-slate-500: #5f6b7c;
-  --color-slate-600: #475263;
-  --color-slate-700: #333d4d;
-  --color-slate-800: #1f2938;
-  --color-slate-900: #0e1a2b;
+  /* Tinta y fondos. */
+  --color-tinta: #261a23;
+  --color-tinta-suave: #3a2b36;
+  --color-hormigon: #f6f5f3;
 
-  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
-  --font-senal: var(--font-barlow-condensed), var(--font-barlow), ui-sans-serif, sans-serif;
+  /* Neutros tibios teñidos hacia la ciruela (reemplazan el slate de Tailwind). */
+  --color-slate-50: #faf9f8;
+  --color-slate-100: #f1eeee;
+  --color-slate-200: #e4dfe1;
+  --color-slate-300: #cbc3c7;
+  --color-slate-400: #9d9298;
+  --color-slate-500: #6e6369;
+  --color-slate-600: #574d53;
+  --color-slate-700: #41383e;
+  --color-slate-800: #2f272c;
+  --color-slate-900: #261a23;
 
-  --radius-lg: 6px;
-  --radius-xl: 8px;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-titulo: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-lg: 10px;
+  --radius-xl: 14px;
 }
 
 :root {
@@ -54,28 +57,21 @@
   accent-color: var(--linea);
 }
 
-/* La vista profesional cambia de línea: todo lo que usa --linea pasa a cobalto. */
+/* Se conserva como gancho de la vista profesional. */
 .linea-pro {
   --linea: var(--color-pro-700);
   --linea-oscura: var(--color-pro-800);
   --linea-clara: var(--color-pro-50);
-  /* Las pantallas usan clases "marca-*": dentro de la vista profesional apuntan al cobalto. */
-  --color-marca-50: var(--color-pro-50);
-  --color-marca-100: var(--color-pro-100);
-  --color-marca-600: var(--color-pro-600);
-  --color-marca-700: var(--color-pro-700);
-  --color-marca-800: var(--color-pro-800);
-  accent-color: var(--linea);
 }
 
 body {
   background: var(--color-hormigon);
   color: var(--color-tinta);
-  font-feature-settings: "lnum" 1;
+  font-feature-settings: "tnum" 1;
 }
 
 ::selection {
-  background: var(--color-senal);
+  background: var(--color-marca-100);
   color: var(--color-tinta);
 }
 
@@ -85,37 +81,34 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-senal);
+  outline: 3px solid var(--color-marca-600);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 html {
-  scrollbar-color: var(--color-slate-400) var(--color-hormigon);
+  scrollbar-color: var(--color-slate-300) var(--color-hormigon);
 }
 
 a {
   text-underline-offset: 3px;
-  text-decoration-thickness: 2px;
+  text-decoration-thickness: 1.5px;
 }
 
-/* Movimiento firma: las horas entran como en un tablero de salidas, una tras otra.
-   El texto es visible desde el primer cuadro; solo se desliza y enfoca. */
-@keyframes tablero {
+/* Entrada sutil de las horas: visibles desde el primer cuadro, solo se asientan. */
+@keyframes asentar {
   from {
-    transform: translateY(45%);
-    filter: blur(3px);
+    transform: translateY(6px);
   }
   to {
     transform: none;
-    filter: none;
   }
 }
 
 .tablero-cifra {
   display: inline-block;
-  animation: tablero 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--i, 0) * 70ms);
+  animation: asentar 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -126,37 +119,38 @@ a {
 
 @layer components {
   .btn {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-(--linea-oscura) disabled:opacity-50 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-(--linea-oscura) disabled:opacity-50 cursor-pointer;
   }
-  /* Acción principal de la página: amarillo señal con tinta. */
-  .btn-senal {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-senal px-5 py-2.5 text-base font-bold text-tinta transition-colors duration-150 hover:bg-[#ffc81f] cursor-pointer;
+  /* Acción de avanzar con una hora: salvia. */
+  .btn-acento {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-acento px-5 py-2.5 text-base font-semibold text-white transition-colors duration-150 hover:bg-[#335a47] cursor-pointer;
   }
   .btn-sec {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-2 border-tinta/15 bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-colors duration-150 hover:border-tinta/40 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-colors duration-150 hover:border-slate-400 hover:bg-slate-50 cursor-pointer;
   }
   .btn-peligro {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border-2 border-red-200 bg-white px-3 py-1.5 text-[15px] font-semibold text-red-800 transition-colors duration-150 hover:border-red-400 hover:bg-red-50 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-[15px] font-semibold text-red-800 transition-colors duration-150 hover:border-red-300 hover:bg-red-50 cursor-pointer;
   }
   .campo {
-    @apply block min-h-10 w-full rounded-lg border-2 border-tinta/15 bg-white px-3 py-2 text-[15px] text-tinta placeholder:text-slate-500 focus:border-(--linea) focus:outline-none;
+    @apply block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-tinta placeholder:text-slate-500 focus:border-(--linea) focus:ring-3 focus:ring-marca-100 focus:outline-none;
   }
   .etiqueta {
-    @apply mb-1 block text-sm font-semibold text-slate-700;
+    @apply mb-1.5 block text-sm font-semibold text-slate-700;
   }
-  /* Panel esmaltado. */
   .tarjeta {
-    @apply rounded-lg border-2 border-tinta/10 bg-white p-5 shadow-[0_1px_2px_rgb(14_26_43/0.06),0_4px_12px_-6px_rgb(14_26_43/0.12)];
+    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgb(38_26_35/0.04),0_8px_24px_-12px_rgb(38_26_35/0.10)];
   }
   .titulo {
-    @apply font-senal text-4xl leading-none font-bold tracking-[-0.01em] text-tinta;
+    @apply font-titulo text-3xl leading-tight font-bold tracking-[-0.02em] text-tinta sm:text-[2.125rem];
   }
   .enlace {
-    @apply font-medium text-(--linea) underline-offset-3 hover:underline;
+    @apply font-semibold text-(--linea) underline-offset-3 hover:underline;
   }
-  /* Numerales de tablero. */
   .cifra {
-    @apply font-senal font-semibold tabular-nums tracking-tight;
+    @apply font-titulo font-semibold tabular-nums tracking-[-0.01em];
+  }
+  .insignia {
+    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-marca-50 font-titulo text-sm font-bold text-marca-700;
   }
   /* Solo la primera letra en mayúscula: "Jueves, 26 de noviembre". */
   .mayus {
@@ -164,9 +158,5 @@ a {
   }
   .mayus::first-letter {
     text-transform: uppercase;
-  }
-  /* Insignia de línea, como las de Metro. */
-  .insignia {
-    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-(--linea) font-senal text-sm font-bold text-white;
   }
 }
