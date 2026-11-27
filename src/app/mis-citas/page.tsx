@@ -63,8 +63,8 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
       <Aviso error={sp.error} ok={sp.ok} />
 
       {primera ? (
-        <section aria-labelledby="proxima" className="grid overflow-hidden rounded-[20px] bg-noche text-white md:grid-cols-[13rem_minmax(0,1fr)]">
-          <div className="flex flex-row items-baseline gap-4 bg-marca-800 px-6 py-5 md:flex-col md:items-start md:justify-center md:gap-1 md:py-8">
+        <section aria-labelledby="proxima" className="grid overflow-hidden rounded-[20px] bg-marca-700 text-white md:grid-cols-[13rem_minmax(0,1fr)]">
+          <div className="flex flex-row items-baseline gap-4 bg-noche px-6 py-5 md:flex-col md:items-start md:justify-center md:gap-1 md:py-8">
             <p className="mayus text-lg font-semibold text-marca-100">{formatoDia(fechaISO(primera.inicio), { weekday: "long", day: undefined, month: undefined })}</p>
             <p className="cifra text-[56px] leading-none tracking-[-0.04em]">{Number(fechaISO(primera.inicio).slice(8))}</p>
             <p className="mayus text-lg font-semibold text-marca-100">{formatoDia(fechaISO(primera.inicio), { month: "long", weekday: undefined, day: undefined })}</p>

@@ -11,7 +11,7 @@ export function Aviso({ error, ok }: { error?: string | string[]; ok?: string | 
   if (o)
     return (
       <p role="status" className="mb-4 flex items-start gap-3 rounded-xl border border-acento-suave bg-acento-claro px-4 py-3 text-[15px] font-medium text-tinta">
-        <svg viewBox="0 0 20 20" aria-hidden="true" className="mt-0.5 size-5 shrink-0"><circle cx="10" cy="10" r="10" fill="#2f6a52" /><path d="m5.8 10.4 2.8 2.8 5.6-6" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        <svg viewBox="0 0 20 20" aria-hidden="true" className="mt-0.5 size-5 shrink-0"><circle cx="10" cy="10" r="10" fill="#17714f" /><path d="m5.8 10.4 2.8 2.8 5.6-6" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         {o}
       </p>
     );

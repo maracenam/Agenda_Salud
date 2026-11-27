@@ -1,70 +1,75 @@
 @import "tailwindcss";
 
 /*
-  Agenda Salud, tercera dirección: "Agenda abierta".
-  Una herramienta clínica que se ve como el trabajo de la matrona: el día como
-  una grilla de tiempo, la ficha con su notación (G P A C, FUR, EG), la reserva
-  como una hoja con horas libres. Ciruela noche para la estructura, ciruela para
-  la marca y las acciones, salvia para lo disponible y confirmado.
-  Una sola familia (Schibsted Grotesk) con pesos marcados. Sin cifras tabulares: en Schibsted ensanchan los dos puntos y las comas.
+  Agenda Salud, identidad "Cinta lustre": una pulsera hecha de papel lustre.
+  Lila como color dueño (también como superficie), menta y rosa como papeles,
+  amarillo solo para la hora elegida. Young Serif para títulos y la marca,
+  Instrument Sans para todo lo demás (horas incluidas: la serif usa números antiguos).
 */
 @theme {
-  /* Schibsted, servida por next/font, espacia mal la puntuación si no se fijan las features: se declaran explícitas. */
   --default-font-feature-settings: "kern" 1;
-  /* Ciruela. */
-  --color-marca-50: #f6eef4;
-  --color-marca-100: #ead9e5;
-  --color-marca-200: #d7b9cf;
-  --color-marca-600: #7a3a6c;
-  --color-marca-700: #6b2f5e;
-  --color-marca-800: #4c1f43;
-  --color-noche: #2b1027;
-  --color-noche-2: #3a1834;
+  /* Lila. */
+  --color-marca-50: #f3f0ff;
+  --color-marca-100: #e6e0ff;
+  --color-marca-200: #cfc5ff;
+  --color-marca-600: #7b63f3;
+  --color-marca-700: #6a4ff0;
+  --color-marca-800: #4a33c9;
+  /* Tinta lila: barra lateral del panel, fondos oscuros. */
+  --color-noche: #26214a;
+  --color-noche-2: #332c5e;
 
-  /* Se conservan como alias de la marca para pantallas antiguas. */
-  --color-pro-50: #f6eef4;
-  --color-pro-100: #ead9e5;
-  --color-pro-600: #7a3a6c;
-  --color-pro-700: #6b2f5e;
-  --color-pro-800: #4c1f43;
+  /* Alias para pantallas antiguas. */
+  --color-pro-50: #f3f0ff;
+  --color-pro-100: #e6e0ff;
+  --color-pro-600: #7b63f3;
+  --color-pro-700: #6a4ff0;
+  --color-pro-800: #4a33c9;
 
-  /* Salvia: horas libres, confirmar, siguiente. */
-  --color-acento: #2f6a52;
-  --color-acento-oscuro: #245641;
-  --color-acento-claro: #e2efe7;
-  --color-acento-suave: #c7dfd0;
+  /* Papeles. */
+  --color-menta: #c9f0e0;
+  --color-menta-oscura: #a9e4cc;
+  --color-rosa: #ec4a7c;
+  --color-rosa-claro: #ffd6e3;
+  --color-amarillo: #ffc629;
+  --color-amarillo-oscuro: #f0b400;
+
+  /* Libre y confirmado: papel menta con texto verde profundo. */
+  --color-acento: #17714f;
+  --color-acento-oscuro: #105a3e;
+  --color-acento-claro: #c9f0e0;
+  --color-acento-suave: #a9e4cc;
 
   /* Alerta clínica (alergias, no asistió). */
   --color-alerta: #9a4a0b;
   --color-alerta-claro: #fdf1e3;
 
-  /* Tinta y fondos: blanco limpio sobre un gris niebla teñido de ciruela. */
-  --color-tinta: #1e1520;
-  --color-tinta-suave: #3a2b36;
-  --color-hormigon: #f2f0f3;
+  --color-tinta: #26214a;
+  --color-tinta-suave: #3d3768;
+  --color-hormigon: #faf8ff;
   --color-papel: #ffffff;
 
-  --color-slate-50: #f8f7f9;
-  --color-slate-100: #efecf0;
-  --color-slate-200: #e3dee5;
-  --color-slate-300: #cdc5d0;
-  --color-slate-400: #9c929f;
-  --color-slate-500: #6c6270;
-  --color-slate-600: #554b58;
-  --color-slate-700: #3f3642;
-  --color-slate-800: #2c252f;
-  --color-slate-900: #1e1520;
+  --color-slate-50: #f8f7fc;
+  --color-slate-100: #efedf7;
+  --color-slate-200: #e2ddf3;
+  --color-slate-300: #cdc7e2;
+  --color-slate-400: #9d97b8;
+  --color-slate-500: #6b6589;
+  --color-slate-600: #575173;
+  --color-slate-700: #423c5e;
+  --color-slate-800: #2f2a4c;
+  --color-slate-900: #26214a;
 
-  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
-  --font-titulo: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-titulo: var(--font-young), ui-serif, Georgia, serif;
 
-  /* Radios con jerarquía: control 8, panel 12, pieza destacada 20. */
+/* Radios con jerarquía: control 8, panel 12, pieza destacada 20. */
   --radius-sm: 4px;
   --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  --radius-3xl: 20px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+  --radius-2xl: 22px;
+  --radius-3xl: 28px;
 }
 
 :root {
@@ -84,6 +89,21 @@
 body {
   background: var(--color-hormigon);
   color: var(--color-tinta);
+  /* Young Serif tiene un solo peso: nunca negrita sintética. */
+  font-synthesis-weight: none;
+}
+
+/* Títulos en Young Serif. Fuera de capas para ganarle a font-bold y tracking de las utilidades. */
+h1,
+h2,
+.titulo,
+.marca-texto {
+  font-family: var(--font-titulo);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+h1 {
+  line-height: 1.02;
 }
 
 ::selection {
@@ -97,7 +117,7 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-marca-600);
+  outline: 3px solid var(--color-amarillo);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -139,10 +159,47 @@ a {
 }
 .bloque-cita:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 14px -8px rgb(43 16 39 / 0.45);
+  box-shadow: 0 6px 14px -8px rgb(38 33 74 / 0.4);
+}
+
+/* La cinta: la reserva impresa en una pulsera rosa con broche lila. Se cierra al elegir. */
+@keyframes cerrar-cinta {
+  from {
+    clip-path: inset(0 100% 0 0 round 999px);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 999px);
+  }
+}
+.cinta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 3.5rem;
+  padding: 0 3.75rem 0 1.4rem;
+  border-radius: 999px;
+  background: var(--color-rosa-claro);
+  color: var(--color-tinta);
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+  animation: cerrar-cinta 550ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.cinta-broche {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: -1.25rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 8px var(--color-marca-700);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cinta,
   .tablero-cifra,
   .bloque-cita {
     animation: none;
@@ -155,16 +212,16 @@ a {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
   .btn {
-    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-(--linea-oscura) active:translate-y-px disabled:opacity-50;
+    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-(--linea-oscura) active:translate-y-px disabled:opacity-50;
   }
   .btn-acento {
-    @apply inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-lg bg-acento px-5 py-2.5 text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-acento-oscuro active:translate-y-px;
+    @apply inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-marca-700 px-6 py-2.5 text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-marca-800 active:translate-y-px;
   }
   .btn-sec {
-    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-[background-color,border-color,transform] duration-150 hover:border-slate-400 hover:bg-slate-50 active:translate-y-px;
+    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-tinta bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-[background-color,border-color,transform] duration-150 hover:bg-marca-50 active:translate-y-px;
   }
   .btn-peligro {
-    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-[15px] font-semibold text-red-800 transition-colors duration-150 hover:bg-red-50;
+    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full px-3 py-1.5 text-[15px] font-semibold text-red-800 transition-colors duration-150 hover:bg-red-50;
   }
   .campo {
     @apply block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base text-tinta placeholder:text-slate-500 focus:border-(--linea) focus:ring-3 focus:ring-marca-100 focus:outline-none;
@@ -176,7 +233,7 @@ a {
     @apply rounded-xl border border-slate-200 bg-white p-5;
   }
   .titulo {
-    @apply font-titulo text-[28px] leading-tight font-bold tracking-[-0.025em] text-tinta sm:text-[32px];
+    @apply font-titulo text-[32px] leading-[1.05] text-tinta sm:text-[40px];
   }
   .subtitulo {
     @apply text-lg font-bold tracking-[-0.01em] text-tinta;
@@ -185,10 +242,10 @@ a {
     @apply font-semibold text-(--linea) underline-offset-3 hover:underline;
   }
   .cifra {
-    @apply font-semibold tracking-[-0.01em];
+    @apply font-sans font-semibold tracking-[-0.01em];
   }
   .insignia {
-    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-marca-100 text-sm font-bold text-marca-800;
+    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-rosa-claro text-sm font-bold text-tinta;
   }
   .mayus {
     display: inline-block;

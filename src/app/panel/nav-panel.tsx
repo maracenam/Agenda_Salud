@@ -44,7 +44,7 @@ export function NavPanel() {
               <Link
                 href={href}
                 aria-current={activo ? "page" : undefined}
-                className={`flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] font-semibold whitespace-nowrap transition-colors ${
+                className={`flex min-h-11 items-center gap-3 rounded-full px-3.5 text-[15px] font-semibold whitespace-nowrap transition-colors ${
                   activo ? "bg-white text-noche" : "text-marca-100 hover:bg-white/10 hover:text-white"
                 }`}
               >

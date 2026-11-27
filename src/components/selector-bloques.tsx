@@ -37,7 +37,7 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
                 scroll={false}
                 aria-disabled={!atiende}
                 aria-current={activo ? "date" : undefined}
-                className={`flex min-w-[4.25rem] flex-col items-center rounded-lg border px-2 py-2 text-[13px] font-medium transition-colors ${
+                className={`flex min-w-[4.25rem] flex-col items-center rounded-xl border px-2 py-2 text-[13px] font-medium transition-colors ${
                   activo
                     ? "border-marca-700 bg-marca-700 text-white"
                     : atiende
@@ -72,7 +72,7 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
                 {lista.map((b, i) => (
                   <label
                     key={b.inicio}
-                    className="cursor-pointer overflow-hidden rounded-lg border border-transparent bg-acento-claro py-3 text-center text-acento transition-colors hover:border-acento has-checked:border-acento has-checked:bg-acento has-checked:text-white has-focus-visible:outline-3 has-focus-visible:outline-marca-600"
+                    className="cursor-pointer overflow-hidden rounded-full border-2 border-transparent bg-acento-claro py-3 text-center text-acento transition-colors hover:border-acento has-checked:-rotate-3 has-checked:border-tinta has-checked:bg-amarillo has-checked:text-tinta has-focus-visible:outline-3 has-focus-visible:outline-amarillo"
                   >
                     <input type="radio" name="inicio" value={b.inicio} required className="sr-only" />
                     <span className="cifra tablero-cifra text-lg" style={{ "--i": i } as React.CSSProperties}>{formatoHora(b.inicio)}</span>

@@ -4,102 +4,80 @@ import Link from "next/link";
 import { useState } from "react";
 
 /*
-  Reserva de muestra en la portada. Se puede usar: eliges día y hora y el pie
-  cambia. Los datos son de ejemplo y el texto lo dice; el botón lleva al buscador real.
+  Reserva de muestra en la portada, con la identidad "Cinta lustre".
+  Cada día es una tira de papel con sus horas; al elegir una, la reserva queda
+  impresa en una cinta con broche, como la pulsera de la maternidad.
+  Los datos son de ejemplo y la portada lo dice; el botón lleva al buscador real.
 */
 
-const DIAS = [
-  { id: "lun", corto: "Lun", n: 30, largo: "Lunes 30 de noviembre", horas: ["09:00", "09:45", "11:15", "12:00", "15:00", "15:45", "17:15"] },
-  { id: "mar", corto: "Mar", n: 1, largo: "Martes 1 de diciembre", horas: ["09:45", "10:30", "12:00", "16:30", "18:00"] },
-  { id: "mie", corto: "Mié", n: 2, largo: "Miércoles 2 de diciembre", horas: ["09:00", "10:30", "11:15"] },
-  { id: "jue", corto: "Jue", n: 3, largo: "Jueves 3 de diciembre", horas: [] },
-  { id: "vie", corto: "Vie", n: 4, largo: "Viernes 4 de diciembre", horas: ["09:00", "09:45", "10:30", "15:00", "17:15", "18:00"] },
+type Hora = { h: string; tomada?: boolean };
+const DIAS: { id: string; corto: string; fecha: string; papel: string; giro: string; horas: Hora[] }[] = [
+  { id: "lun", corto: "Lun", fecha: "30 nov", papel: "bg-menta", giro: "-rotate-2", horas: [{ h: "9:00" }, { h: "11:00", tomada: true }, { h: "16:30" }] },
+  { id: "mar", corto: "Mar", fecha: "1 dic", papel: "bg-rosa-claro", giro: "rotate-[1.5deg] translate-y-1.5", horas: [{ h: "10:30" }, { h: "12:00" }, { h: "15:00", tomada: true }] },
+  { id: "mie", corto: "Mié", fecha: "2 dic", papel: "bg-white", giro: "-rotate-1", horas: [{ h: "9:30", tomada: true }, { h: "11:30" }, { h: "17:00" }] },
+  { id: "jue", corto: "Jue", fecha: "3 dic", papel: "bg-menta", giro: "rotate-[2deg] translate-y-1", horas: [{ h: "8:30" }, { h: "13:00" }, { h: "18:00" }] },
 ];
 
 export function ReservaDemo() {
-  const [dia, setDia] = useState(1);
-  const [hora, setHora] = useState<string | null>("10:30");
-  const d = DIAS[dia];
+  const [eleccion, setEleccion] = useState<{ dia: string; fecha: string; h: string } | null>({ dia: "Mar", fecha: "1 dic", h: "10:30" });
 
   return (
-    <div className="rounded-3xl bg-white text-tinta shadow-[0_2px_4px_rgb(43_16_39/0.2),0_30px_60px_-20px_rgb(0_0_0/0.55)]">
-      <div className="flex items-center gap-3 px-5 pt-5 sm:px-6 sm:pt-6">
-        <span className="insignia size-12 text-base">CR</span>
-        <div className="min-w-0">
-          <p className="text-lg leading-tight font-bold">Camila Rojas</p>
-          <p className="text-[15px] text-slate-600">Matrona en Ñuñoa, control prenatal de 45 minutos</p>
-        </div>
+    <div className="rounded-[28px] bg-marca-700 p-5 text-white sm:p-7">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <p className="font-titulo text-[22px] leading-tight">Camila Rojas, matrona</p>
+        <p className="text-sm text-marca-100">Ñuñoa, control prenatal de 45 min</p>
       </div>
 
-      <fieldset className="mt-5 px-5 sm:px-6">
-        <legend className="mb-2 text-sm font-semibold text-slate-600">Día</legend>
-        <div className="grid grid-cols-5 gap-1.5">
-          {DIAS.map((x, i) => {
-            const activo = i === dia;
-            const vacio = x.horas.length === 0;
-            return (
-              <button
-                key={x.id}
-                type="button"
-                disabled={vacio}
-                aria-pressed={activo}
-                onClick={() => {
-                  setDia(i);
-                  setHora(null);
-                }}
-                className={`flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-lg border transition-colors disabled:cursor-not-allowed ${
-                  activo
-                    ? "border-marca-700 bg-marca-700 text-white"
-                    : vacio
-                      ? "border-transparent bg-slate-100 text-slate-400"
-                      : "border-slate-200 hover:border-marca-600"
-                }`}
-              >
-                <span className={`text-xs font-medium ${activo ? "text-marca-100" : ""}`}>{x.corto}</span>
-                <span className={`cifra text-xl leading-tight ${vacio ? "line-through decoration-slate-300" : ""}`}>{x.n}</span>
-              </button>
-            );
-          })}
+      <fieldset className="mt-5">
+        <legend className="sr-only">Elige día y hora</legend>
+        <div className="grid grid-cols-4 gap-2 sm:gap-3">
+          {DIAS.map((d) => (
+            <div key={d.id} className={`flex flex-col items-center gap-2.5 rounded-md px-1 pt-3 pb-4 text-tinta shadow-[0_2px_0_rgb(38_33_74/0.25)] ${d.papel} ${d.giro}`}>
+              <p className="text-center leading-tight">
+                <span className="block font-titulo text-[15px]">{d.corto}</span>
+                <span className="text-xs text-slate-600">{d.fecha}</span>
+              </p>
+              {d.horas.map((x) => {
+                const activa = eleccion?.dia === d.corto && eleccion.h === x.h;
+                return (
+                  <button
+                    key={x.h}
+                    type="button"
+                    disabled={x.tomada}
+                    aria-pressed={x.tomada ? undefined : activa}
+                    aria-label={x.tomada ? `${d.corto} ${x.h}, ocupada` : `${d.corto} ${d.fecha}, ${x.h}`}
+                    onClick={() => setEleccion({ dia: d.corto, fecha: d.fecha, h: x.h })}
+                    className={`cifra grid size-12 cursor-pointer place-items-center rounded-full border-2 border-tinta text-[13px] transition-[transform,background-color] duration-200 sm:size-14 sm:text-[15px] disabled:cursor-not-allowed disabled:border-dashed disabled:text-slate-500 disabled:line-through disabled:opacity-60 ${
+                      activa ? "-rotate-6 scale-110 bg-amarillo" : "hover:bg-white/60"
+                    }`}
+                  >
+                    {x.h}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </fieldset>
 
-      <fieldset className="mt-5 px-5 sm:px-6">
-        <legend className="mb-2 text-sm font-semibold text-slate-600">Horas libres</legend>
-        <div key={d.id} className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
-          {d.horas.map((h, i) => {
-            const activa = h === hora;
-            return (
-              <button
-                key={h}
-                type="button"
-                aria-pressed={activa}
-                onClick={() => setHora(h)}
-                className={`cifra flex min-h-11 cursor-pointer items-center justify-center rounded-lg text-[15px] transition-colors ${
-                  activa ? "bg-acento text-white" : "bg-acento-claro text-acento hover:bg-acento-suave"
-                }`}
-              >
-                <span className="tablero-cifra" style={{ "--i": i } as React.CSSProperties}>{h}</span>
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
-
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-b-3xl border-t border-slate-200 bg-slate-50 px-5 py-4 sm:px-6">
-        <p aria-live="polite" className="text-[15px]">
-          {hora ? (
-            <>
-              <span className="block font-bold">{d.largo}</span>
-              <span className="text-slate-600">a las {hora}, en Av. Irarrázaval</span>
-            </>
-          ) : (
-            <span className="text-slate-600">Elige una hora</span>
-          )}
-        </p>
-        <Link href="/profesionales" className={`btn-acento min-h-11 px-4 text-[15px] ${hora ? "" : "pointer-events-none opacity-40"}`} aria-disabled={!hora}>
-          Reservar esta hora
-        </Link>
+      <div className="mt-7 flex min-h-16 flex-wrap items-center gap-3" aria-live="polite">
+        {eleccion ? (
+          <span key={`${eleccion.dia}${eleccion.h}`} className="cinta">
+            <span className="truncate">
+              {eleccion.dia} {eleccion.fecha}, {eleccion.h}, Camila Rojas
+            </span>
+            <span className="cinta-broche" aria-hidden="true" />
+          </span>
+        ) : (
+          <span className="text-[15px] text-marca-100">Elige una hora para ver tu cinta.</span>
+        )}
       </div>
+      <Link
+        href="/profesionales"
+        className="mt-4 inline-flex min-h-12 items-center rounded-full bg-white px-6 text-base font-semibold text-tinta transition-colors hover:bg-marca-50"
+      >
+        Buscar horas reales
+      </Link>
     </div>
   );
 }

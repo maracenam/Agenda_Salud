@@ -26,12 +26,12 @@ function claseBloque(c: Cita, siguiente: boolean, elegida: boolean) {
     c.estado === "cancelada"
       ? "border-slate-200 bg-slate-100 text-slate-500 line-through decoration-slate-400"
       : c.estado === "completada"
-        ? "border-marca-100 bg-marca-50 text-marca-800"
+        ? "border-slate-200 bg-slate-100 text-slate-600"
         : c.estado === "no_asistio"
           ? "border-[#f3d6b4] bg-alerta-claro text-alerta"
           : siguiente
-            ? "border-acento bg-acento text-white"
-            : "border-acento-suave bg-acento-claro text-tinta";
+            ? "border-marca-700 bg-marca-700 text-white"
+            : "border-menta-oscura bg-menta text-tinta";
   return `${base} ${elegida ? "ring-2 ring-marca-700 ring-offset-2" : ""}`;
 }
 

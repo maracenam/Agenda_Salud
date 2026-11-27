@@ -4,7 +4,7 @@ import { Marca } from "@/components/marca";
 import { requerirProfesional } from "@/lib/sesion";
 import { NavPanel } from "./nav-panel";
 
-/* El panel tiene su propio marco: barra lateral ciruela noche y área de trabajo clara. */
+/* El panel tiene su propio marco: barra lateral tinta lila y área de trabajo clara. */
 export default async function PanelLayout({
   children,
 }: {

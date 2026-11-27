@@ -4,7 +4,7 @@ import { ReservaDemo } from "@/components/reserva-demo";
 import { Ubicacion } from "@/components/marca";
 
 /*
-  Portada "Agenda abierta". Cada sección muestra una pieza real del producto:
+  Portada con la identidad "Cinta lustre". Cada sección muestra una pieza real del producto:
   la reserva (se puede usar), el día de la matrona en su grilla de tiempo,
   la cuenta de la ficha (FUR, edad gestacional, FPP) y el recordatorio por email.
 */
@@ -20,38 +20,36 @@ const DIA_PANEL = [
   { ini: 495, dur: 45, h: "17:15", p: "Fernanda Araya", s: "Control prenatal", e: "confirmada" },
 ];
 const ESTILO_BLOQUE: Record<string, string> = {
-  hecha: "bg-marca-50 text-marca-800 border-marca-100",
+  hecha: "bg-slate-100 text-slate-600 border-slate-200",
   falta: "bg-alerta-claro text-alerta border-[#f3d6b4]",
-  siguiente: "bg-acento text-white border-acento",
-  confirmada: "bg-acento-claro text-tinta border-acento-suave",
+  siguiente: "bg-marca-700 text-white border-marca-700",
+  confirmada: "bg-menta text-tinta border-menta-oscura",
 };
 const PX_MIN = 56 / 60;
 
-function Buscador({ id, oscuro = false }: { id: string; oscuro?: boolean }) {
+function Buscador({ id }: { id: string }) {
   return (
-    <form action="/profesionales" className="flex max-w-xl flex-col gap-2 sm:flex-row">
+    <form action="/profesionales" className="flex max-w-lg items-center gap-2 rounded-full border-2 border-tinta bg-white p-1.5 pl-5 focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-amarillo">
       <label htmlFor={id} className="sr-only">Comuna</label>
-      <div className="relative flex-1">
-        <Ubicacion className="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-marca-700" />
-        <input
-          id={id}
-          name="q"
-          placeholder="Comuna, por ejemplo Ñuñoa"
-          className={`block min-h-13 w-full rounded-lg border bg-white pr-3 pl-11 text-[17px] text-tinta placeholder:text-slate-500 focus:ring-4 focus:outline-none ${oscuro ? "border-transparent focus:ring-white/25" : "border-slate-300 focus:border-marca-600 focus:ring-marca-100"}`}
-        />
-      </div>
-      <button className="btn-acento min-h-13 px-6 text-[17px]">Buscar matrona</button>
+      <Ubicacion className="size-5 shrink-0 text-marca-700" />
+      <input
+        id={id}
+        name="q"
+        placeholder="Tu comuna, ej. Ñuñoa"
+        className="min-w-0 flex-1 bg-transparent py-2 text-[17px] text-tinta placeholder:text-slate-500 focus:outline-none"
+      />
+      <button className="btn-acento min-h-12 shrink-0 px-5 text-[16px]"><span>Buscar<span className="hidden sm:inline"> matrona</span></span></button>
     </form>
   );
 }
 
 function VistaPanel() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-[0_1px_2px_rgb(43_16_39/0.06),0_24px_48px_-28px_rgb(43_16_39/0.35)]" aria-label="Vista de la agenda de una matrona, con datos de ejemplo" role="img">
+    <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-[0_1px_2px_rgb(38_33_74/0.06),0_24px_48px_-28px_rgb(38_33_74/0.35)]" aria-label="Vista de la agenda de una matrona, con datos de ejemplo" role="img">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3.5">
-        <p className="text-lg font-bold">Viernes 27 de noviembre</p>
-        <div className="flex rounded-lg bg-slate-100 p-1 text-sm font-semibold">
-          <span className="rounded-md bg-white px-3 py-1 shadow-sm">Día</span>
+        <p className="font-titulo text-xl">Viernes 27 de noviembre</p>
+        <div className="flex rounded-full bg-slate-100 p-1 text-sm font-semibold">
+          <span className="rounded-full bg-white px-3 py-1 shadow-sm">Día</span>
           <span className="px-3 py-1 text-slate-600">Semana</span>
         </div>
       </div>
@@ -81,8 +79,8 @@ function VistaPanel() {
             ))}
           </div>
         </div>
-        <aside className="border-t border-slate-200 bg-slate-50 p-5 md:border-t-0 md:border-l">
-          <p className="text-sm font-semibold text-acento">Siguiente</p>
+        <aside className="border-t border-slate-200 bg-marca-50 p-5 md:border-t-0 md:border-l">
+          <p className="text-sm font-semibold text-marca-700">Siguiente</p>
           <p className="cifra mt-1 text-[40px] leading-none tracking-[-0.03em]">11:30</p>
           <p className="mt-3 text-lg font-bold">Josefa Contreras</p>
           <p className="text-slate-600">Toma de PAP, 30 minutos</p>
@@ -101,24 +99,26 @@ function VistaPanel() {
 
 function CorreoRecordatorio() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white" role="img" aria-label="Email de recordatorio que recibe la paciente un día antes">
-      <div className="space-y-1 border-b border-slate-200 bg-slate-50 px-5 py-4 text-[15px]">
-        <p><span className="text-slate-500">De</span> Agenda Salud</p>
-        <p><span className="text-slate-500">Asunto</span> <span className="font-semibold">Mañana tienes hora con Camila Rojas</span></p>
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white" role="img" aria-label="Email de recordatorio que recibe la paciente un día antes">
+      <div className="space-y-1 bg-menta px-5 py-4 text-[15px]">
+        <p><span className="text-slate-600">De</span> agenda salud</p>
+        <p><span className="text-slate-600">Asunto</span> <span className="font-semibold">Mañana tienes hora con Camila Rojas</span></p>
       </div>
       <div className="px-6 py-7 sm:px-8">
-        <p className="text-2xl font-bold tracking-[-0.02em]">Te esperamos mañana</p>
+        <p className="font-titulo text-[28px] leading-tight">Te esperamos mañana</p>
+        <span className="cinta mt-5 [animation:none]">
+          <span className="truncate">Lun 30 nov, 10:30, Camila Rojas</span>
+          <span className="cinta-broche" aria-hidden="true" />
+        </span>
         <div className="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-2 text-[15px]">
-          <span className="text-slate-500">Cuándo</span>
-          <span className="font-semibold">Lunes 30 de noviembre, 10:30</span>
           <span className="text-slate-500">Qué</span>
-          <span>Control prenatal con Camila Rojas</span>
+          <span>Control prenatal</span>
           <span className="text-slate-500">Dónde</span>
           <span>Av. Irarrázaval 2401, oficina 304, Ñuñoa</span>
         </div>
         <div className="mt-6 flex flex-wrap gap-2">
-          <span className="inline-flex min-h-10 items-center rounded-lg bg-marca-700 px-4 text-sm font-semibold text-white">Ver mi cita</span>
-          <span className="inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-4 text-sm font-semibold">Cambiar hora</span>
+          <span className="inline-flex min-h-10 items-center rounded-full bg-marca-700 px-4 text-sm font-semibold text-white">Ver mi cita</span>
+          <span className="inline-flex min-h-10 items-center rounded-full border-2 border-tinta px-4 text-sm font-semibold">Cambiar hora</span>
         </div>
       </div>
     </div>
@@ -128,35 +128,35 @@ function CorreoRecordatorio() {
 export default function Inicio() {
   return (
     <>
-      {/* Portada: la reserva misma, usable. */}
-      <section className="bg-noche text-white">
-        <div className="contenedor grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1fr_29rem] lg:gap-16 lg:py-24">
-          <div>
-            <h1 className="max-w-[14ch] text-[44px] leading-[1.02] font-extrabold tracking-[-0.04em] text-balance sm:text-[64px] lg:text-[72px]">
-              Reserva tu hora con una matrona.
+      {/* Portada: la reserva misma, usable, en tiras de papel. */}
+      <section>
+        <div className="contenedor grid grid-cols-1 items-center gap-12 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_31rem] lg:gap-14 lg:py-20">
+          <div className="min-w-0">
+            <h1 className="max-w-[12ch] text-[46px] text-balance sm:text-[72px] lg:text-[84px]">
+              Toma hora con tu matrona.
             </h1>
-            <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-marca-100 sm:text-xl">
-              Matronas y matrones independientes publican aquí sus horas libres. Tú eliges día y hora, sin llamar ni escribir.
+            <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-slate-700 sm:text-xl">
+              Matronas y matrones independientes publican aquí sus horas libres. Eliges día y hora en la tira, y tu reserva queda impresa en una cinta, como la pulsera de la maternidad.
             </p>
             <div className="mt-9">
-              <Buscador id="comuna" oscuro />
+              <Buscador id="comuna" />
             </div>
-            <p className="mt-5 max-w-[52ch] text-[15px] text-marca-200">
+            <p className="mt-5 max-w-[52ch] text-[15px] text-slate-600">
               El día antes te llega un recordatorio por email. Si no puedes ir, cambias o cancelas en línea.
             </p>
           </div>
           <div>
             <ReservaDemo />
-            <p className="mt-3 text-center text-sm text-marca-200">Matrona y horas de ejemplo. Prueba elegir otro día.</p>
+            <p className="mt-3 text-center text-sm text-slate-600">Matrona y horas de ejemplo. Prueba elegir otra hora.</p>
           </div>
         </div>
       </section>
 
       {/* Vista profesional: el día en su grilla de tiempo. */}
-      <section aria-labelledby="pro" className="py-20 sm:py-28">
+      <section aria-labelledby="pro" className="border-t border-slate-200 py-20 sm:py-28">
         <div className="contenedor">
           <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
-            <h2 id="pro" className="max-w-[16ch] text-[34px] leading-[1.05] font-extrabold tracking-[-0.035em] text-balance sm:text-5xl">
+            <h2 id="pro" className="max-w-[16ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
               Para matronas: tu día completo en una pantalla.
             </h2>
             <p className="max-w-[50ch] text-lg text-slate-700 lg:justify-self-end">
@@ -177,7 +177,7 @@ export default function Inicio() {
       <section aria-labelledby="ficha" className="border-y border-slate-200 bg-white py-20 sm:py-28">
         <div className="contenedor grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <h2 id="ficha" className="max-w-[15ch] text-[34px] leading-[1.05] font-extrabold tracking-[-0.035em] text-balance sm:text-5xl">
+            <h2 id="ficha" className="max-w-[15ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
               Una ficha escrita en lenguaje de matrona.
             </h2>
             <p className="mt-5 max-w-[46ch] text-lg text-slate-700">
@@ -185,10 +185,10 @@ export default function Inicio() {
             </p>
           </div>
           <div className="space-y-4">
-            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-xl border border-slate-200 px-5 py-4">
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-xl bg-rosa-claro px-5 py-4">
               <span className="text-sm font-semibold text-slate-600">Antecedentes</span>
               <span className="cifra text-[28px] tracking-[-0.02em]">G2 P1 A0 C0</span>
-              <span className="rounded-md bg-alerta-claro px-2 py-1 text-sm font-semibold text-alerta">Alergia: penicilina</span>
+              <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-alerta">Alergia: penicilina</span>
             </div>
             <CalculadoraFur />
             <p className="text-sm text-slate-600">Cambia la FUR para probar la cuenta.</p>
@@ -201,7 +201,7 @@ export default function Inicio() {
         <div className="contenedor grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <CorreoRecordatorio />
           <div className="lg:order-first">
-            <h2 id="recordatorio" className="max-w-[14ch] text-[34px] leading-[1.05] font-extrabold tracking-[-0.035em] text-balance sm:text-5xl">
+            <h2 id="recordatorio" className="max-w-[14ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
               Un día antes, la paciente recibe esto.
             </h2>
             <p className="mt-5 max-w-[44ch] text-lg text-slate-700">
@@ -214,17 +214,17 @@ export default function Inicio() {
       {/* Cierre: dos puertas, una acción cada una. */}
       <section aria-label="Empezar" className="contenedor pb-20 sm:pb-28">
         <div className="grid overflow-hidden rounded-3xl lg:grid-cols-2">
-          <div className="bg-white p-8 sm:p-12">
-            <h2 className="text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">Busco hora</h2>
+          <div className="bg-menta p-8 sm:p-12">
+            <h2 className="text-4xl sm:text-5xl">Busco hora</h2>
             <p className="mt-3 max-w-[40ch] text-lg text-slate-700">Escribe tu comuna y mira quién atiende cerca.</p>
             <div className="mt-8">
               <Buscador id="comuna-cierre" />
             </div>
           </div>
-          <div className="bg-marca-800 p-8 text-white sm:p-12">
-            <h2 className="text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">Atiendo como matrona</h2>
+          <div className="bg-marca-700 p-8 text-white sm:p-12">
+            <h2 className="text-4xl sm:text-5xl">Atiendo como matrona</h2>
             <p className="mt-3 max-w-[40ch] text-lg text-marca-100">Publica tus horas, recibe reservas y lleva la ficha de cada paciente.</p>
-            <Link href="/registro?rol=profesional" className="mt-8 inline-flex min-h-13 items-center rounded-lg bg-white px-6 text-[17px] font-semibold text-marca-800 transition-colors hover:bg-marca-50">
+            <Link href="/registro?rol=profesional" className="mt-8 inline-flex min-h-13 items-center rounded-full bg-white px-6 text-[17px] font-semibold text-tinta transition-colors hover:bg-amarillo">
               Crear mi agenda
             </Link>
           </div>
