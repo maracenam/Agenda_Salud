@@ -37,11 +37,12 @@ async function enviar({ para, asunto, html }: Email): Promise<{ ok: boolean; err
 
 function plantilla(titulo: string, cuerpo: string, enlace?: { texto: string; url: string }) {
   const boton = enlace
-    ? `<p style="margin:24px 0"><a href="${enlace.url}" style="background:#0f766e;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none">${enlace.texto}</a></p>`
+    ? `<p style="margin:24px 0"><a href="${enlace.url}" style="display:inline-block;background:#6b2f5e;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">${enlace.texto}</a></p>`
     : "";
-  return `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#1f2937">
-  <h2 style="color:#0f766e">${titulo}</h2>${cuerpo}${boton}
-  <p style="color:#6b7280;font-size:12px">Agenda Salud · Este es un mensaje automático.</p></div>`;
+  return `<div style="font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;max-width:520px;margin:auto;color:#1e1520;font-size:16px;line-height:1.5">
+  <p style="margin:0 0 20px;font-weight:800;font-size:17px;color:#2b1027">Agenda Salud</p>
+  <h2 style="margin:0 0 12px;font-size:22px;line-height:1.25;color:#1e1520">${titulo}</h2>${cuerpo}${boton}
+  <p style="margin-top:32px;border-top:1px solid #e4dfe5;padding-top:12px;color:#6b6070;font-size:13px">Mensaje automático de Agenda Salud. Si no reservaste esta hora, puedes ignorarlo.</p></div>`;
 }
 
 const esc = (s: string | null | undefined) =>

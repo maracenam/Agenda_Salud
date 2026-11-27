@@ -4,6 +4,8 @@ import { NextResponse, type NextRequest } from "next/server";
 const PRIVADAS = ["/panel", "/mis-citas", "/cuenta"];
 
 export async function proxy(request: NextRequest) {
+  // El layout usa la ruta para decidir si muestra la cabecera pública o el panel.
+  request.headers.set("x-ruta", request.nextUrl.pathname);
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(

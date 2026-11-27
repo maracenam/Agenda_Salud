@@ -109,3 +109,11 @@ export function formatoPrecio(n: number | null | undefined): string {
   if (n == null) return "";
   return new Intl.NumberFormat(LOCALE, { style: "currency", currency: "CLP" }).format(n);
 }
+
+/** Minutos desde la medianoche, en hora de Chile, de un instante. */
+export function minutosChile(d: Date | string): number {
+  const partes = new Intl.DateTimeFormat("en-GB", { timeZone: ZONA, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(d));
+  const h = Number(partes.find((p) => p.type === "hour")?.value ?? 0);
+  const m = Number(partes.find((p) => p.type === "minute")?.value ?? 0);
+  return h * 60 + m;
+}

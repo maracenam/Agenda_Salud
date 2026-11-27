@@ -1,28 +1,28 @@
 /**
- * Identidad de Agenda Salud.
- * El símbolo es una hoja de agenda con una hora marcada: la esquina doblada
- * de la libreta y un punto salvia en el día de la cita.
+ * Identidad "Cinta lustre" de Agenda Salud.
+ * El símbolo es una pulsera de papel lustre cerrada: un aro lila, una solapa
+ * rosa pegada con un leve giro y el broche blanco que la convierte en pulsera.
+ * En fondo oscuro el aro pasa a blanco y la solapa a amarillo.
  */
 
-export function Simbolo({ className = "size-8" }: { className?: string }) {
+export function Simbolo({ className = "size-8", claro = false }: { className?: string; claro?: boolean }) {
+  const aro = claro ? "#ffffff" : "#6a4ff0";
+  const solapa = claro ? "#ffc629" : "#ec4a7c";
+  const broche = claro ? "#26214a" : "#ffffff";
   return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-      <rect width="32" height="32" rx="9" fill="#66305a" />
-      <path d="M9 11.5A2.5 2.5 0 0 1 11.5 9h9A2.5 2.5 0 0 1 23 11.5V19l-4 4h-7.5A2.5 2.5 0 0 1 9 20.5Z" fill="#fff" />
-      <path d="M19 23v-2.5a1.5 1.5 0 0 1 1.5-1.5H23" fill="none" stroke="#ecdae7" strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M9 13.6h14" stroke="#66305a" strokeWidth="1.6" />
-      <circle cx="16" cy="17.4" r="2.4" fill="#3f6b55" />
+    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+      <circle cx="30" cy="31" r="19" fill="none" stroke={aro} strokeWidth="11" />
+      <path d="M34 37 L59 33 L61 49 L36 53 Z" fill={solapa} />
+      <circle cx="51" cy="43" r="5.2" fill={broche} stroke={aro} strokeWidth="2.4" />
     </svg>
   );
 }
 
 export function Marca({ claro = false, className = "" }: { claro?: boolean; className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <Simbolo className="size-8" />
-      <span className={`font-titulo text-[19px] leading-none font-bold tracking-[-0.02em] ${claro ? "text-white" : "text-tinta"}`}>
-        Agenda <span className={claro ? "text-marca-100" : "text-marca-700"}>Salud</span>
-      </span>
+    <span className={`inline-flex items-center gap-2 ${className}`}>
+      <Simbolo className="size-9" claro={claro} />
+      <span className={`marca-texto text-[23px] leading-none ${claro ? "text-white" : "text-tinta"}`}>agenda salud</span>
     </span>
   );
 }

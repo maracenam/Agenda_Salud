@@ -32,11 +32,11 @@ const ENLACES = [
   { href: "/panel/perfil", t: "Mi perfil", I: IconoPerfil },
 ];
 
-export function NavPanel({ id }: { id: string }) {
+export function NavPanel() {
   const ruta = usePathname();
   return (
-    <nav aria-label="Panel profesional" className="min-w-0 lg:sticky lg:top-6">
-      <ul className="-mx-4 flex gap-1 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0">
+    <nav aria-label="Panel profesional" className="min-w-0">
+      <ul className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:overflow-visible lg:px-3 lg:pb-0">
         {ENLACES.map(({ href, t, I }) => {
           const activo = href === "/panel" ? ruta === "/panel" : ruta.startsWith(href);
           return (
@@ -44,8 +44,8 @@ export function NavPanel({ id }: { id: string }) {
               <Link
                 href={href}
                 aria-current={activo ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] font-semibold whitespace-nowrap transition-colors ${
-                  activo ? "bg-marca-700 text-white" : "text-slate-700 hover:bg-white hover:text-tinta"
+                className={`flex min-h-11 items-center gap-3 rounded-full px-3.5 text-[15px] font-semibold whitespace-nowrap transition-colors ${
+                  activo ? "bg-white text-noche" : "text-marca-100 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <I className="size-5 shrink-0" />
@@ -55,9 +55,6 @@ export function NavPanel({ id }: { id: string }) {
           );
         })}
       </ul>
-      <Link href={`/profesionales/${id}`} className="enlace mt-3 hidden px-3 text-sm lg:block">
-        Ver mi página pública
-      </Link>
     </nav>
   );
 }

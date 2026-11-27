@@ -1,214 +1,235 @@
 import Link from "next/link";
-import { Calendario, Campana, Escudo, Ficha, Flecha, Ubicacion } from "@/components/marca";
+import { CalculadoraFur } from "@/components/calculadora-fur";
+import { ReservaDemo } from "@/components/reserva-demo";
+import { Ubicacion } from "@/components/marca";
 
-// Datos de muestra para ilustrar la reserva. Se rotulan "Ejemplo" en pantalla.
-const DIAS = [
-  { d: "Lun", n: 30, activo: true },
-  { d: "Mar", n: 1 },
-  { d: "Mié", n: 2 },
-  { d: "Jue", n: 3 },
-  { d: "Vie", n: 4 },
+/*
+  Portada con la identidad "Cinta lustre". Cada sección muestra una pieza real del producto:
+  la reserva (se puede usar), el día de la matrona en su grilla de tiempo,
+  la cuenta de la ficha (FUR, edad gestacional, FPP) y el recordatorio por email.
+*/
+
+// Día de muestra del panel. Minutos desde las 09:00; 1 hora = 56 px.
+const DIA_PANEL = [
+  { ini: 0, dur: 45, h: "09:00", p: "Fernanda Araya", s: "Control prenatal", e: "hecha" },
+  { ini: 45, dur: 30, h: "09:45", p: "Isidora Fuentes", s: "Toma de PAP", e: "falta" },
+  { ini: 90, dur: 45, h: "10:30", p: "Valentina Muñoz", s: "Control prenatal", e: "hecha" },
+  { ini: 150, dur: 30, h: "11:30", p: "Josefa Contreras", s: "Toma de PAP", e: "siguiente" },
+  { ini: 195, dur: 30, h: "12:15", p: "Antonia Silva", s: "Control ginecológico", e: "confirmada" },
+  { ini: 360, dur: 60, h: "15:00", p: "Catalina Pérez", s: "Asesoría de lactancia", e: "confirmada" },
+  { ini: 495, dur: 45, h: "17:15", p: "Fernanda Araya", s: "Control prenatal", e: "confirmada" },
 ];
-const HORAS = ["09:00", "09:45", "10:30", "11:15", "12:00", "15:30"];
+const ESTILO_BLOQUE: Record<string, string> = {
+  hecha: "bg-slate-100 text-slate-600 border-slate-200",
+  falta: "bg-alerta-claro text-alerta border-[#f3d6b4]",
+  siguiente: "bg-marca-700 text-white border-marca-700",
+  confirmada: "bg-menta text-tinta border-menta-oscura",
+};
+const PX_MIN = 56 / 60;
 
-const AGENDA = [
-  { h: "09:00", p: "Fernanda Araya", s: "Control prenatal", e: "Atendida", c: "bg-marca-50 text-marca-700" },
-  { h: "09:45", p: "Josefa Contreras", s: "Toma de PAP", e: "Siguiente", c: "bg-acento text-white" },
-  { h: "10:30", p: "Antonia Silva", s: "Consejería", e: "Confirmada", c: "bg-acento-claro text-acento" },
-];
-
-const CONFIANZA = [
-  { i: Campana, t: "Recordatorio por email el día antes" },
-  { i: Calendario, t: "Cambia o cancela tu hora en línea" },
-  { i: Escudo, t: "Datos protegidos según la Ley 21.719" },
-];
-
-const PRO = [
-  { i: Calendario, t: "Publica tus horarios y recibe reservas sin coordinar por WhatsApp." },
-  { i: Ficha, t: "Ficha gineco-obstétrica de cada paciente, con su historial de controles." },
-  { i: Campana, t: "Recordatorios automáticos que bajan las inasistencias." },
-];
-
-const FICHA = [
-  { c: "GPAC", t: "Antecedentes gineco-obstétricos", d: "Gestas, partos, abortos y cesáreas, siempre a la vista." },
-  { c: "FUR", t: "Fecha de última regla", d: "Registrada en cada control, con la edad gestacional a mano." },
-  { c: "PAP", t: "Último PAP y resultado", d: "Para saber quién está al día y a quién recordarle." },
-  { c: "CTL", t: "Historial de controles", d: "Cada atención queda escrita, con fecha y prestación." },
-];
-
-function Ejemplo() {
+function Buscador({ id }: { id: string }) {
   return (
-    <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-medium text-slate-500">Ejemplo</span>
+    <form action="/profesionales" className="flex max-w-lg items-center gap-2 rounded-full border-2 border-tinta bg-white p-1.5 pl-5 focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-amarillo">
+      <label htmlFor={id} className="sr-only">Comuna</label>
+      <Ubicacion className="size-5 shrink-0 text-marca-700" />
+      <input
+        id={id}
+        name="q"
+        placeholder="Tu comuna, ej. Ñuñoa"
+        className="min-w-0 flex-1 bg-transparent py-2 text-[17px] text-tinta placeholder:text-slate-500 focus:outline-none"
+      />
+      <button className="btn-acento min-h-12 shrink-0 px-5 text-[16px]"><span>Buscar<span className="hidden sm:inline"> matrona</span></span></button>
+    </form>
+  );
+}
+
+function VistaPanel() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-[0_1px_2px_rgb(38_33_74/0.06),0_24px_48px_-28px_rgb(38_33_74/0.35)]" aria-label="Vista de la agenda de una matrona, con datos de ejemplo" role="img">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3.5">
+        <p className="font-titulo text-xl">Viernes 27 de noviembre</p>
+        <div className="flex rounded-full bg-slate-100 p-1 text-sm font-semibold">
+          <span className="rounded-full bg-white px-3 py-1 shadow-sm">Día</span>
+          <span className="px-3 py-1 text-slate-600">Semana</span>
+        </div>
+      </div>
+      <div className="grid md:grid-cols-[1fr_17rem]">
+        <div className="relative grid grid-cols-[3.25rem_1fr] px-3 py-4 sm:px-5">
+          <ol className="text-right text-xs text-slate-500">
+            {["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"].map((h) => (
+              <li key={h} className="cifra h-14 pr-3 font-medium -translate-y-2">{h}</li>
+            ))}
+          </ol>
+          <div className="relative h-[504px] border-l border-slate-200" style={{ backgroundImage: "linear-gradient(to bottom, var(--color-slate-200) 1px, transparent 1px)", backgroundSize: "100% 56px" }}>
+            <div className="absolute inset-x-0 top-[130px] z-10 flex items-center" aria-hidden="true">
+              <span className="-ml-1 size-2 rounded-full bg-marca-700" />
+              <span className="h-0.5 flex-1 bg-marca-700" />
+            </div>
+            {DIA_PANEL.map((c) => (
+              <div
+                key={c.h + c.p}
+                className={`absolute inset-x-2 overflow-hidden rounded-lg border px-3 py-1.5 text-[13px] leading-tight ${ESTILO_BLOQUE[c.e]}`}
+                style={{ top: c.ini * PX_MIN + 2, height: c.dur * PX_MIN - 4 }}
+              >
+                <p className="truncate font-semibold">
+                  <span className="cifra">{c.h}</span> {c.p}
+                </p>
+                {c.dur >= 60 && <p className="truncate opacity-80">{c.s}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+        <aside className="border-t border-slate-200 bg-marca-50 p-5 md:border-t-0 md:border-l">
+          <p className="text-sm font-semibold text-marca-700">Siguiente</p>
+          <p className="cifra mt-1 text-[40px] leading-none tracking-[-0.03em]">11:30</p>
+          <p className="mt-3 text-lg font-bold">Josefa Contreras</p>
+          <p className="text-slate-600">Toma de PAP, 30 minutos</p>
+          <p className="mt-3 rounded-lg bg-white px-3 py-2 text-[15px] text-slate-700">“Me toca el PAP anual”</p>
+          <span className="btn mt-4 w-full">Abrir ficha</span>
+          <dl className="mt-6 grid grid-cols-3 gap-2 border-t border-slate-200 pt-4 text-center">
+            <div><dt className="text-xs text-slate-500">Atendidas</dt><dd className="cifra text-xl">2</dd></div>
+            <div><dt className="text-xs text-slate-500">Por atender</dt><dd className="cifra text-xl">4</dd></div>
+            <div><dt className="text-xs text-slate-500">No asistió</dt><dd className="cifra text-xl">1</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function CorreoRecordatorio() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white" role="img" aria-label="Email de recordatorio que recibe la paciente un día antes">
+      <div className="space-y-1 bg-menta px-5 py-4 text-[15px]">
+        <p><span className="text-slate-600">De</span> agenda salud</p>
+        <p><span className="text-slate-600">Asunto</span> <span className="font-semibold">Mañana tienes hora con Camila Rojas</span></p>
+      </div>
+      <div className="px-6 py-7 sm:px-8">
+        <p className="font-titulo text-[28px] leading-tight">Te esperamos mañana</p>
+        <span className="cinta mt-5 [animation:none]">
+          <span className="truncate">Lun 30 nov, 10:30, Camila Rojas</span>
+          <span className="cinta-broche" aria-hidden="true" />
+        </span>
+        <div className="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-2 text-[15px]">
+          <span className="text-slate-500">Qué</span>
+          <span>Control prenatal</span>
+          <span className="text-slate-500">Dónde</span>
+          <span>Av. Irarrázaval 2401, oficina 304, Ñuñoa</span>
+        </div>
+        <div className="mt-6 flex flex-wrap gap-2">
+          <span className="inline-flex min-h-10 items-center rounded-full bg-marca-700 px-4 text-sm font-semibold text-white">Ver mi cita</span>
+          <span className="inline-flex min-h-10 items-center rounded-full border-2 border-tinta px-4 text-sm font-semibold">Cambiar hora</span>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export default function Inicio() {
   return (
-    <div className="space-y-16 sm:space-y-24">
-      {/* Portada: titular y buscador a la izquierda, la reserva misma a la derecha. */}
-      <section className="grid items-center gap-10 pt-2 sm:pt-6 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-        <div>
-          <h1 className="max-w-[15ch] font-titulo text-[40px] leading-[1.04] font-bold tracking-[-0.03em] text-balance text-tinta sm:text-6xl">
-            Tu hora con la matrona, <span className="text-marca-700">sin llamadas.</span>
-          </h1>
-          <p className="mt-5 max-w-[48ch] text-lg leading-relaxed text-slate-600">
-            Matronas y matrones independientes publican aquí sus horas libres. Eliges día y hora, y te llega un recordatorio antes de tu control.
-          </p>
-
-          <form action="/profesionales" className="mt-8 flex max-w-xl flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_1px_2px_rgb(38_26_35/0.04),0_12px_32px_-16px_rgb(38_26_35/0.18)] sm:flex-row">
-            <label htmlFor="comuna" className="sr-only">Comuna</label>
-            <div className="relative flex-1">
-              <Ubicacion className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-marca-700" />
-              <input
-                id="comuna"
-                name="q"
-                placeholder="¿En qué comuna? Ej: Ñuñoa"
-                className="block min-h-12 w-full rounded-lg bg-transparent pr-3 pl-10 text-base text-tinta placeholder:text-slate-500 focus:outline-none"
-              />
-            </div>
-            <button className="btn-acento">
-              Buscar matrona <Flecha />
-            </button>
-          </form>
-
-          <ul className="mt-7 grid gap-2.5 text-[15px] text-slate-700 sm:grid-cols-1">
-            {CONFIANZA.map(({ i: Icono, t }) => (
-              <li key={t} className="flex items-center gap-2.5">
-                <Icono className="size-5 shrink-0 text-acento" />
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Vista previa de la reserva, tal como la ve la paciente. */}
-        <div className="tarjeta p-0" aria-label="Ejemplo de reserva">
-          <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
-            <div className="flex items-center gap-3">
-              <span className="insignia size-11 text-base">CR</span>
-              <div>
-                <p className="font-semibold">Camila Rojas</p>
-                <p className="text-sm text-slate-600">Matrona · Control prenatal · 45 min</p>
-              </div>
-            </div>
-            <Ejemplo />
-          </div>
-          <div className="space-y-5 px-5 py-5">
-            <div>
-              <p className="etiqueta">Elige el día</p>
-              <div className="grid grid-cols-5 gap-2">
-                {DIAS.map((d) => (
-                  <span
-                    key={d.n}
-                    className={`flex flex-col items-center rounded-lg border py-2 ${d.activo ? "border-marca-700 bg-marca-700 text-white" : "border-slate-200 bg-white text-tinta"}`}
-                  >
-                    <span className={`text-xs font-medium ${d.activo ? "text-marca-100" : "text-slate-500"}`}>{d.d}</span>
-                    <span className="cifra text-lg">{d.n}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="etiqueta">Horas libres</p>
-              <div className="grid grid-cols-3 gap-2">
-                {HORAS.map((h, i) => (
-                  <span
-                    key={h}
-                    className={`cifra flex min-h-11 items-center justify-center rounded-lg text-[15px] ${h === "10:30" ? "bg-acento text-white" : "bg-acento-claro text-acento"}`}
-                  >
-                    <span style={{ "--i": i } as React.CSSProperties} className="tablero-cifra">{h}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-xl border-t border-slate-200 bg-slate-50 px-5 py-4">
-            <p className="text-[15px]">
-              <span className="font-semibold">Lunes 30, 10:30</span> <span className="text-slate-600">· Ñuñoa</span>
+    <>
+      {/* Portada: la reserva misma, usable, en tiras de papel. */}
+      <section>
+        <div className="contenedor grid grid-cols-1 items-center gap-12 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_31rem] lg:gap-14 lg:py-20">
+          <div className="min-w-0">
+            <h1 className="max-w-[12ch] text-[46px] text-balance sm:text-[72px] lg:text-[84px]">
+              Toma hora con tu matrona.
+            </h1>
+            <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-slate-700 sm:text-xl">
+              Matronas y matrones independientes publican aquí sus horas libres. Eliges día y hora en la tira, y tu reserva queda impresa en una cinta, como la pulsera de la maternidad.
             </p>
-            <span className="text-sm font-semibold text-acento">Lista para confirmar</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Vista profesional. */}
-      <section aria-labelledby="pro" className="grid gap-10 overflow-hidden rounded-3xl bg-marca-800 p-6 text-white sm:p-10 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:p-12">
-        <div>
-          <h2 id="pro" className="max-w-[18ch] font-titulo text-3xl leading-tight font-bold tracking-[-0.02em] text-balance sm:text-4xl">
-            Para matronas: tu consulta ordenada, sin libreta ni Excel.
-          </h2>
-          <ul className="mt-6 space-y-4">
-            {PRO.map(({ i: Icono, t }) => (
-              <li key={t} className="flex gap-3 text-[17px] text-marca-50/90">
-                <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/10">
-                  <Icono className="size-5 text-white" />
-                </span>
-                {t}
-              </li>
-            ))}
-          </ul>
-          <Link
-            href="/registro?rol=profesional"
-            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-lg bg-white px-5 font-semibold text-marca-800 transition-colors hover:bg-marca-50"
-          >
-            Crear mi agenda gratis <Flecha />
-          </Link>
-        </div>
-
-        <div className="rounded-xl bg-white p-5 text-tinta shadow-[0_20px_40px_-20px_rgb(0_0_0/0.5)]">
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-semibold">
-              Hoy <span className="font-normal text-slate-600">· lunes 30</span>
+            <div className="mt-9">
+              <Buscador id="comuna" />
+            </div>
+            <p className="mt-5 max-w-[52ch] text-[15px] text-slate-600">
+              El día antes te llega un recordatorio por email. Si no puedes ir, cambias o cancelas en línea.
             </p>
-            <Ejemplo />
           </div>
-          <ul className="mt-4 divide-y divide-slate-200">
-            {AGENDA.map((a) => (
-              <li key={a.h} className="grid grid-cols-[3.75rem_1fr_auto] items-center gap-3 py-3">
-                <span className="cifra text-xl">{a.h}</span>
-                <span className="min-w-0">
-                  <span className="block truncate font-semibold">{a.p}</span>
-                  <span className="block truncate text-sm text-slate-600">{a.s}</span>
-                </span>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${a.c}`}>{a.e}</span>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <ReservaDemo />
+            <p className="mt-3 text-center text-sm text-slate-600">Matrona y horas de ejemplo. Prueba elegir otra hora.</p>
+          </div>
         </div>
       </section>
 
-      {/* Ficha clínica. */}
-      <section aria-labelledby="ficha" className="grid gap-8 md:grid-cols-[1fr_1.4fr] md:items-start">
-        <div>
-          <h2 id="ficha" className="titulo text-balance">Una ficha que habla matronería.</h2>
-          <p className="mt-4 max-w-[46ch] text-lg text-slate-700">
-            No es un software médico genérico con campos de más. Cada control de tu paciente queda donde lo buscas, con los datos que de verdad revisas.
-          </p>
+      {/* Vista profesional: el día en su grilla de tiempo. */}
+      <section aria-labelledby="pro" className="border-t border-slate-200 py-20 sm:py-28">
+        <div className="contenedor">
+          <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+            <h2 id="pro" className="max-w-[16ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
+              Para matronas: tu día completo en una pantalla.
+            </h2>
+            <p className="max-w-[50ch] text-lg text-slate-700 lg:justify-self-end">
+              Cada cita en su hora, la que sigue marcada y lo que falta por cerrar a la vista. Publicas tus horarios una vez y las pacientes reservan solas, sin dobles citas.
+            </p>
+          </div>
+          <div className="mt-12">
+            <VistaPanel />
+          </div>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link href="/registro?rol=profesional" className="btn min-h-12 px-5 text-base">Crear mi agenda</Link>
+            <p className="text-[15px] text-slate-600">Configuras prestaciones, duración y horarios en minutos.</p>
+          </div>
         </div>
-        <ul className="tarjeta divide-y divide-slate-200 p-0">
-          {FICHA.map((f) => (
-            <li key={f.c} className="grid grid-cols-[4rem_1fr] items-start gap-4 px-5 py-4">
-              <span className="cifra rounded-md bg-marca-50 py-1 text-center text-[15px] text-marca-700">{f.c}</span>
-              <span>
-                <span className="block font-semibold">{f.t}</span>
-                <span className="block text-slate-600">{f.d}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
       </section>
 
-      {/* Cierre */}
-      <section className="flex flex-col gap-6 rounded-2xl bg-marca-50 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
-        <div>
-          <h2 className="font-titulo text-3xl font-bold tracking-[-0.02em]">¿Necesitas hora?</h2>
-          <p className="mt-2 max-w-[50ch] text-slate-700">Busca por comuna y reserva en un par de minutos.</p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/profesionales" className="btn-acento">Buscar matrona <Flecha /></Link>
-          <Link href="/registro?rol=profesional" className="btn-sec min-h-12">Soy matrona</Link>
+      {/* Ficha: la cuenta que una matrona hace en cada control. */}
+      <section aria-labelledby="ficha" className="border-y border-slate-200 bg-white py-20 sm:py-28">
+        <div className="contenedor grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <h2 id="ficha" className="max-w-[15ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
+              Una ficha escrita en lenguaje de matrona.
+            </h2>
+            <p className="mt-5 max-w-[46ch] text-lg text-slate-700">
+              Gestas, partos, abortos y cesáreas; FUR, último PAP, método anticonceptivo y el historial de cada control. La edad gestacional se calcula sola.
+            </p>
+          </div>
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-xl bg-rosa-claro px-5 py-4">
+              <span className="text-sm font-semibold text-slate-600">Antecedentes</span>
+              <span className="cifra text-[28px] tracking-[-0.02em]">G2 P1 A0 C0</span>
+              <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-alerta">Alergia: penicilina</span>
+            </div>
+            <CalculadoraFur />
+            <p className="text-sm text-slate-600">Cambia la FUR para probar la cuenta.</p>
+          </div>
         </div>
       </section>
-    </div>
+
+      {/* Recordatorio. */}
+      <section aria-labelledby="recordatorio" className="py-20 sm:py-28">
+        <div className="contenedor grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <CorreoRecordatorio />
+          <div className="lg:order-first">
+            <h2 id="recordatorio" className="max-w-[14ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
+              Un día antes, la paciente recibe esto.
+            </h2>
+            <p className="mt-5 max-w-[44ch] text-lg text-slate-700">
+              Con la hora, el lugar y un enlace para cambiarla. Si cancela, la hora vuelve a quedar libre en tu agenda.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Cierre: dos puertas, una acción cada una. */}
+      <section aria-label="Empezar" className="contenedor pb-20 sm:pb-28">
+        <div className="grid overflow-hidden rounded-3xl lg:grid-cols-2">
+          <div className="bg-menta p-8 sm:p-12">
+            <h2 className="text-4xl sm:text-5xl">Busco hora</h2>
+            <p className="mt-3 max-w-[40ch] text-lg text-slate-700">Escribe tu comuna y mira quién atiende cerca.</p>
+            <div className="mt-8">
+              <Buscador id="comuna-cierre" />
+            </div>
+          </div>
+          <div className="bg-marca-700 p-8 text-white sm:p-12">
+            <h2 className="text-4xl sm:text-5xl">Atiendo como matrona</h2>
+            <p className="mt-3 max-w-[40ch] text-lg text-marca-100">Publica tus horas, recibe reservas y lleva la ficha de cada paciente.</p>
+            <Link href="/registro?rol=profesional" className="mt-8 inline-flex min-h-13 items-center rounded-full bg-white px-6 text-[17px] font-semibold text-tinta transition-colors hover:bg-amarillo">
+              Crear mi agenda
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
