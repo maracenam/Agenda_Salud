@@ -7,11 +7,11 @@
 export function Simbolo({ className = "size-8" }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-      <rect width="32" height="32" rx="3" fill="#66305a" />
-      <path d="M9 9h14v10l-4 4H9Z" fill="#fff" />
-      <path d="M19 23v-4h4Z" fill="#ecdae7" />
-      <path d="M9 13.6h14" stroke="#66305a" strokeWidth="1.6" />
-      <circle cx="16" cy="17.4" r="2.4" fill="#3f6b55" />
+      <rect width="32" height="32" rx="8" fill="#6b2f5e" />
+      <path d="M9 10.5A1.5 1.5 0 0 1 10.5 9h11a1.5 1.5 0 0 1 1.5 1.5V19l-4 4h-8.5A1.5 1.5 0 0 1 9 21.5Z" fill="#fff" />
+      <path d="M19 23v-2.5a1.5 1.5 0 0 1 1.5-1.5H23Z" fill="#d7b9cf" />
+      <path d="M9 13.6h14" stroke="#6b2f5e" strokeWidth="1.6" />
+      <circle cx="16" cy="17.4" r="2.4" fill="#2f6a52" />
     </svg>
   );
 }
@@ -20,8 +20,8 @@ export function Marca({ claro = false, className = "" }: { claro?: boolean; clas
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <Simbolo className="size-8" />
-      <span className={`font-titulo text-[21px] leading-none font-bold tracking-[-0.01em] ${claro ? "text-white" : "text-tinta"}`}>
-        Agenda <span className={claro ? "text-marca-100" : "text-marca-700"}>Salud</span>
+      <span className={`text-[19px] leading-none font-extrabold tracking-[-0.03em] ${claro ? "text-white" : "text-tinta"}`}>
+        Agenda Salud
       </span>
     </span>
   );

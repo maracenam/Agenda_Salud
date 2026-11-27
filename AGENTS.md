@@ -10,4 +10,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Skills de diseño
 
-En `.claude/skills/` hay tres skills de diseño frontend: `impeccable`, `design-taste-frontend` (Taste Skill) y `ui-ux-pro-max`. Úsalas para diseñar, rediseñar o pulir pantallas. La identidad visual vigente es "Consulta clara" (ver `DESIGN.md` y `PRODUCT.md`): ciruela y salvia, titulares en Zilla Slab y texto en Rethink Sans, esquinas casi rectas. Esa identidad manda sobre cualquier estilo por defecto que sugiera una skill.
+En `.claude/skills/` hay cuatro skills de diseño frontend: `impeccable`, `design-taste-frontend` (Taste Skill), `ui-ux-pro-max` y `frontend-design`. `frontend-design` es la skill anti "AI slop" de Anthropic. Úsalas para diseñar, rediseñar o pulir pantallas. La identidad visual vigente es "Agenda abierta" (ver `DESIGN.md` y `PRODUCT.md`): ciruela noche, ciruela y salvia, una sola familia (Schibsted Grotesk), radios 6/8/12/20 y piezas reales del producto en vez de tarjetas de marketing. Esa identidad manda sobre cualquier estilo por defecto que sugiera una skill.

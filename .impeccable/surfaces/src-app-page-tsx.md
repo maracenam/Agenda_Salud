@@ -15,14 +15,14 @@ Restricciones: sin testimonios, cifras de clientes ni precios inventados. Españ
 
 ## Direction contract
 
-THESIS: Agenda Salud se lee primero como software de agenda de salud confiable ("Consulta clara"), no como anuncio. La reserva misma es la protagonista. Rechaza la landing SaaS genérica en teal y la estética de señalética de transporte (ronda 1, descartada por el usuario).
+THESIS: "Agenda abierta". La pantalla muestra el producto funcionando en vez de describirlo. Cada sección de la portada es una pieza real: reserva usable, grilla de tiempo del panel, calculadora de FUR y correo de recordatorio. Rechaza la landing SaaS de tarjetas, la señalética de transporte (ronda 1) y el serif sobre crema con filetes de periódico (ronda 2, "Consulta clara").
 
-OWN-WORLD: ciruela #66305a (marca, acciones, día elegido) y salvia #3F6B55 (disponible, confirmar, siguiente) sobre blanco tibio #F6F5F3, tinta ciruela #261A23, neutros reteñidos a ciruela. Zilla Slab en titulares, Rethink Sans en texto y cifras tabulares. Esquinas de papel (2-6px), hojas planas con línea superior de tinta, reglas de 2px; sin sombras salvo la hoja de agenda.
+OWN-WORLD: ciruela noche #2B1027 para estructura (portada, barra lateral del panel, próxima hora), ciruela #6B2F5E para marca y acciones, salvia #2F6A52 para disponible y confirmado, alerta clínica #9A4A0B/#FDF1E3 para alergias y PAP vencido, niebla #F2F0F3 de fondo. Una sola familia, Schibsted Grotesk, con contraste de peso. Radios 6/8/12/20 según jerarquía.
 
-STORY: la paciente ve una reserva real en la portada (profesional, días, horas libres, confirmación) y busca por comuna; la matrona ve su día ordenado en una banda ciruela y crea su agenda.
+STORY: la paciente prueba una reserva en la portada y busca por comuna; la matrona ve su día en la grilla y la ficha con resumen clínico.
 
-FIRST VIEWPORT: izquierda, titular "Tu hora con la matrona, sin llamadas." con buscador por comuna (botón salvia) y tres señales de confianza. Derecha, tarjeta de reserva rotulada "Ejemplo".
+FIRST VIEWPORT: fondo ciruela noche; izquierda, "Reserva tu hora con una matrona." con buscador por comuna; derecha, la tarjeta de reserva interactiva. Una línea de texto aclara que la matrona y las horas son de ejemplo.
 
-FORM: registro seguro, re-roll 1 sobre seed:4479ea3102dc9a4a. Movimiento firma: las horas se asientan (translateY 6px, 420ms, escalonado), sin movimiento con prefers-reduced-motion.
+FORM: movimiento firma, las horas se asientan al cambiar de día; nada más se anima solo. prefers-reduced-motion respetado.
 
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+FINISH: tipos y lint sin errores nuevos, detector de impeccable sin hallazgos (solo avisos de escala, ya documentada en DESIGN.md), copy-lint de Taste sin FAIL, capturas de las 16 pantallas a 1440 y 390.
