@@ -35,10 +35,10 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
                     <span className="text-slate-400">No atiende</span>
                   ) : (
                     delDia.map((h) => (
-                      <form key={h.id} action={eliminarHorario} className="inline-flex items-center gap-1 rounded-full bg-marca-50 px-3 py-1 text-marca-800">
+                      <form key={h.id} action={eliminarHorario} className="inline-flex items-center gap-1 rounded-sm bg-marca-50 px-3 py-1 text-marca-800">
                         <input type="hidden" name="id" value={h.id} />
                         {h.hora_inicio.slice(0, 5)}–{h.hora_fin.slice(0, 5)}
-                        <button aria-label="Eliminar bloque" className="ml-1 cursor-pointer rounded-full p-0.5 text-marca-700 hover:bg-white hover:text-red-700"><svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg></button>
+                        <button aria-label="Eliminar bloque" className="ml-1 cursor-pointer rounded-sm p-0.5 text-marca-700 hover:bg-white hover:text-red-700"><svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg></button>
                       </form>
                     ))
                   )}

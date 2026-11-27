@@ -28,7 +28,7 @@ const ESTADOS: Record<string, { t: string; c: string; p: string }> = {
 export function EstadoCita({ estado }: { estado: string }) {
   const e = ESTADOS[estado];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 align-middle text-[13px] font-semibold ${e?.c ?? ""}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 align-middle text-[13px] font-semibold ${e?.c ?? ""}`}>
       <span aria-hidden="true" className={`size-1.5 rounded-full ${e?.p ?? ""}`} />
       {e?.t ?? estado}
     </span>

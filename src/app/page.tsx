@@ -60,7 +60,7 @@ const FRASE =
 function Ejemplo({ oscuro = false }: { oscuro?: boolean }) {
   return (
     <span
-      className={`rounded-full border px-2 py-0.5 text-xs font-medium ${oscuro ? "border-white/20 text-marca-100" : "border-slate-200 bg-slate-50 text-slate-500"}`}
+      className={`rounded-sm border px-1.5 py-0.5 text-xs font-medium ${oscuro ? "border-white/20 text-marca-100" : "border-slate-200 bg-slate-50 text-slate-500"}`}
     >
       Ejemplo
     </span>
@@ -77,7 +77,7 @@ function Check({ className = "size-4" }: { className?: string }) {
 
 function Buscador({ id }: { id: string }) {
   return (
-    <form action="/profesionales" className="buscador flex max-w-xl flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-2 sm:flex-row">
+    <form action="/profesionales" className="buscador flex max-w-xl flex-col gap-1.5 rounded-sm bg-white p-1.5 sm:flex-row">
       <label htmlFor={id} className="sr-only">Comuna</label>
       <div className="relative flex-1">
         <Ubicacion className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-marca-700" />
@@ -137,7 +137,7 @@ function HojaAgenda() {
               </span>
             )}
             {b.e === "tuya" && (
-              <span className="flex min-h-11 items-center justify-between rounded-lg bg-acento px-3 text-sm font-semibold text-white shadow-[0_6px_16px_-8px_rgb(63_107_85/0.8)]">
+              <span className="flex min-h-11 items-center justify-between rounded-lg bg-acento px-3 text-sm font-semibold text-white">
                 <span className="flex items-center gap-2">
                   <span className="size-2.5 rounded-full bg-white" aria-hidden="true" />
                   Tu hora
@@ -167,7 +167,7 @@ export default function Inicio() {
       {/* 1. Portada: el titular y el buscador; a la derecha, la hoja de agenda. */}
       <section data-enter className="grid items-center gap-10 pt-2 sm:pt-6 lg:min-h-[calc(100svh-9rem)] lg:grid-cols-[1.1fr_1fr] lg:gap-16">
         <div>
-          <h1 className="entra max-w-[13ch] font-titulo text-[44px] leading-[1.02] font-bold tracking-[-0.035em] text-balance text-tinta sm:text-7xl">
+          <h1 className="entra max-w-[13ch] font-titulo text-[46px] leading-[0.98] font-semibold tracking-[-0.02em] text-balance text-tinta sm:text-[5.25rem]">
             Tu hora con la matrona, <span className="text-marca-700">sin llamadas.</span>
           </h1>
           <p className="entra mt-6 max-w-[46ch] text-lg leading-relaxed text-slate-600 [--d:1]">
@@ -189,7 +189,7 @@ export default function Inicio() {
 
       {/* 2. Momento: la frase se escribe a medida que se lee. */}
       <section aria-label="Lo que cambia" className="mx-auto max-w-5xl">
-        <p className="frase font-titulo text-[30px] leading-[1.18] font-bold tracking-[-0.025em] text-balance sm:text-5xl lg:text-[3.5rem]">
+        <p className="frase font-titulo text-[32px] leading-[1.12] font-medium tracking-[-0.015em] text-balance sm:text-5xl lg:text-[3.5rem]">
           {FRASE.split(" ").map((p, i) => (
             <span key={i}>{p} </span>
           ))}
@@ -203,8 +203,8 @@ export default function Inicio() {
           <Ejemplo />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-3xl bg-slate-100 p-5 sm:p-7">
+        <div className="grid border-t-2 border-tinta lg:grid-cols-2 lg:divide-x lg:divide-slate-300">
+          <div className="py-6 lg:pr-10">
             <p className="flex items-baseline justify-between gap-3">
               <span className="font-semibold">Por WhatsApp</span>
               <span className="cifra text-slate-500">6 mensajes · 2 días</span>
@@ -213,7 +213,7 @@ export default function Inicio() {
               {CHAT.map((m) => (
                 <li key={m.h} className={`flex ${m.de === "p" ? "justify-end" : "justify-start"}`}>
                   <span
-                    className={`max-w-[82%] rounded-2xl px-3.5 py-2 text-[15px] leading-snug ${m.de === "p" ? "rounded-br-md bg-white text-tinta" : "rounded-bl-md bg-slate-200/80 text-tinta"}`}
+                    className={`max-w-[82%] rounded-md px-3.5 py-2 text-[15px] leading-snug ${m.de === "p" ? "rounded-br-none border border-slate-300 bg-white text-tinta" : "rounded-bl-none bg-slate-200/70 text-tinta"}`}
                   >
                     {m.t}
                     <span className="cifra ml-2 align-baseline text-[11px] font-medium text-slate-500">{m.h}</span>
@@ -223,7 +223,7 @@ export default function Inicio() {
             </ol>
           </div>
 
-          <div className="flex flex-col rounded-3xl border border-acento-suave bg-white p-5 sm:p-7">
+          <div className="flex flex-col border-t border-slate-300 py-6 lg:border-t-0 lg:pl-10">
             <p className="flex items-baseline justify-between gap-3">
               <span className="font-semibold">En Agenda Salud</span>
               <span className="cifra text-acento">3 toques</span>
@@ -256,10 +256,10 @@ export default function Inicio() {
       </section>
 
       {/* 4. Vista profesional: la única banda de color de la página. */}
-      <section aria-labelledby="pro" className="overflow-hidden rounded-[28px] bg-marca-800 text-white">
+      <section aria-labelledby="pro" className="overflow-hidden bg-marca-800 text-white">
         <div className="grid gap-12 p-6 sm:p-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:p-14">
           <div>
-            <h2 id="pro" className="max-w-[16ch] font-titulo text-[34px] leading-[1.08] font-bold tracking-[-0.025em] text-balance sm:text-5xl">
+            <h2 id="pro" className="max-w-[16ch] font-titulo text-[36px] leading-[1.02] font-semibold tracking-[-0.015em] text-balance sm:text-[3.5rem]">
               Para matronas: tu día entero, de un vistazo.
             </h2>
             <dl className="mt-8 divide-y divide-white/15 border-y border-white/15">
@@ -278,7 +278,7 @@ export default function Inicio() {
             </Link>
           </div>
 
-          <div className="rounded-2xl bg-white p-5 text-tinta shadow-[0_30px_60px_-30px_rgb(0_0_0/0.6)] sm:p-7">
+          <div className="border-t-4 border-acento bg-white p-5 text-tinta sm:p-7">
             <div className="flex items-center justify-between gap-3">
               <p className="text-lg font-semibold">
                 Hoy <span className="font-normal text-slate-600">· lunes 30</span>
@@ -289,14 +289,14 @@ export default function Inicio() {
               {AGENDA.map((a) => (
                 <li
                   key={a.h}
-                  className={`grid grid-cols-[4rem_1fr_auto] items-center gap-3 border-b border-slate-200 py-4 last:border-b-0 sm:grid-cols-[6.5rem_1fr_auto] ${a.e === "Siguiente" ? "-mx-3 rounded-xl border-transparent bg-acento-claro px-3" : ""}`}
+                  className={`grid grid-cols-[4rem_1fr_auto] items-center gap-3 border-b border-slate-200 py-4 last:border-b-0 sm:grid-cols-[6.5rem_1fr_auto] ${a.e === "Siguiente" ? "-mx-3 border-transparent bg-acento-claro px-3" : ""}`}
                 >
                   <span className={`cifra text-xl sm:text-[2rem] ${a.libre ? "text-slate-400" : ""}`}>{a.h}</span>
                   <span className="min-w-0">
                     <span className={`block truncate font-semibold ${a.libre ? "text-slate-500" : ""}`}>{a.p}</span>
                     <span className="block truncate text-sm text-slate-600">{a.s}</span>
                   </span>
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${a.c}`}>{a.e}</span>
+                  <span className={`rounded-sm px-2 py-1 text-xs font-semibold ${a.c}`}>{a.e}</span>
                 </li>
               ))}
             </ul>
@@ -313,8 +313,8 @@ export default function Inicio() {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 sm:px-8">
+        <div className="border-y-2 border-tinta">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-300 py-4">
             <p>
               <span className="font-semibold">Valentina Muñoz</span> <span className="text-slate-600">· 31 años · Control prenatal</span>
             </p>
@@ -324,10 +324,10 @@ export default function Inicio() {
             {FICHA.map((f, i) => (
               <div
                 key={f.l}
-                className={`flex flex-col-reverse justify-end gap-2 border-slate-200 px-5 py-7 sm:px-8 ${i > 0 ? "border-t sm:border-t-0" : ""} ${i % 2 === 1 ? "sm:border-l" : ""} ${i >= 2 ? "sm:border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l" : ""}`}
+                className={`flex flex-col-reverse justify-end gap-2 border-slate-300 px-0 py-7 sm:px-8 ${i % 2 === 0 ? "sm:pl-0" : ""} ${i === 2 ? "lg:pl-8" : ""} ${i > 0 ? "border-t sm:border-t-0" : ""} ${i % 2 === 1 ? "sm:border-l" : ""} ${i >= 2 ? "sm:border-t lg:border-t-0" : ""} ${i === 2 ? "lg:border-l" : ""}`}
               >
                 <dt className="max-w-[24ch] text-[15px] text-slate-600">{f.l}</dt>
-                <dd className="cifra text-[2.5rem] leading-none tracking-[-0.03em] whitespace-nowrap text-marca-700 xl:text-5xl">{f.v}</dd>
+                <dd className="font-titulo text-[2.75rem] leading-none font-semibold tracking-[-0.01em] whitespace-nowrap text-marca-700 xl:text-[3.5rem]">{f.v}</dd>
               </div>
             ))}
           </dl>
@@ -337,7 +337,7 @@ export default function Inicio() {
       {/* 6. Cierre: la misma búsqueda de la portada, sin caja. */}
       <section aria-labelledby="cierre" className="grid gap-8 border-t border-slate-200 pt-16 sm:pt-20 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <h2 id="cierre" className="font-titulo text-[44px] leading-none font-bold tracking-[-0.035em] sm:text-7xl">
+          <h2 id="cierre" className="font-titulo text-[46px] leading-none font-semibold tracking-[-0.02em] sm:text-[5.25rem]">
             ¿Necesitas hora?
           </h2>
           <p className="mt-4 max-w-[44ch] text-lg text-slate-700">Busca por comuna y reserva en un par de minutos, sin escribirle a nadie.</p>

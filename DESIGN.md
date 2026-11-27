@@ -18,31 +18,31 @@ colors:
   borde: "#e4dfe1"
 typography:
   display:
-    fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "3.75rem"
-    fontWeight: 700
-    lineHeight: 1.04
-    letterSpacing: "-0.03em"
+    fontFamily: "Zilla Slab, ui-serif, Georgia, serif"
+    fontSize: "5.25rem"
+    fontWeight: 600
+    lineHeight: 0.98
+    letterSpacing: "-0.02em"
   headline:
-    fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "2.125rem"
-    fontWeight: 700
+    fontFamily: "Zilla Slab, ui-serif, Georgia, serif"
+    fontSize: "2.375rem"
+    fontWeight: 600
     lineHeight: 1.15
     letterSpacing: "-0.02em"
   body:
-    fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Rethink Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.6
   cifra:
-    fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Rethink Sans, ui-sans-serif, system-ui, sans-serif"
     fontWeight: 600
     fontFeature: "tnum"
 rounded:
-  control: "10px"
-  tarjeta: "14px"
-  banda: "24px"
-  pastilla: "9999px"
+  control: "4px"
+  tarjeta: "2px"
+  hoja: "3px"
+  etiqueta: "2px"
 ---
 
 # Agenda Salud: Consulta clara
@@ -57,11 +57,15 @@ Software de agenda de salud que se lee primero como herramienta clínica confiab
 
 ## Logo
 
-Cuadrado ciruela redondeado con una hoja de agenda blanca: esquina doblada de libreta, línea de encabezado y un punto salvia, la hora marcada. Vive en `src/components/marca.tsx` (`Simbolo`, `Marca`) y en `src/app/icon.svg`. Logotipo: "Agenda **Salud**" en Figtree bold, con "Salud" en ciruela.
+Cuadrado ciruela redondeado con una hoja de agenda blanca: esquina doblada de libreta, línea de encabezado y un punto salvia, la hora marcada. Vive en `src/components/marca.tsx` (`Simbolo`, `Marca`) y en `src/app/icon.svg`. Logotipo: "Agenda **Salud**" en Zilla Slab bold, con "Salud" en ciruela.
 
 ## Tipografía
 
-Una sola familia, **Figtree** (400 a 700). Cifras tabulares en todo el sitio (`.cifra`) para que las horas se alineen como en una agenda. Cuerpo mínimo de 16 px.
+Desde el 27-11-2026 (a pedido de Matías, Figtree no convencía): **Zilla Slab** (500 a 700) para titulares y el logotipo, la letra de una agenda impresa; **Rethink Sans** para texto, botones y cifras. Las horas usan cifras tabulares de Rethink Sans (`.cifra`); los titulares en Zilla fuerzan cifras alineadas (`lining-nums`). Cuerpo mínimo de 16 px.
+
+## Forma
+
+Esquinas de papel, casi rectas (2 a 6 px en toda la escala de Tailwind, redefinida en `globals.css`). Nada de tarjetas redondeadas con sombra: las superficies son hojas planas con borde fino y una línea superior de tinta (`.tarjeta`), o secciones separadas por reglas de 2 px. Las etiquetas de estado son rectángulos, no pastillas. Solo la hoja de agenda de la portada tiene sombra, porque es un papel. El logo también pasó a esquinas rectas.
 
 ## Dos vistas, un sistema
 
@@ -70,7 +74,7 @@ Una sola familia, **Figtree** (400 a 700). Cifras tabulares en todo el sitio (`.
 
 ## Estados de cita
 
-Pastillas redondeadas con punto: Confirmada (salvia), Atendida (ciruela), No asistió (ámbar), Cancelada (gris, hora tachada). "Siguiente" es una pastilla salvia sólida y la fila se tiñe de salvia claro.
+Etiquetas rectangulares con punto: Confirmada (salvia), Atendida (ciruela), No asistió (ámbar), Cancelada (gris, hora tachada). "Siguiente" es una etiqueta salvia sólida y la fila se tiñe de salvia claro.
 
 ## Componentes (`globals.css`)
 
@@ -80,7 +84,7 @@ Pastillas redondeadas con punto: Confirmada (salvia), Atendida (ciruela), No asi
 
 La portada dejó la plantilla "titular + tarjeta + lista de íconos" y ahora cuenta la agenda misma:
 
-- **Hoja de agenda** (`.hoja`, `.hoja-sombra`, `.pliegue`): la tarjeta de reserva es el logo en grande. Hora en el margen, renglones punteados, bloques Reservada (gris), Libre (salvia claro) y Tu hora (salvia sólida), y la esquina doblada en ciruela claro abajo a la derecha. Radio 18px, solo para esta hoja.
+- **Hoja de agenda** (`.hoja`, `.hoja-sombra`, `.pliegue`): la tarjeta de reserva es el logo en grande. Hora en el margen, renglones punteados, bloques Reservada (gris), Libre (salvia claro) y Tu hora (salvia sólida), y la esquina doblada en ciruela claro abajo a la derecha. Radio 3px.
 - **Frase que se escribe** (`.frase`): el único momento de la página. Las palabras pasan de gris a tinta con el scroll (CSS `animation-timeline: view()`); sin soporte o con movimiento reducido se ve entera en tinta.
 - **Antes y ahora**: el WhatsApp de ida y vuelta (burbujas grises) frente a tres toques en Agenda Salud.
 - **Banda ciruela única**: la vista profesional, con horas grandes en cifras tabulares y la fila "Siguiente" teñida de salvia.

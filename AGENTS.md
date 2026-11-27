@@ -10,4 +10,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Skills de diseño
 
-En `.claude/skills/` hay tres skills de diseño frontend: `impeccable`, `design-taste-frontend` (Taste Skill) y `ui-ux-pro-max`. Úsalas para diseñar, rediseñar o pulir pantallas. La identidad visual vigente es "Consulta clara" (ver `DESIGN.md` y `PRODUCT.md`): ciruela y salvia, tipografía Figtree. Esa identidad manda sobre cualquier estilo por defecto que sugiera una skill.
+En `.claude/skills/` hay tres skills de diseño frontend: `impeccable`, `design-taste-frontend` (Taste Skill) y `ui-ux-pro-max`. Úsalas para diseñar, rediseñar o pulir pantallas. La identidad visual vigente es "Consulta clara" (ver `DESIGN.md` y `PRODUCT.md`): ciruela y salvia, titulares en Zilla Slab y texto en Rethink Sans, esquinas casi rectas. Esa identidad manda sobre cualquier estilo por defecto que sugiera una skill.

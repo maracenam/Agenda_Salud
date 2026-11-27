@@ -42,11 +42,16 @@
   --color-slate-800: #2f272c;
   --color-slate-900: #261a23;
 
-  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
-  --font-titulo: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-rethink), ui-sans-serif, system-ui, sans-serif;
+  --font-titulo: var(--font-zilla), ui-serif, Georgia, serif;
 
-  --radius-lg: 10px;
-  --radius-xl: 14px;
+  /* Esquinas de papel: casi rectas. Toda la app hereda esta escala. */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 5px;
+  --radius-3xl: 6px;
 }
 
 :root {
@@ -62,6 +67,11 @@
   --linea: var(--color-pro-700);
   --linea-oscura: var(--color-pro-800);
   --linea-clara: var(--color-pro-50);
+}
+
+/* Zilla Slab trae cifras antiguas: en titulares van alineadas (G2 P1 A0 C1, 12 abr). */
+.font-titulo {
+  font-variant-numeric: lining-nums;
 }
 
 body {
@@ -140,12 +150,12 @@ a {
 /* La hoja de agenda: el dibujo del logo en grande, con su esquina doblada.
    La sombra vive en el contenedor (.hoja-sombra) porque el recorte la cortaría. */
 .hoja-sombra {
-  filter: drop-shadow(0 1px 1px rgb(38 26 35 / 0.07)) drop-shadow(0 18px 30px rgb(38 26 35 / 0.13));
+  filter: drop-shadow(0 1px 0 rgb(38 26 35 / 0.12)) drop-shadow(0 14px 22px rgb(38 26 35 / 0.10));
 }
 .hoja {
   --pliegue: 38px;
   background: #fff;
-  border-radius: 18px;
+  border-radius: 3px;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--pliegue)), calc(100% - var(--pliegue)) 100%, 0 100%);
 }
 .pliegue {
@@ -155,17 +165,16 @@ a {
   width: 38px;
   height: 38px;
   background: var(--color-marca-100);
-  border-top-left-radius: 9px;
+  border-top-left-radius: 3px;
   clip-path: polygon(0 0, 100% 0, 0 100%);
 }
 
 .buscador {
-  box-shadow: 0 1px 2px rgb(38 26 35 / 0.04), 0 12px 32px -16px rgb(38 26 35 / 0.18);
-  transition: box-shadow 200ms ease, border-color 200ms ease;
+  border: 1.5px solid var(--color-tinta);
+  transition: box-shadow 200ms ease;
 }
 .buscador:focus-within {
-  border-color: var(--color-marca-600);
-  box-shadow: 0 0 0 4px var(--color-marca-50), 0 12px 32px -16px rgb(38 26 35 / 0.22);
+  box-shadow: 0 0 0 4px var(--color-marca-100);
 }
 
 /* Paso del "antes y ahora": la acción escrita sobre el control que la hace. */
@@ -228,20 +237,21 @@ a {
   .etiqueta {
     @apply mb-1.5 block text-sm font-semibold text-slate-700;
   }
+  /* Hoja plana: borde fino y una línea superior de tinta, sin sombra ni curva. */
   .tarjeta {
-    @apply rounded-xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgb(38_26_35/0.04),0_8px_24px_-12px_rgb(38_26_35/0.10)];
+    @apply rounded-sm border border-slate-300 border-t-2 border-t-tinta bg-white p-5;
   }
   .titulo {
-    @apply font-titulo text-3xl leading-tight font-bold tracking-[-0.02em] text-tinta sm:text-[2.125rem];
+    @apply font-titulo text-3xl leading-[1.08] font-semibold tracking-[-0.01em] text-tinta sm:text-[2.375rem];
   }
   .enlace {
     @apply font-semibold text-(--linea) underline-offset-3 hover:underline;
   }
   .cifra {
-    @apply font-titulo font-semibold tabular-nums tracking-[-0.01em];
+    @apply font-sans font-semibold tabular-nums tracking-[-0.01em];
   }
   .insignia {
-    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-marca-50 font-titulo text-sm font-bold text-marca-700;
+    @apply inline-flex size-7 shrink-0 items-center justify-center rounded-sm bg-marca-50 font-titulo text-sm font-bold text-marca-700;
   }
   /* Solo la primera letra en mayúscula: "Jueves, 26 de noviembre". */
   .mayus {

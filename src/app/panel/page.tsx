@@ -119,7 +119,7 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
                 </div>
                 <div className="min-w-0">
                   <p className="flex flex-wrap items-center gap-2 text-[17px] font-semibold">
-                    {esProxima && <span className="rounded-full bg-acento px-2.5 py-0.5 text-[13px] font-semibold text-white">Siguiente</span>}
+                    {esProxima && <span className="rounded-sm bg-acento px-2 py-0.5 text-[13px] font-semibold text-white">Siguiente</span>}
                     {c.paciente ? <Link className="hover:text-marca-700 hover:underline" href={`/panel/pacientes/${c.paciente.id}`}>{c.paciente.nombre}</Link> : "Paciente"}
                     <EstadoCita estado={c.estado} />
                   </p>

@@ -17,7 +17,7 @@ Restricciones: sin testimonios, cifras de clientes ni precios inventados. Españ
 
 THESIS: Agenda Salud se lee primero como software de agenda de salud confiable ("Consulta clara"), no como anuncio. La reserva misma es la protagonista. Rechaza la landing SaaS genérica en teal y la estética de señalética de transporte (ronda 1, descartada por el usuario).
 
-OWN-WORLD: ciruela #66305a (marca, acciones, día elegido) y salvia #3F6B55 (disponible, confirmar, siguiente) sobre blanco tibio #F6F5F3, tinta ciruela #261A23, neutros reteñidos a ciruela. Figtree 400-700, cifras tabulares. Esquinas 10/14px, bordes de 1px, sombras suaves.
+OWN-WORLD: ciruela #66305a (marca, acciones, día elegido) y salvia #3F6B55 (disponible, confirmar, siguiente) sobre blanco tibio #F6F5F3, tinta ciruela #261A23, neutros reteñidos a ciruela. Zilla Slab en titulares, Rethink Sans en texto y cifras tabulares. Esquinas de papel (2-6px), hojas planas con línea superior de tinta, reglas de 2px; sin sombras salvo la hoja de agenda.
 
 STORY: la paciente ve una reserva real en la portada (profesional, días, horas libres, confirmación) y busca por comuna; la matrona ve su día ordenado en una banda ciruela y crea su agenda.
 
