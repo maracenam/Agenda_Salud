@@ -76,6 +76,18 @@ Pastillas redondeadas con punto: Confirmada (salvia), Atendida (ciruela), No asi
 
 `.btn` (ciruela), `.btn-acento` (salvia, para avanzar con una hora), `.btn-sec`, `.btn-peligro`, `.campo`, `.etiqueta`, `.tarjeta`, `.titulo`, `.enlace`, `.cifra`, `.insignia` (iniciales en círculo ciruela claro), `.mayus` (solo la primera letra en mayúscula).
 
+## Portada (segunda pasada, con Impeccable y Taste)
+
+La portada dejó la plantilla "titular + tarjeta + lista de íconos" y ahora cuenta la agenda misma:
+
+- **Hoja de agenda** (`.hoja`, `.hoja-sombra`, `.pliegue`): la tarjeta de reserva es el logo en grande. Hora en el margen, renglones punteados, bloques Reservada (gris), Libre (salvia claro) y Tu hora (salvia sólida), y la esquina doblada en ciruela claro abajo a la derecha. Radio 18px, solo para esta hoja.
+- **Frase que se escribe** (`.frase`): el único momento de la página. Las palabras pasan de gris a tinta con el scroll (CSS `animation-timeline: view()`); sin soporte o con movimiento reducido se ve entera en tinta.
+- **Antes y ahora**: el WhatsApp de ida y vuelta (burbujas grises) frente a tres toques en Agenda Salud.
+- **Banda ciruela única**: la vista profesional, con horas grandes en cifras tabulares y la fila "Siguiente" teñida de salvia.
+- **Ficha en notación**: G2 P1 A0 C1, FUR, edad gestacional y PAP escritos en grande, en ciruela.
+- **Cierre tipográfico**: "¿Necesitas hora?" en grande y el mismo buscador, sin caja.
+- **Movimiento**: entrada única de la portada (`.entra`, parte visible y se asienta), botones que bajan 1px al presionar.
+
 ## Reglas
 
 - Táctiles de al menos 44 px; contraste AA como mínimo.

@@ -117,16 +117,107 @@ a {
   }
 }
 
+/* ---- Portada (segunda pasada: Impeccable + Taste) ---- */
+
+/* Entrada única de la portada: parte ya visible y se asienta. */
+@keyframes entrar {
+  from {
+    opacity: 0.25;
+    transform: translateY(14px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+.entra {
+  animation: entrar 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--d, 0) * 90ms);
+}
+
+/* La hoja de agenda: el dibujo del logo en grande, con su esquina doblada.
+   La sombra vive en el contenedor (.hoja-sombra) porque el recorte la cortaría. */
+.hoja-sombra {
+  filter: drop-shadow(0 1px 1px rgb(38 26 35 / 0.07)) drop-shadow(0 18px 30px rgb(38 26 35 / 0.13));
+}
+.hoja {
+  --pliegue: 38px;
+  background: #fff;
+  border-radius: 18px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--pliegue)), calc(100% - var(--pliegue)) 100%, 0 100%);
+}
+.pliegue {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 38px;
+  height: 38px;
+  background: var(--color-marca-100);
+  border-top-left-radius: 9px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.buscador {
+  box-shadow: 0 1px 2px rgb(38 26 35 / 0.04), 0 12px 32px -16px rgb(38 26 35 / 0.18);
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+.buscador:focus-within {
+  border-color: var(--color-marca-600);
+  box-shadow: 0 0 0 4px var(--color-marca-50), 0 12px 32px -16px rgb(38 26 35 / 0.22);
+}
+
+/* Paso del "antes y ahora": la acción escrita sobre el control que la hace. */
+.toque {
+  display: grid;
+  gap: 0.5rem;
+}
+.toque-n {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-slate-700);
+}
+
+/* Momento: la frase pasa de gris a tinta palabra por palabra mientras se lee. */
+@supports (animation-timeline: view()) {
+  .frase span {
+    color: var(--color-slate-300);
+    animation: tinta linear both;
+    animation-timeline: view();
+    animation-range: cover 18% cover 42%;
+  }
+  .frase span:nth-child(n + 10) {
+    animation-range: cover 24% cover 48%;
+  }
+  .frase span:nth-child(n + 18) {
+    animation-range: cover 30% cover 54%;
+  }
+}
+@keyframes tinta {
+  to {
+    color: var(--color-tinta);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entra,
+  .frase span {
+    animation: none;
+    color: inherit;
+  }
+}
+
 @layer components {
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-(--linea-oscura) disabled:opacity-50 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-(--linea) px-4 py-2 text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-(--linea-oscura) active:translate-y-px disabled:opacity-50 cursor-pointer;
   }
   /* Acción de avanzar con una hora: salvia. */
   .btn-acento {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-acento px-5 py-2.5 text-base font-semibold text-white transition-colors duration-150 hover:bg-[#335a47] cursor-pointer;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-acento px-5 py-2.5 text-base font-semibold text-white transition-colors duration-150 hover:bg-[#335a47] active:translate-y-px cursor-pointer;
   }
   .btn-sec {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-colors duration-150 hover:border-slate-400 hover:bg-slate-50 cursor-pointer;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-[15px] font-semibold text-tinta transition-colors duration-150 hover:border-slate-400 hover:bg-slate-50 active:translate-y-px cursor-pointer;
   }
   .btn-peligro {
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-[15px] font-semibold text-red-800 transition-colors duration-150 hover:border-red-300 hover:bg-red-50 cursor-pointer;
