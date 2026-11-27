@@ -76,7 +76,7 @@ function VistaPanel() {
                 <p className="truncate font-semibold">
                   <span className="cifra">{c.h}</span> {c.p}
                 </p>
-                {c.dur >= 45 && <p className="truncate opacity-80">{c.s}</p>}
+                {c.dur >= 60 && <p className="truncate opacity-80">{c.s}</p>}
               </div>
             ))}
           </div>
