@@ -41,12 +41,23 @@ function IconoDerivar({ className = "size-5" }: { className?: string }) {
   );
 }
 
+function IconoIngresos({ className = "size-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="6" width="18" height="12" rx="2" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M6.5 9.5v.01M17.5 14.5v.01" />
+    </svg>
+  );
+}
+
 const ENLACES = [
   { href: "/panel", t: "Agenda", I: Calendario },
   { href: "/panel/pacientes", t: "Pacientes", I: Ficha },
   { href: "/panel/horarios", t: "Horarios", I: Reloj },
   { href: "/panel/servicios", t: "Prestaciones", I: IconoLista },
   { href: "/panel/derivaciones", t: "Derivaciones", I: IconoDerivar },
+  { href: "/panel/ingresos", t: "Mis ingresos", I: IconoIngresos },
   { href: "/panel/indicadores", t: "Indicadores", I: IconoBarras },
   { href: "/panel/perfil", t: "Mi perfil", I: IconoPerfil },
 ];

@@ -11,6 +11,8 @@ export type Perfil = {
   rut: string | null;
   telefono: string | null;
   fecha_nacimiento: string | null;
+  prevision: "fonasa" | "isapre" | "particular" | null;
+  isapre: string | null;
 };
 
 /** Usuario y perfil de la sesión actual, o null. */

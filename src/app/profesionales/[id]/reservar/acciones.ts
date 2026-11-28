@@ -6,6 +6,7 @@ import { avisarCita } from "@/lib/email";
 import { mensajeError } from "@/lib/errores";
 import { volver } from "@/lib/redir";
 import { obtenerSesion } from "@/lib/sesion";
+import { esPrevision } from "@/lib/ingresos";
 
 export async function reservar(formData: FormData) {
   const servicio = String(formData.get("servicio") ?? "");
@@ -25,6 +26,12 @@ export async function reservar(formData: FormData) {
     p_motivo: motivo,
   });
   if (error || !data) volver(ruta, "error", mensajeError(error));
+
+  // La previsión queda en el perfil de la paciente: sirve para proponer el bono al cobrar.
+  const prevision = formData.get("prevision");
+  if (esPrevision(prevision) && prevision !== sesion.perfil.prevision) {
+    await sesion.supabase.from("perfiles").update({ prevision, ...(prevision !== "isapre" ? { isapre: null } : {}) }).eq("id", sesion.id);
+  }
 
   const citaId = (data as { id: string }).id;
   after(() => avisarCita(sesion.supabase, citaId, "confirmacion"));

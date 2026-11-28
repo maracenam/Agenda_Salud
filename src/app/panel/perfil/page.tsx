@@ -100,6 +100,20 @@ export default async function PerfilPro({ searchParams }: PageProps<"/panel/perf
                 </span>
               </label>
             </fieldset>
+            <fieldset className="border-t border-slate-200 pt-5">
+              <legend className="float-left mb-1 w-full font-bold text-marca-800">Bonos que recibes</legend>
+              <p className="clear-both mb-3 text-[15px] text-slate-600">Si tienes convenio, al marcar una cita como atendida te proponemos el bono según la previsión de la paciente.</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 p-3.5 has-checked:border-acento has-checked:bg-acento-claro">
+                  <input type="checkbox" name="recibe_bono_fonasa" defaultChecked={pro?.recibe_bono_fonasa} className="size-5 accent-acento" />
+                  <span className="font-semibold">Bono Fonasa</span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 p-3.5 has-checked:border-acento has-checked:bg-acento-claro">
+                  <input type="checkbox" name="recibe_bono_isapre" defaultChecked={pro?.recibe_bono_isapre} className="size-5 accent-acento" />
+                  <span className="font-semibold">Bono Isapre</span>
+                </label>
+              </div>
+            </fieldset>
           </div>
           <div className="rounded-b-xl border-t border-slate-200 bg-slate-50 px-5 py-4 sm:px-6">
             <button className="btn">Guardar perfil</button>

@@ -5,6 +5,9 @@ import { esFechaValida, fechaISO, formatoDia, formatoHora, hoyChile, inicioDiaCh
 import { requerirProfesional } from "@/lib/sesion";
 import { marcarCita } from "./acciones";
 import { Flecha, FlechaAtras } from "@/components/marca";
+import { CobroCita } from "@/components/cobro-cita";
+import { sugerenciasCobro } from "@/lib/cobros";
+import { nombrePrevision, type MedioPago, type Prevision } from "@/lib/ingresos";
 
 export const metadata = { title: "Mi agenda" };
 
@@ -14,8 +17,9 @@ type Cita = {
   fin: string;
   estado: string;
   motivo: string | null;
-  paciente: { id: string; nombre: string; telefono: string | null } | null;
-  servicio: { nombre: string } | null;
+  paciente: { id: string; nombre: string; telefono: string | null; prevision: Prevision | null; isapre: string | null } | null;
+  servicio: { nombre: string; precio: number | null } | null;
+  pago: { medio: MedioPago; monto: number; folio_bono: string | null } | null;
 };
 
 const HORA_PX = 72;
@@ -50,7 +54,7 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
   const [{ data }, { data: horarios }] = await Promise.all([
     supabase
       .from("citas")
-      .select("id, inicio, fin, estado, motivo, paciente:perfiles!citas_paciente_id_fkey(id, nombre, telefono), servicio:servicios(nombre)")
+      .select("id, inicio, fin, estado, motivo, paciente:perfiles!citas_paciente_id_fkey(id, nombre, telefono, prevision, isapre), servicio:servicios(nombre, precio), pago:pagos(medio, monto, folio_bono)")
       .eq("profesional_id", id)
       .gte("inicio", inicioDiaChile(desde).toISOString())
       .lt("inicio", inicioDiaChile(hasta).toISOString())
@@ -65,6 +69,10 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
   const porCerrar = activas.filter((c) => c.estado === "confirmada" && new Date(c.fin).getTime() <= ahora);
   const elegidaId = typeof sp.cita === "string" ? sp.cita : siguiente ?? activas[0]?.id;
   const elegida = citas.find((c) => c.id === elegidaId);
+  const sugerido = elegida
+    ? (await sugerenciasCobro(supabase, id, [{ id: elegida.id, precio: elegida.servicio?.precio ?? null, prevision: elegida.paciente?.prevision ?? null }]))[elegida.id]
+    : null;
+  const sinCobro = activas.filter((c) => c.estado === "completada" && !c.pago).length;
 
   // Rango visible: de la primera hora de atención (o cita) a la última.
   const minutos = [
@@ -224,6 +232,7 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
                 <p className="text-[15px] text-slate-600">hasta las {formatoHora(elegida.fin)}</p>
                 <p className="mt-4 text-xl leading-tight font-bold">{elegida.paciente?.nombre ?? "Paciente"}</p>
                 <p className="text-slate-700">{elegida.servicio?.nombre}</p>
+                <p className="text-[15px] text-slate-600">{nombrePrevision(elegida.paciente?.prevision, elegida.paciente?.isapre)}</p>
                 {elegida.paciente?.telefono && (
                   <a href={`tel:${elegida.paciente.telefono.replace(/\s/g, "")}`} className="mt-1 inline-block text-[15px] text-slate-600 hover:text-tinta hover:underline">{elegida.paciente.telefono}</a>
                 )}
@@ -232,21 +241,16 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
                   {elegida.paciente && (
                     <Link className="btn" href={`/panel/pacientes/${elegida.paciente.id}?cita=${elegida.id}`}>Abrir ficha</Link>
                   )}
+                  {sugerido && ((elegida.estado === "confirmada" && new Date(elegida.inicio).getTime() < ahora) || elegida.estado === "completada") && (
+                    <CobroCita cita={elegida.id} volver={aquí} estado={elegida.estado} sugerido={sugerido} pago={elegida.pago} />
+                  )}
                   {elegida.estado === "confirmada" && new Date(elegida.inicio).getTime() < ahora && (
-                    <div className="grid grid-cols-2 gap-2">
-                      <form action={marcarCita}>
-                        <input type="hidden" name="cita" value={elegida.id} />
-                        <input type="hidden" name="estado" value="completada" />
-                        <input type="hidden" name="volver" value={aquí} />
-                        <button className="btn-sec w-full">Atendida</button>
-                      </form>
-                      <form action={marcarCita}>
-                        <input type="hidden" name="cita" value={elegida.id} />
-                        <input type="hidden" name="estado" value="no_asistio" />
-                        <input type="hidden" name="volver" value={aquí} />
-                        <button className="btn-sec w-full">No asistió</button>
-                      </form>
-                    </div>
+                    <form action={marcarCita}>
+                      <input type="hidden" name="cita" value={elegida.id} />
+                      <input type="hidden" name="estado" value="no_asistio" />
+                      <input type="hidden" name="volver" value={aquí} />
+                      <button className="btn-sec w-full">No asistió</button>
+                    </form>
                   )}
                   {elegida.estado === "confirmada" && new Date(elegida.inicio).getTime() >= ahora && (
                     <div className="grid grid-cols-2 gap-2">
@@ -264,10 +268,13 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
               <p className="rounded-xl border border-slate-200 bg-white p-5 text-slate-600">Elige una cita en la agenda para ver su detalle.</p>
             )}
 
-            {porCerrar.length > 0 && (
+            {(porCerrar.length > 0 || sinCobro > 0) && (
               <section aria-labelledby="por-cerrar" className="rounded-xl border border-[#f3d6b4] bg-alerta-claro p-5">
                 <h2 id="por-cerrar" className="font-bold text-[#5c2d07]">Por cerrar</h2>
-                <p className="mt-1 text-[15px] text-[#5c2d07]">Ya pasaron y siguen confirmadas. Marca si se atendieron.</p>
+                <p className="mt-1 text-[15px] text-[#5c2d07]">
+                  {porCerrar.length > 0 ? "Ya pasaron y siguen confirmadas. Marca si se atendieron." : `${sinCobro} ${sinCobro === 1 ? "atendida" : "atendidas"} sin cobro registrado.`}
+                </p>
+                <Link href={`/panel/cierre?fecha=${fecha}`} className="btn mt-3 w-full">Cerrar el día</Link>
                 <ul className="mt-3 space-y-1">
                   {porCerrar.map((c) => (
                     <li key={c.id}>

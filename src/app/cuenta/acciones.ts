@@ -5,6 +5,7 @@ import { requerirSesion } from "@/lib/sesion";
 import { volver } from "@/lib/redir";
 import { validarRut } from "@/lib/rut";
 import { mensajeError } from "@/lib/errores";
+import { esPrevision } from "@/lib/ingresos";
 
 export async function guardarCuenta(formData: FormData) {
   const { id, supabase } = await requerirSesion();
@@ -22,9 +23,17 @@ export async function guardarCuenta(formData: FormData) {
       rut: rut || null,
       telefono: String(formData.get("telefono") ?? "").trim().slice(0, 30) || null,
       fecha_nacimiento: nacimiento || null,
+      ...previsionDe(formData),
     })
     .eq("id", id);
   if (error) volver("/cuenta", "error", mensajeError(error));
   revalidatePath("/", "layout");
   volver("/cuenta", "ok", "Datos guardados.");
+}
+
+/** Previsión del formulario, solo si viene una válida (así no se borra la que ya estaba). */
+function previsionDe(f: FormData) {
+  const p = f.get("prevision");
+  if (!esPrevision(p)) return {};
+  return { prevision: p, isapre: p === "isapre" ? String(f.get("isapre") ?? "").trim().slice(0, 60) || null : null };
 }
