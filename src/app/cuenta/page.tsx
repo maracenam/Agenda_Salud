@@ -11,7 +11,7 @@ export default async function Cuenta({ searchParams }: PageProps<"/cuenta">) {
     <div className="contenedor py-8 sm:py-12">
       <div className="mx-auto max-w-[36rem]">
         <h1 className="titulo">Mis datos</h1>
-        <p className="mt-1 mb-6 text-[15px] text-slate-600">Tu matrona los ve al atenderte. El RUT y la fecha de nacimiento van a tu ficha.</p>
+        <p className="mt-1 mb-6 text-[15px] text-slate-600">Tu profesional los ve al atenderte. El RUT y la fecha de nacimiento van a tu ficha.</p>
         <Aviso error={sp.error} ok={sp.ok} />
         <form action={guardarCuenta} className="rounded-xl border border-slate-200 bg-white">
           <div className="space-y-4 p-6">

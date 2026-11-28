@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Aviso } from "@/components/aviso";
 import { Ubicacion } from "@/components/marca";
 import { requerirProfesional } from "@/lib/sesion";
+import { cargarEspecialidades } from "@/lib/consultas";
+import { moduloDe } from "@/lib/especialidades";
 import { guardarPerfil } from "../acciones";
 
 export const metadata = { title: "Mi perfil profesional" };
@@ -9,7 +11,12 @@ export const metadata = { title: "Mi perfil profesional" };
 export default async function PerfilPro({ searchParams }: PageProps<"/panel/perfil">) {
   const sp = await searchParams;
   const { id, supabase, perfil } = await requerirProfesional();
-  const { data: pro } = await supabase.from("profesionales").select("*").eq("id", id).single();
+  const [{ data: pro }, especialidades] = await Promise.all([
+    supabase.from("profesionales").select("*").eq("id", id).single(),
+    cargarEspecialidades(),
+  ]);
+  const esp = especialidades.find((e) => e.id === pro?.especialidad_id);
+  const modulo = moduloDe(esp?.slug);
   const iniciales = perfil.nombre.split(" ").filter(Boolean).slice(0, 2).map((x) => x[0]).join("").toUpperCase();
 
   return (
@@ -17,7 +24,7 @@ export default async function PerfilPro({ searchParams }: PageProps<"/panel/perf
       <div>
         <h1 className="titulo">Mi perfil profesional</h1>
         <p className="mt-1 max-w-[62ch] text-[15px] text-slate-600">
-          Es lo que ven las pacientes antes de reservar. Tu nombre y teléfono se cambian en{" "}
+          Es lo que ven tus pacientes antes de reservar. Tu nombre y teléfono se cambian en{" "}
           <Link className="enlace" href="/cuenta">Mis datos</Link>.
         </p>
       </div>
@@ -29,9 +36,20 @@ export default async function PerfilPro({ searchParams }: PageProps<"/panel/perf
             <fieldset>
               <legend className="mb-3 font-bold text-marca-800">Cómo te presentas</legend>
               <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="etiqueta" htmlFor="especialidad_id">Especialidad</label>
+                <select className="campo" id="especialidad_id" name="especialidad_id" defaultValue={pro?.especialidad_id ?? ""} aria-describedby="esp-ayuda">
+                  {especialidades.map((e) => (
+                    <option key={e.id} value={e.id}>{e.nombre}</option>
+                  ))}
+                </select>
+                <p id="esp-ayuda" className="mt-1.5 text-sm text-slate-600">
+                  Define en qué sección del buscador apareces y los campos de tu ficha clínica. Si la cambias, los datos de fichas anteriores se conservan.
+                </p>
+              </div>
               <div>
                 <label className="etiqueta" htmlFor="titulo">Título</label>
-                <input className="campo" id="titulo" name="titulo" defaultValue={pro?.titulo ?? ""} placeholder="Matrona, Universidad de Chile" />
+                <input className="campo" id="titulo" name="titulo" defaultValue={pro?.titulo ?? ""} placeholder={modulo.ejemplos.titulo} />
               </div>
               <div>
                 <label className="etiqueta" htmlFor="registro_sis">Registro en la Superintendencia de Salud</label>
@@ -45,7 +63,7 @@ export default async function PerfilPro({ searchParams }: PageProps<"/panel/perf
                   name="bio"
                   rows={5}
                   defaultValue={pro?.bio ?? ""}
-                  placeholder="Tu experiencia y en qué te enfocas: control prenatal, ginecología, lactancia."
+                  placeholder={modulo.ejemplos.bio}
                 />
               </div>
               </div>
@@ -90,7 +108,7 @@ export default async function PerfilPro({ searchParams }: PageProps<"/panel/perf
               <span className="insignia size-12 text-base">{iniciales}</span>
               <div className="min-w-0">
                 <p className="truncate font-bold">{perfil.nombre}</p>
-                <p className="truncate text-sm text-slate-600">{pro?.titulo || "Matrona"}</p>
+                <p className="truncate text-sm text-slate-600">{esp?.nombre}{pro?.titulo ? `, ${pro.titulo}` : ""}</p>
               </div>
             </div>
             <p className="mt-4 line-clamp-4 text-[15px] text-slate-700">{pro?.bio || "Aquí aparecerá tu presentación."}</p>

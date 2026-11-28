@@ -13,9 +13,11 @@ type Props = {
   ocultos: Record<string, string>;
   textoBoton?: string;
   conMotivo?: boolean;
+  /** Ejemplo de motivo según la especialidad. */
+  ejemploMotivo?: string;
 };
 
-export async function SelectorBloques({ supabase, servicioId, fecha, diasConHorario, rutaBase, accion, ocultos, textoBoton = "Confirmar reserva", conMotivo }: Props) {
+export async function SelectorBloques({ supabase, servicioId, fecha, diasConHorario, rutaBase, accion, ocultos, textoBoton = "Confirmar reserva", conMotivo, ejemploMotivo = "Por ejemplo, primera consulta" }: Props) {
   const hoy = hoyChile();
   const dias = Array.from({ length: 21 }, (_, i) => sumarDias(hoy, i));
   const { data: bloques, error } = await supabase.rpc("bloques_disponibles", { p_servicio: servicioId, p_fecha: fecha });
@@ -85,7 +87,7 @@ export async function SelectorBloques({ supabase, servicioId, fecha, diasConHora
         {conMotivo && lista.length > 0 && (
           <div>
             <label className="etiqueta" htmlFor="motivo">Motivo de consulta, si quieres contarlo</label>
-            <textarea className="campo" id="motivo" name="motivo" rows={2} maxLength={500} placeholder="Por ejemplo, control de embarazo de 12 semanas" />
+            <textarea className="campo" id="motivo" name="motivo" rows={2} maxLength={500} placeholder={ejemploMotivo} />
           </div>
         )}
         {lista.length > 0 && <button className="btn-acento w-full sm:w-auto">{textoBoton}</button>}

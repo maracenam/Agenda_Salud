@@ -247,10 +247,24 @@ a {
   .insignia {
     @apply inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-rosa-claro text-sm font-bold text-tinta;
   }
+  .chip {
+    @apply inline-flex min-h-10 items-center rounded-full border border-slate-300 bg-white px-3.5 text-[15px] font-semibold text-slate-700 transition-colors hover:border-marca-600 hover:bg-marca-50;
+  }
+  .chip-activo {
+    @apply border-marca-700 bg-marca-700 text-white hover:bg-marca-800;
+  }
   .mayus {
     display: inline-block;
   }
   .mayus::first-letter {
     text-transform: uppercase;
   }
+}
+
+/* Registro: la especialidad solo aparece si la cuenta es para recibir reservas. */
+.solo-pro {
+  display: none;
+}
+form:has(input[name="rol"][value="profesional"]:checked) .solo-pro {
+  display: block;
 }

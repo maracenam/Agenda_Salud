@@ -9,6 +9,7 @@ import { obtenerSesion } from "@/lib/sesion";
 import { crearClienteServidor } from "@/lib/supabase/server";
 import { reservar } from "./acciones";
 import { FlechaAtras } from "@/components/marca";
+import { moduloDe } from "@/lib/especialidades";
 
 export const metadata = { title: "Reservar hora" };
 
@@ -33,7 +34,7 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
             <span className="insignia size-11 text-base">{iniciales(pro.perfil?.nombre)}</span>
             <div className="min-w-0">
               <p className="truncate font-bold">{pro.perfil?.nombre}</p>
-              <p className="truncate text-sm text-slate-600">{pro.titulo || "Matrona"}</p>
+              <p className="truncate text-sm text-slate-600">{pro.titulo || pro.especialidad?.profesion}</p>
             </div>
           </div>
           <dl className="space-y-3 p-5 text-[15px]">
@@ -85,6 +86,7 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
               accion={reservar}
               ocultos={{ servicio: servicio.id, profesional: pro.id, fecha }}
               conMotivo
+              ejemploMotivo={moduloDe(pro.especialidad?.slug).ejemplos.motivo}
             />
           </div>
         </div>

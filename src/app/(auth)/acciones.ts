@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { crearClienteServidor } from "@/lib/supabase/server";
 import { rutaSegura, volver } from "@/lib/redir";
+import { cargarEspecialidades } from "@/lib/consultas";
 
 export async function ingresar(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
@@ -28,9 +29,15 @@ export async function registrar(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const telefono = String(formData.get("telefono") ?? "").trim();
   const rol = formData.get("rol") === "profesional" ? "profesional" : "paciente";
+  const especialidad = String(formData.get("especialidad") ?? "").trim();
   const siguiente = rutaSegura(formData.get("siguiente"), "");
   const base = `/registro?rol=${rol}`;
-  if (nombre.length < 3) volver(base, "error", "Escribe tu nombre completo.");
+  if (nombre.length < 3 || nombre.length > 120) volver(base, "error", "Escribe tu nombre completo.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) volver(base, "error", "Revisa tu correo.");
+  if (rol === "profesional") {
+    const validas = (await cargarEspecialidades()).map((e) => e.slug);
+    if (!validas.includes(especialidad)) volver(base, "error", "Elige tu especialidad.");
+  }
   if (password.length < 8) volver(base, "error", "La contraseña debe tener al menos 8 caracteres.");
   if (!formData.get("acepta")) volver(base, "error", "Debes aceptar el tratamiento de tus datos para continuar.");
 
@@ -40,7 +47,7 @@ export async function registrar(formData: FormData) {
     email,
     password,
     options: {
-      data: { nombre, telefono, rol },
+      data: rol === "profesional" ? { nombre, telefono, rol, especialidad } : { nombre, telefono, rol },
       emailRedirectTo: `${origen}/auth/callback${siguiente ? `?siguiente=${encodeURIComponent(siguiente)}` : ""}`,
     },
   });

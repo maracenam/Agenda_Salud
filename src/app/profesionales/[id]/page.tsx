@@ -24,7 +24,7 @@ export default async function PerfilProfesional({ params }: PageProps<"/profesio
           <span className="insignia size-16 text-xl sm:size-20 sm:text-2xl">{iniciales(pro.perfil?.nombre)}</span>
           <div className="min-w-0">
             <h1 className="titulo sm:text-[40px] sm:leading-[1.05]">{pro.perfil?.nombre}</h1>
-            <p className="mt-1 text-lg text-slate-700">{pro.titulo || "Matrona"}</p>
+            <p className="mt-1 text-lg text-slate-700">{pro.especialidad?.profesion}{pro.titulo ? `, ${pro.titulo}` : ""}</p>
             <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[15px] text-slate-600">
               {pro.comuna && <span className="flex items-center gap-1 font-medium"><Ubicacion className="size-4" />{pro.comuna}</span>}
               {pro.registro_sis && <span>Registro en la Superintendencia de Salud <span className="cifra text-tinta">{pro.registro_sis}</span></span>}

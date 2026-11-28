@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Aviso, EstadoCita } from "@/components/aviso";
 import { cancelarCita } from "@/lib/acciones-citas";
-import { fechaISO, formatoDia, formatoFecha, formatoFechaCorta, formatoHora } from "@/lib/fechas";
+import { fechaISO, formatoDia, formatoFecha, formatoFechaCorta, formatoHora, instanteActual } from "@/lib/fechas";
 import { requerirSesion } from "@/lib/sesion";
 
 export const metadata = { title: "Mis citas" };
@@ -29,7 +29,7 @@ function Acciones({ c, ahora }: { c: Cita; ahora: number }) {
     </div>
   ) : (
     <p className="max-w-64 text-sm text-slate-600">
-      Faltan menos de {horas} horas. Para moverla, llama a tu matrona{c.profesional?.perfil?.telefono ? ` al ${c.profesional.perfil.telefono}` : ""}.
+      Faltan menos de {horas} horas. Para moverla, llama a tu profesional{c.profesional?.perfil?.telefono ? ` al ${c.profesional.perfil.telefono}` : ""}.
     </p>
   );
 }
@@ -44,7 +44,7 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
     .order("inicio", { ascending: false })
     .limit(100);
   const citas = (data ?? []) as unknown as Cita[];
-  const ahora = Date.now();
+  const ahora = instanteActual();
   const proximas = citas.filter((c) => new Date(c.inicio).getTime() >= ahora && c.estado === "confirmada").reverse();
   const pasadas = citas.filter((c) => !proximas.includes(c));
   const [primera, ...resto] = proximas;
@@ -87,7 +87,7 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
         <section className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-10 text-center">
           <p className="text-xl font-bold">No tienes horas por delante</p>
           <p className="mt-1 text-slate-600">Cuando reserves, la verás aquí con su dirección y la opción de cambiarla.</p>
-          <Link href="/profesionales" className="btn mt-5">Buscar matrona</Link>
+          <Link href="/profesionales" className="btn mt-5">Buscar profesional</Link>
         </section>
       )}
 
@@ -117,7 +117,7 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
                 <tr>
                   <th className="py-3 pr-4 pl-5 font-semibold">Fecha</th>
                   <th className="px-4 py-3 font-semibold">Prestación</th>
-                  <th className="px-4 py-3 font-semibold">Matrona</th>
+                  <th className="px-4 py-3 font-semibold">Profesional</th>
                   <th className="py-3 pr-5 pl-4 text-right font-semibold">Estado</th>
                 </tr>
               </thead>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Lupa } from "@/components/marca";
-import { formatoFechaCorta } from "@/lib/fechas";
+import { formatoFechaCorta, instanteActual } from "@/lib/fechas";
 import { requerirProfesional } from "@/lib/sesion";
 
 export const metadata = { title: "Pacientes" };
@@ -18,7 +18,7 @@ export default async function Pacientes({ searchParams }: PageProps<"/panel/paci
     .order("inicio", { ascending: false })
     .limit(2000);
   const filas = (data ?? []) as unknown as Fila[];
-  const ahora = Date.now();
+  const ahora = instanteActual();
   const mapa = new Map<string, { p: NonNullable<Fila["paciente"]>; ultima?: string; proxima?: string; total: number }>();
   for (const f of filas) {
     if (!f.paciente) continue;

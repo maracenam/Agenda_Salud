@@ -57,7 +57,7 @@ export default async function Reprogramar({ params, searchParams }: PageProps<"/
               <dd>{cita.servicio?.nombre}</dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold text-slate-600">{volverA === "/panel" ? "Paciente" : "Matrona"}</dt>
+              <dt className="text-sm font-semibold text-slate-600">{volverA === "/panel" ? "Paciente" : "Profesional"}</dt>
               <dd>{conQuien}</dd>
             </div>
           </dl>
