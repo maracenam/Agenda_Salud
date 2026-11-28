@@ -3,28 +3,14 @@ import { Ficha, FlechaAtras } from "@/components/marca";
 import { notFound } from "next/navigation";
 import { Aviso, EstadoCita } from "@/components/aviso";
 import { formatoFechaCorta, formatoFechaHora, hoyChile } from "@/lib/fechas";
+import { edadAnios } from "@/lib/calculos";
+import { datosDelModulo, moduloDe, type Campo, type Datos } from "@/lib/especialidades";
 import { requerirProfesional } from "@/lib/sesion";
 import { guardarFicha, registrarAtencion } from "../../acciones";
 
 export const metadata = { title: "Ficha clínica" };
 
 type Ficha = Record<string, string | number | null>;
-
-function edad(nacimiento: string | null) {
-  if (!nacimiento) return null;
-  const [a, m, d] = nacimiento.split("-").map(Number);
-  const [ha, hm, hd] = hoyChile().split("-").map(Number);
-  return ha - a - (hm < m || (hm === m && hd < d) ? 1 : 0);
-}
-
-/** Semanas de gestación según FUR (regla de Naegele) */
-function edadGestacional(fur: string | null | undefined) {
-  if (!fur) return null;
-  const dias = Math.floor((Date.parse(hoyChile()) - Date.parse(fur)) / 86_400_000);
-  if (dias < 0 || dias > 300) return null;
-  const fpp = new Date(Date.parse(fur) + 280 * 86_400_000).toISOString().slice(0, 10);
-  return { semanas: Math.floor(dias / 7), dias: dias % 7, fpp };
-}
 
 function Texto({ name, label, f, rows = 2 }: { name: string; label: string; f: Ficha | null; rows?: number }) {
   return (
@@ -35,13 +21,40 @@ function Texto({ name, label, f, rows = 2 }: { name: string; label: string; f: F
   );
 }
 
-function Numero({ name, label, f }: { name: string; label: string; f: Ficha | null }) {
-  return (
-    <div>
-      <label className="etiqueta" htmlFor={name}>{label}</label>
-      <input className="campo" id={name} name={name} type="number" min={0} max={30} defaultValue={(f?.[name] as number) ?? ""} />
-    </div>
+/** Un campo propio de la especialidad, con prefijo para no chocar con los campos comunes. */
+function CampoModulo({ c, valor, prefijo }: { c: Campo; valor: Datos[string] | undefined; prefijo: string }) {
+  const id = prefijo + c.clave;
+  const v = valor ?? "";
+  const etiqueta = (
+    <label className="etiqueta" htmlFor={id}>
+      {c.etiqueta}
+      {c.tipo === "numero" && c.unidad && <span className="font-normal text-slate-500"> ({c.unidad})</span>}
+    </label>
   );
+  if (c.tipo === "numero")
+    return <div>{etiqueta}<input className="campo" id={id} name={id} type="number" inputMode="decimal" min={c.min} max={c.max} step={c.paso ?? 1} defaultValue={v} /></div>;
+  if (c.tipo === "fecha") return <div>{etiqueta}<input className="campo" id={id} name={id} type="date" defaultValue={v} /></div>;
+  if (c.tipo === "opcion")
+    return (
+      <div>
+        {etiqueta}
+        <select className="campo" id={id} name={id} defaultValue={String(v)}>
+          <option value="">Sin indicar</option>
+          {c.opciones.map((o) => <option key={o} value={o}>{o}</option>)}
+        </select>
+      </div>
+    );
+  return (c.filas ?? 1) > 1 ? (
+    <div className="col-span-full">{etiqueta}<textarea className="campo" id={id} name={id} rows={c.filas} maxLength={c.max} defaultValue={v} /></div>
+  ) : (
+    <div>{etiqueta}<input className="campo" id={id} name={id} maxLength={c.max} defaultValue={v} /></div>
+  );
+}
+
+function valorLegible(c: Campo, v: Datos[string]) {
+  if (c.tipo === "fecha" && typeof v === "string") return formatoFechaCorta(v + "T12:00:00");
+  if (c.tipo === "numero") return `${String(v).replace(".", ",")}${c.unidad ? ` ${c.unidad}` : ""}`;
+  return String(v);
 }
 
 export default async function FichaPaciente({ params, searchParams }: PageProps<"/panel/pacientes/[id]">) {
@@ -50,23 +63,26 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
   if (!/^[0-9a-f-]{36}$/i.test(pacienteId)) notFound();
   const { id, supabase } = await requerirProfesional();
 
-  const [{ data: paciente }, { data: ficha }, { data: atenciones }, { data: citas }] = await Promise.all([
+  const [{ data: paciente }, { data: ficha }, { data: atenciones }, { data: citas }, { data: pro }] = await Promise.all([
     supabase.from("perfiles").select("id, nombre, email, rut, telefono, fecha_nacimiento").eq("id", pacienteId).maybeSingle(),
     supabase.from("fichas").select("*").eq("profesional_id", id).eq("paciente_id", pacienteId).maybeSingle(),
     supabase.from("atenciones").select("*").eq("profesional_id", id).eq("paciente_id", pacienteId).order("fecha", { ascending: false }),
     supabase.from("citas").select("id, inicio, estado, servicio:servicios(nombre)").eq("profesional_id", id).eq("paciente_id", pacienteId).order("inicio", { ascending: false }),
+    supabase.from("profesionales").select("especialidad:especialidades(slug, nombre)").eq("id", id).single(),
   ]);
   if (!paciente || !citas?.length) notFound();
 
   const f = ficha as Ficha | null;
-  const eg = edadGestacional(f?.fur as string | null);
+  const esp = pro?.especialidad as unknown as { slug: string; nombre: string } | null;
+  const modulo = moduloDe(esp?.slug);
+  const hoy = hoyChile();
+  const datosFicha = datosDelModulo(ficha?.datos_especialidad, modulo.slug);
+  const datosAtenciones = (atenciones ?? []).map((a) => datosDelModulo(a.datos_especialidad, modulo.slug));
+  const tarjetas = modulo.resumen(datosFicha, datosAtenciones, hoy);
   const citaActual = typeof sp.cita === "string" ? citas.find((c) => c.id === sp.cita) : undefined;
-  const años = edad(paciente.fecha_nacimiento);
+  const años = edadAnios(paciente.fecha_nacimiento, hoy);
   const iniciales = paciente.nombre.split(" ").filter(Boolean).slice(0, 2).map((x: string) => x[0]).join("").toUpperCase();
   const alergias = typeof f?.alergias === "string" && f.alergias.trim() ? f.alergias.trim() : null;
-  const pap = typeof f?.ultimo_pap === "string" ? f.ultimo_pap : null;
-  const mesesPap = pap ? Math.floor((Date.parse(hoyChile()) - Date.parse(pap)) / (86_400_000 * 30.44)) : null;
-  const n = (k: string) => (f?.[k] != null && f[k] !== "" ? String(f[k]) : "–");
   const nombreServicio = (c: (typeof citas)[number]) => (c.servicio as unknown as { nombre: string } | null)?.nombre;
 
   return (
@@ -87,40 +103,15 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
         </div>
       </div>
 
-      {/* Resumen clínico: lo que la matrona mira antes de saludar. */}
+      {/* Resumen clínico: lo que la o el profesional mira antes de saludar. Cambia según la especialidad. */}
       <section aria-label="Resumen clínico" className="grid overflow-hidden rounded-xl border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-4">
-        <div className="border-b border-slate-200 p-5 sm:border-r lg:border-b-0">
-          <p className="text-sm font-semibold text-slate-600">Fórmula obstétrica</p>
-          <p className="cifra mt-2 flex gap-3 text-2xl">
-            {(["gestas", "partos", "abortos", "cesareas"] as const).map((k) => (
-              <span key={k}><span className="text-slate-500">{k[0].toUpperCase()}</span>{n(k)}</span>
-            ))}
-          </p>
-        </div>
-        <div className="border-b border-slate-200 p-5 lg:border-r lg:border-b-0">
-          <p className="text-sm font-semibold text-slate-600">Edad gestacional</p>
-          {eg ? (
-            <>
-              <p className="cifra mt-2 text-2xl text-marca-700">{eg.semanas}+{eg.dias} <span className="text-base font-medium text-slate-600">semanas</span></p>
-              <p className="mt-0.5 text-sm text-slate-600">Parto probable el {formatoFechaCorta(eg.fpp + "T12:00:00")}</p>
-            </>
-          ) : (
-            <p className="mt-2 text-[15px] text-slate-500">Sin FUR registrada</p>
-          )}
-        </div>
-        <div className="border-b border-slate-200 p-5 sm:border-r sm:border-b-0">
-          <p className="text-sm font-semibold text-slate-600">Último PAP</p>
-          {pap ? (
-            <>
-              <p className="cifra mt-2 text-2xl">{formatoFechaCorta(pap + "T12:00:00")}</p>
-              <p className={`mt-0.5 text-sm ${mesesPap != null && mesesPap >= 12 ? "font-semibold text-alerta" : "text-slate-600"}`}>
-                {mesesPap != null && mesesPap >= 12 ? `Hace ${mesesPap} meses, toca repetirlo` : mesesPap === 0 ? "Este mes" : `Hace ${mesesPap} ${mesesPap === 1 ? "mes" : "meses"}`}
-              </p>
-            </>
-          ) : (
-            <p className="mt-2 text-[15px] text-slate-500">Sin registro</p>
-          )}
-        </div>
+        {tarjetas.slice(0, 3).map((t) => (
+          <div key={t.titulo} className={`border-b border-slate-200 p-5 sm:border-r lg:border-b-0 ${t.alerta ? "bg-alerta-claro" : ""}`}>
+            <p className={`text-sm font-semibold ${t.alerta ? "text-alerta" : "text-slate-600"}`}>{t.titulo}</p>
+            <p className="cifra mt-2 text-2xl">{t.valor}</p>
+            {t.detalle && <p className={`mt-0.5 text-sm ${t.alerta ? "font-semibold text-alerta" : "text-slate-600"}`}>{t.detalle}</p>}
+          </div>
+        ))}
         <div className={`p-5 ${alergias ? "bg-alerta-claro" : ""}`}>
           <p className={`text-sm font-semibold ${alergias ? "text-alerta" : "text-slate-600"}`}>Alergias</p>
           <p className={`mt-2 text-lg leading-snug font-bold ${alergias ? "text-[#5c2d07]" : "font-medium text-slate-500"}`}>{alergias ?? "No registradas"}</p>
@@ -145,6 +136,11 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
                 <label className="etiqueta" htmlFor="motivo">Motivo de consulta</label>
                 <input className="campo" id="motivo" name="motivo" defaultValue={citaActual ? nombreServicio(citaActual) ?? "" : ""} />
               </div>
+              {modulo.atencion.length > 0 && (
+                <div className="grid gap-3 sm:col-span-2 sm:grid-cols-2 lg:grid-cols-4">
+                  {modulo.atencion.map((c) => <CampoModulo key={c.clave} c={c} valor={undefined} prefijo="at_" />)}
+                </div>
+              )}
               <div>
                 <label className="etiqueta" htmlFor="at_diagnostico">Diagnóstico</label>
                 <textarea className="campo" id="at_diagnostico" name="diagnostico" rows={3} />
@@ -172,13 +168,20 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
               </p>
             ) : (
               <ol className="mt-3 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
-                {atenciones!.map((a) => (
+                {atenciones!.map((a, i) => (
                   <li key={a.id} className="grid gap-x-6 gap-y-2 p-5 sm:grid-cols-[9rem_minmax(0,1fr)]">
                     <div>
                       <p className="mayus font-semibold">{formatoFechaCorta(a.fecha)}</p>
                       {a.motivo && <p className="text-sm text-slate-600">{a.motivo}</p>}
                     </div>
                     <dl className="space-y-2 text-[15px]">
+                      {modulo.atencion.some((c) => datosAtenciones[i][c.clave] != null) && (
+                        <div className="flex flex-wrap gap-x-5 gap-y-1">
+                          {modulo.atencion.filter((c) => datosAtenciones[i][c.clave] != null).map((c) => (
+                            <div key={c.clave} className="flex gap-1.5"><dt className="text-sm font-semibold text-slate-600">{c.etiqueta}</dt><dd className="cifra">{valorLegible(c, datosAtenciones[i][c.clave])}</dd></div>
+                          ))}
+                        </div>
+                      )}
                       {a.diagnostico && <div><dt className="text-sm font-semibold text-slate-600">Diagnóstico</dt><dd>{a.diagnostico}</dd></div>}
                       {a.indicaciones && <div><dt className="text-sm font-semibold text-slate-600">Indicaciones</dt><dd className="whitespace-pre-line">{a.indicaciones}</dd></div>}
                       {a.notas && <div><dt className="text-sm font-semibold text-slate-600">Evolución</dt><dd className="whitespace-pre-line text-slate-700">{a.notas}</dd></div>}
@@ -198,30 +201,15 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
               {ficha && <span className="text-sm text-slate-600">Al día el {formatoFechaCorta(ficha.actualizado_en)}</span>}
             </div>
             <div className="space-y-6 p-5">
-              <fieldset className="space-y-3">
-                <legend className="mb-3 font-bold text-marca-800">Gineco-obstétrico</legend>
-                <div className="grid grid-cols-4 gap-2">
-                  <Numero name="gestas" label="Gestas" f={f} />
-                  <Numero name="partos" label="Partos" f={f} />
-                  <Numero name="abortos" label="Abortos" f={f} />
-                  <Numero name="cesareas" label="Cesáreas" f={f} />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="etiqueta" htmlFor="fur">FUR</label>
-                    <input className="campo" id="fur" name="fur" type="date" defaultValue={(f?.fur as string) ?? ""} />
+              {modulo.ficha.length > 0 && (
+                <fieldset>
+                  <legend className="mb-3 font-bold text-marca-800">{modulo.tituloFicha}</legend>
+                  <div className={`grid gap-3 ${modulo.slug === "matroneria" ? "grid-cols-4 [&>*:nth-child(n+5)]:col-span-2" : "grid-cols-2"}`}>
+                    {modulo.ficha.map((c) => <CampoModulo key={c.clave} c={c} valor={datosFicha[c.clave]} prefijo="esp_" />)}
                   </div>
-                  <div>
-                    <label className="etiqueta" htmlFor="ultimo_pap">Último PAP</label>
-                    <input className="campo" id="ultimo_pap" name="ultimo_pap" type="date" defaultValue={(f?.ultimo_pap as string) ?? ""} />
-                  </div>
-                </div>
-                <div>
-                  <label className="etiqueta" htmlFor="metodo_anticonceptivo">Método anticonceptivo</label>
-                  <input className="campo" id="metodo_anticonceptivo" name="metodo_anticonceptivo" defaultValue={(f?.metodo_anticonceptivo as string) ?? ""} />
-                </div>
-              </fieldset>
-              <fieldset className="space-y-3 border-t border-slate-200 pt-5">
+                </fieldset>
+              )}
+              <fieldset className={`space-y-3 ${modulo.ficha.length > 0 ? "border-t border-slate-200 pt-5" : ""}`}>
                 <legend className="float-left mb-3 w-full font-bold text-marca-800">Antecedentes</legend>
                 <Texto name="antecedentes" label="Mórbidos y quirúrgicos" f={f} />
                 <Texto name="alergias" label="Alergias" f={f} rows={1} />

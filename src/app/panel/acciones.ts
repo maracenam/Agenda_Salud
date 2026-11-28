@@ -5,6 +5,7 @@ import { mensajeError } from "@/lib/errores";
 import { rutaSegura, volver } from "@/lib/redir";
 import { requerirProfesional } from "@/lib/sesion";
 import { inicioDiaChile } from "@/lib/fechas";
+import { leerCampos, moduloDe } from "@/lib/especialidades";
 
 const txt = (f: FormData, k: string) => String(f.get(k) ?? "").trim() || null;
 const num = (f: FormData, k: string) => {
@@ -23,9 +24,11 @@ export async function guardarPerfil(formData: FormData) {
     ]);
     if (!nServ || !nHor) volver("/panel/perfil", "error", "Para publicar necesitas al menos una prestación activa y un horario de atención.");
   }
+  const especialidad = num(formData, "especialidad_id");
   const { error } = await supabase
     .from("profesionales")
     .update({
+      ...(especialidad && Number.isInteger(especialidad) ? { especialidad_id: especialidad } : {}),
       titulo: txt(formData, "titulo"),
       registro_sis: txt(formData, "registro_sis"),
       bio: txt(formData, "bio"),
@@ -135,25 +138,39 @@ export async function marcarCita(formData: FormData) {
   volver(ruta, "ok", estado === "completada" ? "Cita marcada como atendida." : estado === "no_asistio" ? "Cita marcada como inasistencia." : "Cita actualizada.");
 }
 
-// Fichas y atenciones -----------------------------------------------------------
+// Fichas y atenciones (CU-07, CU-08) ---------------------------------------------
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function moduloProfesional(supabase: Awaited<ReturnType<typeof requerirProfesional>>["supabase"], id: string) {
+  const { data } = await supabase.from("profesionales").select("especialidad:especialidades(slug)").eq("id", id).single();
+  return moduloDe((data?.especialidad as unknown as { slug: string } | null)?.slug);
+}
+
 export async function guardarFicha(formData: FormData) {
   const { id, supabase } = await requerirProfesional();
   const paciente = String(formData.get("paciente") ?? "");
+  if (!UUID.test(paciente)) volver("/panel/pacientes", "error", "Paciente no válido.");
   const ruta = `/panel/pacientes/${paciente}`;
+  const modulo = await moduloProfesional(supabase, id);
+  const leido = leerCampos(modulo.ficha, formData, "esp_");
+  if ("error" in leido) volver(ruta, "error", leido.error);
+
+  // Se conservan los datos de otros módulos (por ejemplo, si cambió de especialidad).
+  const { data: actual } = await supabase
+    .from("fichas")
+    .select("datos_especialidad")
+    .eq("profesional_id", id)
+    .eq("paciente_id", paciente)
+    .maybeSingle();
+  const previos = (actual?.datos_especialidad ?? {}) as Record<string, unknown>;
   const datos = {
-    antecedentes: txt(formData, "antecedentes"),
-    alergias: txt(formData, "alergias"),
-    medicamentos: txt(formData, "medicamentos"),
-    diagnostico: txt(formData, "diagnostico"),
-    tratamiento: txt(formData, "tratamiento"),
-    observaciones: txt(formData, "observaciones"),
-    gestas: num(formData, "gestas"),
-    partos: num(formData, "partos"),
-    abortos: num(formData, "abortos"),
-    cesareas: num(formData, "cesareas"),
-    fur: txt(formData, "fur"),
-    metodo_anticonceptivo: txt(formData, "metodo_anticonceptivo"),
-    ultimo_pap: txt(formData, "ultimo_pap"),
+    antecedentes: txt(formData, "antecedentes")?.slice(0, 4000) ?? null,
+    alergias: txt(formData, "alergias")?.slice(0, 1000) ?? null,
+    medicamentos: txt(formData, "medicamentos")?.slice(0, 1000) ?? null,
+    diagnostico: txt(formData, "diagnostico")?.slice(0, 4000) ?? null,
+    tratamiento: txt(formData, "tratamiento")?.slice(0, 4000) ?? null,
+    observaciones: txt(formData, "observaciones")?.slice(0, 4000) ?? null,
+    datos_especialidad: { ...previos, [modulo.slug]: leido.datos },
   };
   const { error } = await supabase
     .from("fichas")
@@ -166,7 +183,25 @@ export async function guardarFicha(formData: FormData) {
 export async function registrarAtencion(formData: FormData) {
   const { id, supabase } = await requerirProfesional();
   const paciente = String(formData.get("paciente") ?? "");
+  if (!UUID.test(paciente)) volver("/panel/pacientes", "error", "Paciente no válido.");
   const ruta = `/panel/pacientes/${paciente}`;
+  const modulo = await moduloProfesional(supabase, id);
+  const leido = leerCampos(modulo.atencion, formData, "at_");
+  if ("error" in leido) volver(ruta, "error", leido.error);
+
+  // La cita, si viene, debe ser de esta profesional y de esta paciente.
+  const citaId = txt(formData, "cita");
+  if (citaId) {
+    const { data: cita } = await supabase
+      .from("citas")
+      .select("id")
+      .eq("id", UUID.test(citaId) ? citaId : "00000000-0000-0000-0000-000000000000")
+      .eq("profesional_id", id)
+      .eq("paciente_id", paciente)
+      .maybeSingle();
+    if (!cita) volver(ruta, "error", "La cita no corresponde a esta paciente.");
+  }
+
   // La ficha debe existir: se crea vacía si hace falta
   let { data: ficha } = await supabase.from("fichas").select("id").eq("profesional_id", id).eq("paciente_id", paciente).maybeSingle();
   if (!ficha) {
@@ -174,16 +209,16 @@ export async function registrarAtencion(formData: FormData) {
     if (r.error) volver(ruta, "error", mensajeError(r.error));
     ficha = r.data;
   }
-  const citaId = txt(formData, "cita");
   const { error } = await supabase.from("atenciones").insert({
     ficha_id: ficha!.id,
     profesional_id: id,
     paciente_id: paciente,
     cita_id: citaId,
-    motivo: txt(formData, "motivo"),
-    diagnostico: txt(formData, "diagnostico"),
-    indicaciones: txt(formData, "indicaciones"),
-    notas: txt(formData, "notas"),
+    motivo: txt(formData, "motivo")?.slice(0, 300) ?? null,
+    diagnostico: txt(formData, "diagnostico")?.slice(0, 4000) ?? null,
+    indicaciones: txt(formData, "indicaciones")?.slice(0, 4000) ?? null,
+    notas: txt(formData, "notas")?.slice(0, 8000) ?? null,
+    datos_especialidad: Object.keys(leido.datos).length ? { [modulo.slug]: leido.datos } : {},
   });
   if (error) volver(ruta, "error", mensajeError(error));
   if (citaId) await supabase.rpc("marcar_cita", { p_cita: citaId, p_estado: "completada" });
