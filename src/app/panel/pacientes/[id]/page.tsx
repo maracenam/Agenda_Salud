@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { nombrePrevision } from "@/lib/ingresos";
 import { Ficha, FlechaAtras } from "@/components/marca";
 import { notFound } from "next/navigation";
 import { Aviso, EstadoCita } from "@/components/aviso";
@@ -64,7 +65,7 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
   const { id, supabase } = await requerirProfesional();
 
   const [{ data: paciente }, { data: ficha }, { data: atenciones }, { data: citas }, { data: pro }, { data: colegas }] = await Promise.all([
-    supabase.from("perfiles").select("id, nombre, email, rut, telefono, fecha_nacimiento").eq("id", pacienteId).maybeSingle(),
+    supabase.from("perfiles").select("id, nombre, email, rut, telefono, fecha_nacimiento, prevision, isapre").eq("id", pacienteId).maybeSingle(),
     supabase.from("fichas").select("*").eq("profesional_id", id).eq("paciente_id", pacienteId).maybeSingle(),
     supabase.from("atenciones").select("*").eq("profesional_id", id).eq("paciente_id", pacienteId).order("fecha", { ascending: false }),
     supabase.from("citas").select("id, inicio, estado, servicio:servicios(nombre)").eq("profesional_id", id).eq("paciente_id", pacienteId).order("inicio", { ascending: false }),
@@ -98,6 +99,7 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
             <h1 className="titulo">{paciente.nombre}</h1>
             <dl className="mt-1 flex flex-wrap gap-x-5 gap-y-1 text-[15px] text-slate-600">
               {paciente.rut && <div className="flex gap-1.5"><dt className="sr-only">RUT</dt><dd>{paciente.rut}</dd></div>}
+              <div className="flex gap-1.5"><dt className="sr-only">Previsión</dt><dd>{nombrePrevision(paciente.prevision, paciente.isapre)}</dd></div>
               {años != null && <div className="flex gap-1.5"><dt className="sr-only">Edad</dt><dd>{años} años</dd></div>}
               {paciente.telefono && <div className="flex gap-1.5"><dt className="sr-only">Teléfono</dt><dd><a className="hover:text-tinta hover:underline" href={`tel:${paciente.telefono.replace(/\s/g, "")}`}>{paciente.telefono}</a></dd></div>}
               {paciente.email && <div className="flex gap-1.5"><dt className="sr-only">Correo</dt><dd><a className="hover:text-tinta hover:underline" href={`mailto:${paciente.email}`}>{paciente.email}</a></dd></div>}

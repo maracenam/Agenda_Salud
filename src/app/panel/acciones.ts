@@ -8,6 +8,8 @@ import { rutaSegura, volver } from "@/lib/redir";
 import { requerirProfesional } from "@/lib/sesion";
 import { inicioDiaChile } from "@/lib/fechas";
 import { leerCampos, moduloDe } from "@/lib/especialidades";
+import { formatoPrecio } from "@/lib/fechas";
+import { esMedio, leerMonto, type MedioPago } from "@/lib/ingresos";
 
 const txt = (f: FormData, k: string) => String(f.get(k) ?? "").trim() || null;
 const num = (f: FormData, k: string) => {
@@ -38,6 +40,8 @@ export async function guardarPerfil(formData: FormData) {
       comuna: txt(formData, "comuna")?.slice(0, 80) ?? null,
       telefono_consulta: txt(formData, "telefono_consulta")?.slice(0, 30) ?? null,
       horas_min_cambio: Math.min(72, Math.max(0, num(formData, "horas_min_cambio") ?? 2)),
+      recibe_bono_fonasa: formData.get("recibe_bono_fonasa") === "on",
+      recibe_bono_isapre: formData.get("recibe_bono_isapre") === "on",
       publicado: publicar,
     })
     .eq("id", id);
@@ -141,8 +145,86 @@ export async function marcarCita(formData: FormData) {
   volver(ruta, "ok", estado === "completada" ? "Cita marcada como atendida." : estado === "no_asistio" ? "Cita marcada como inasistencia." : "Cita actualizada.");
 }
 
+// Pagos (CU-12) -----------------------------------------------------------------
+/** Atendida y cobrada en un toque. Con "sin_cobro" solo la marca como atendida. */
+export async function atenderYCobrar(formData: FormData) {
+  const { supabase } = await requerirProfesional();
+  const ruta = rutaSegura(formData.get("volver"), "/panel");
+  const cita = String(formData.get("cita") ?? "");
+  if (!UUID.test(cita)) volver(ruta, "error", "Cita no válida.");
+  if (formData.get("sin_cobro") === "1") {
+    const { error } = await supabase.rpc("marcar_cita", { p_cita: cita, p_estado: "completada" });
+    if (error) volver(ruta, "error", mensajeError(error));
+    revalidatePath("/panel", "layout");
+    volver(ruta, "ok", "Cita marcada como atendida, sin cobro registrado.");
+  }
+  const leido = leerCobro(formData, "");
+  if ("error" in leido) volver(ruta, "error", leido.error);
+  const { error } = await supabase.rpc("registrar_pago", { p_cita: cita, ...leido });
+  if (error) volver(ruta, "error", mensajeError(error));
+  revalidatePath("/panel", "layout");
+  volver(ruta, "ok", `Atendida. Cobro de ${formatoPrecio(leido.p_monto)} registrado.`);
+}
+
+function leerCobro(f: FormData, sufijo: string): { error: string } | { p_medio: MedioPago; p_monto: number; p_folio: string | null } {
+  const medio = String(f.get(`medio${sufijo}`) ?? "");
+  const monto = leerMonto(f.get(`monto${sufijo}`));
+  if (!esMedio(medio)) return { error: "Elige el medio de pago." };
+  if (monto == null) return { error: "Revisa el monto cobrado: solo números, sin decimales." };
+  const folio = txt(f, `folio${sufijo}`)?.slice(0, 40) ?? null;
+  return { p_medio: medio, p_monto: monto, p_folio: folio };
+}
+
+/** Cierre del día: confirma de una vez todas las citas que ya pasaron. */
+export async function cerrarDia(formData: FormData) {
+  const { supabase } = await requerirProfesional();
+  const ruta = rutaSegura(formData.get("volver"), "/panel/cierre");
+  const ids = formData.getAll("cita").map(String).filter((c) => UUID.test(c)).slice(0, 60);
+  let atendidas = 0;
+  let ausentes = 0;
+  const fallas: string[] = [];
+  for (const id of ids) {
+    const estado = String(formData.get(`estado_${id}`) ?? "");
+    if (estado === "no_asistio") {
+      const { error } = await supabase.rpc("marcar_cita", { p_cita: id, p_estado: "no_asistio" });
+      if (error) fallas.push(mensajeError(error));
+      else ausentes++;
+    } else if (estado === "atendida") {
+      const leido = leerCobro(formData, `_${id}`);
+      if ("error" in leido) {
+        fallas.push(leido.error);
+        continue;
+      }
+      const { error } = await supabase.rpc("registrar_pago", { p_cita: id, ...leido });
+      if (error) fallas.push(mensajeError(error));
+      else atendidas++;
+    }
+  }
+  revalidatePath("/panel", "layout");
+  if (fallas.length) volver(ruta, "error", `${atendidas + ausentes} citas cerradas. ${fallas.length} no se pudieron guardar: ${fallas[0]}`);
+  volver(ruta, "ok", `Día cerrado: ${atendidas} ${atendidas === 1 ? "atendida" : "atendidas"} y ${ausentes} sin asistir.`);
+}
+
+/** Marca cobros como "boleta emitida" (o lo deshace). */
+export async function marcarBoletas(formData: FormData) {
+  const { supabase } = await requerirProfesional();
+  const ruta = rutaSegura(formData.get("volver"), "/panel/ingresos");
+  const pagos = formData.getAll("pago").map(String).filter((p) => UUID.test(p)).slice(0, 500);
+  const emitida = formData.get("emitida") !== "false";
+  if (pagos.length === 0) volver(ruta, "error", "Elige al menos una atención.");
+  const { data, error } = await supabase.rpc("marcar_boletas", {
+    p_pagos: pagos,
+    p_emitida: emitida,
+    p_numero: txt(formData, "numero")?.slice(0, 20) ?? null,
+  });
+  if (error) volver(ruta, "error", mensajeError(error));
+  revalidatePath("/panel/ingresos");
+  const n = Number(data ?? 0);
+  volver(ruta, "ok", emitida ? `${n} ${n === 1 ? "atención quedó" : "atenciones quedaron"} con boleta emitida.` : "Marca de boleta quitada.");
+}
+
 // Fichas y atenciones (CU-07, CU-08) ---------------------------------------------
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID =/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 async function moduloProfesional(supabase: Awaited<ReturnType<typeof requerirProfesional>>["supabase"], id: string) {
   const { data } = await supabase.from("profesionales").select("especialidad:especialidades(slug)").eq("id", id).single();

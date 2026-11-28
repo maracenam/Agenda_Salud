@@ -10,6 +10,7 @@ import { crearClienteServidor } from "@/lib/supabase/server";
 import { reservar } from "./acciones";
 import { FlechaAtras } from "@/components/marca";
 import { moduloDe } from "@/lib/especialidades";
+import { CampoPrevision } from "@/components/campo-prevision";
 
 export const metadata = { title: "Reservar hora" };
 
@@ -87,6 +88,7 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
               ocultos={{ servicio: servicio.id, profesional: pro.id, fecha }}
               conMotivo
               ejemploMotivo={moduloDe(pro.especialidad?.slug).ejemplos.motivo}
+              extra={sesion && sesion.id !== pro.id ? <CampoPrevision valor={sesion.perfil.prevision} /> : null}
             />
           </div>
         </div>

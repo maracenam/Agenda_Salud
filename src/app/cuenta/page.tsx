@@ -1,6 +1,7 @@
 import { Aviso } from "@/components/aviso";
 import { requerirSesion } from "@/lib/sesion";
 import { guardarCuenta } from "./acciones";
+import { CampoPrevision } from "@/components/campo-prevision";
 
 export const metadata = { title: "Mi cuenta" };
 
@@ -37,6 +38,7 @@ export default async function Cuenta({ searchParams }: PageProps<"/cuenta">) {
               <label className="etiqueta" htmlFor="fecha_nacimiento">Fecha de nacimiento</label>
               <input className="campo" id="fecha_nacimiento" name="fecha_nacimiento" type="date" defaultValue={perfil.fecha_nacimiento ?? ""} />
             </div>
+            <CampoPrevision valor={perfil.prevision} isapre={perfil.isapre} conIsapre />
           </div>
           <div className="rounded-b-xl border-t border-slate-200 bg-slate-50 px-6 py-4">
             <button className="btn">Guardar cambios</button>

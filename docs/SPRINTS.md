@@ -30,16 +30,18 @@ Agregar una especialidad nueva = una fila en `especialidades` + un módulo en `e
 | 9 | CU-09 Avisos por correo | RF-08 | Correos con la especialidad; dueño de la cita verificado antes de leer con la clave de servidor | pgTAP `rf08`, unitarias `rf08` (escape de HTML y asunto) |
 | 10 | CU-10 Indicadores de la profesional | RF-09 | `/panel/indicadores`: agendadas, realizadas, inasistencia, cancelaciones, fichas completas | pgTAP `rf09`, unitarias `rf09`, E2E |
 | 11 | CU-11 Derivar a una colega | Red de derivación | Tabla `derivaciones`, funciones `derivar_paciente` y `responder_derivacion`, pantallas y correos | pgTAP `cu11`, integrales, E2E derivación |
+| 12 | CU-12 Registrar el pago al atender | Cobros | Previsión de la paciente (al reservar o en su cuenta), bonos que recibe la profesional, tabla `pagos`, `registrar_pago` (atendida + cobro en un toque) y cierre del día | pgTAP `cu12`, unitarias `cu12`, integrales, pentest, E2E cobros |
+| 13 | CU-13 Mis ingresos | Cobros | `/panel/ingresos`: cobrado del mes por medio, boletas pendientes con acceso al SII, retención estimada (Ley 21.133), exportar a Excel (CSV) | unitarias `cu12`, E2E cobros |
 
 ## Pruebas
 
 | Nivel | Herramienta | Cantidad | Comando |
 |---|---|---|---|
-| Unitarias de base de datos, una por RF | pgTAP | 106 | `npm run test:db` |
-| Unitarias de la aplicación, una por RF | Vitest | 81 | `npm test` |
-| Integrales del sistema (Auth + API + funciones + RLS) | Vitest | 10 | `npm run test:integracion` |
-| Pentest automatizado | Vitest contra la app y la API | 26 | `npm run test:seguridad` |
-| E2E en navegador, escritorio y celular, con accesibilidad (axe, WCAG 2.1 AA) | Playwright | 23 | `npm run test:e2e` |
+| Unitarias de base de datos, una por RF | pgTAP | 125 | `npm run test:db` |
+| Unitarias de la aplicación, una por RF | Vitest | 99 | `npm test` |
+| Integrales del sistema (Auth + API + funciones + RLS) | Vitest | 15 | `npm run test:integracion` |
+| Pentest automatizado | Vitest contra la app y la API | 27 | `npm run test:seguridad` |
+| E2E en navegador, escritorio y celular, con accesibilidad (axe, WCAG 2.1 AA) | Playwright | 27 | `npm run test:e2e` |
 
 Todas necesitan Supabase local: `npx supabase start` y `npx supabase db reset`. La app se levanta sola en el puerto 3100 para E2E; el pentest necesita `npm run build && npx next start -p 3100`.
 
