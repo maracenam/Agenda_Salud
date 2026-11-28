@@ -25,7 +25,7 @@ export function ReservaDemo() {
     <div className="rounded-[28px] bg-marca-700 p-5 text-white sm:p-7">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <p className="font-titulo text-[22px] leading-tight">Camila Rojas, matrona</p>
-        <p className="text-sm text-marca-100">Ñuñoa, control prenatal de 45 min</p>
+        <p className="text-sm text-white">Ñuñoa, control prenatal de 45 min</p>
       </div>
 
       <fieldset className="mt-5">
@@ -69,7 +69,7 @@ export function ReservaDemo() {
             <span className="cinta-broche" aria-hidden="true" />
           </span>
         ) : (
-          <span className="text-[15px] text-marca-100">Elige una hora para ver tu cinta.</span>
+          <span className="text-[15px] text-white">Elige una hora para ver tu cinta.</span>
         )}
       </div>
       <Link

@@ -1,22 +1,14 @@
 import { Aviso } from "@/components/aviso";
 import { formatoPrecio } from "@/lib/fechas";
 import { requerirProfesional } from "@/lib/sesion";
+import { moduloDe } from "@/lib/especialidades";
 import { alternarServicio, guardarServicio } from "../acciones";
 
 export const metadata = { title: "Prestaciones" };
 
-const SUGERENCIAS = [
-  { nombre: "Control prenatal", duracion: 45 },
-  { nombre: "Control ginecológico", duracion: 30 },
-  { nombre: "Toma de PAP", duracion: 30 },
-  { nombre: "Consejería en anticoncepción", duracion: 30 },
-  { nombre: "Asesoría de lactancia", duracion: 60 },
-  { nombre: "Control de puerperio", duracion: 45 },
-];
-
 type Servicio = { id: string; nombre: string; descripcion: string | null; duracion_min: number; precio: number | null; activo: boolean };
 
-function FormServicio({ s }: { s?: Servicio }) {
+function FormServicio({ s, ejemplo }: { s?: Servicio; ejemplo: string }) {
   const k = s?.id ?? "nueva";
   return (
     <form action={guardarServicio} className="grid gap-3 sm:grid-cols-[minmax(0,2fr)_8rem_9rem] sm:items-end">
@@ -24,7 +16,7 @@ function FormServicio({ s }: { s?: Servicio }) {
       {s && <input type="hidden" name="activo" value={s.activo ? "on" : "off"} />}
       <div>
         <label className="etiqueta" htmlFor={`nombre-${k}`}>Nombre</label>
-        <input className="campo" id={`nombre-${k}`} name="nombre" required defaultValue={s?.nombre} placeholder="Control prenatal" />
+        <input className="campo" id={`nombre-${k}`} name="nombre" required defaultValue={s?.nombre} placeholder={ejemplo} />
       </div>
       <div>
         <label className="etiqueta" htmlFor={`duracion-${k}`}>Minutos</label>
@@ -35,7 +27,7 @@ function FormServicio({ s }: { s?: Servicio }) {
         <input className="campo" id={`precio-${k}`} name="precio" type="number" min={0} step={500} defaultValue={s?.precio ?? ""} placeholder="Opcional" />
       </div>
       <div className="sm:col-span-3">
-        <label className="etiqueta" htmlFor={`descripcion-${k}`}>Descripción para la paciente</label>
+        <label className="etiqueta" htmlFor={`descripcion-${k}`}>Descripción para pacientes</label>
         <input className="campo" id={`descripcion-${k}`} name="descripcion" defaultValue={s?.descripcion ?? ""} placeholder="Qué incluye y qué traer, en una línea" />
       </div>
       <div className="sm:col-span-3">
@@ -48,10 +40,15 @@ function FormServicio({ s }: { s?: Servicio }) {
 export default async function Servicios({ searchParams }: PageProps<"/panel/servicios">) {
   const sp = await searchParams;
   const { id, supabase } = await requerirProfesional();
-  const { data } = await supabase.from("servicios").select("*").eq("profesional_id", id).order("creado_en");
+  const [{ data }, { data: pro }] = await Promise.all([
+    supabase.from("servicios").select("*").eq("profesional_id", id).order("creado_en"),
+    supabase.from("profesionales").select("especialidad:especialidades(slug)").eq("id", id).single(),
+  ]);
+  const modulo = moduloDe((pro?.especialidad as unknown as { slug: string } | null)?.slug);
+  const ejemplo = modulo.prestaciones[0]?.nombre ?? "Consulta";
   const servicios = (data ?? []) as Servicio[];
   const nombres = new Set(servicios.map((s) => s.nombre.toLowerCase()));
-  const sugerencias = SUGERENCIAS.filter((s) => !nombres.has(s.nombre.toLowerCase()));
+  const sugerencias = modulo.prestaciones.map((p) => ({ nombre: p.nombre, duracion: p.duracion })).filter((s) => !nombres.has(s.nombre.toLowerCase()));
 
   return (
     <div className="space-y-8">
@@ -72,7 +69,7 @@ export default async function Servicios({ searchParams }: PageProps<"/panel/serv
                     {s.descripcion && <span className="block truncate text-sm text-slate-600">{s.descripcion}</span>}
                   </span>
                   <span className="cifra text-[15px] text-slate-700 max-sm:hidden">{s.duracion_min} min</span>
-                  <span className="cifra text-right text-[15px] max-sm:hidden">{s.precio != null ? formatoPrecio(s.precio) : <span className="font-normal text-slate-400">Sin precio</span>}</span>
+                  <span className="cifra text-right text-[15px] max-sm:hidden">{s.precio != null ? formatoPrecio(s.precio) : <span className="font-normal text-slate-500">Sin precio</span>}</span>
                   <span className="text-right text-sm font-semibold">
                     {s.activo ? <span className="text-marca-700 group-open:hidden">Editar</span> : <span className="rounded-md bg-slate-100 px-2 py-1 text-slate-600 group-open:hidden">Oculta</span>}
                     <span className="hidden text-slate-600 group-open:inline">Cerrar</span>
@@ -80,11 +77,11 @@ export default async function Servicios({ searchParams }: PageProps<"/panel/serv
                   <span className="cifra text-sm text-slate-600 sm:hidden">{s.duracion_min} min{s.precio != null ? `, ${formatoPrecio(s.precio)}` : ""}</span>
                 </summary>
                 <div className="space-y-4 border-t border-slate-200 bg-slate-50 px-5 py-5">
-                  <FormServicio s={s} />
+                  <FormServicio s={s} ejemplo={ejemplo} />
                   <form action={alternarServicio} className="border-t border-slate-200 pt-4">
                     <input type="hidden" name="id" value={s.id} />
                     <input type="hidden" name="activo" value={String(!s.activo)} />
-                    <button className="btn-sec">{s.activo ? "Ocultar a las pacientes" : "Volver a mostrar"}</button>
+                    <button className="btn-sec">{s.activo ? "Ocultar a pacientes" : "Volver a mostrar"}</button>
                   </form>
                 </div>
               </details>
@@ -114,7 +111,7 @@ export default async function Servicios({ searchParams }: PageProps<"/panel/serv
             </div>
           )}
           <div className={sugerencias.length > 0 ? "border-t border-slate-200 pt-5" : ""}>
-            <FormServicio />
+            <FormServicio ejemplo={ejemplo} />
           </div>
         </div>
       </section>

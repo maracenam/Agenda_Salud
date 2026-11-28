@@ -24,11 +24,30 @@ function IconoLista({ className = "size-5" }: { className?: string }) {
   );
 }
 
+function IconoBarras({ className = "size-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" aria-hidden="true">
+      <path d="M5 20V11M12 20V5M19 20v-6" />
+    </svg>
+  );
+}
+
+function IconoDerivar({ className = "size-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 12h12M12 6l6 6-6 6" />
+      <path d="M20 5v14" />
+    </svg>
+  );
+}
+
 const ENLACES = [
   { href: "/panel", t: "Agenda", I: Calendario },
   { href: "/panel/pacientes", t: "Pacientes", I: Ficha },
   { href: "/panel/horarios", t: "Horarios", I: Reloj },
   { href: "/panel/servicios", t: "Prestaciones", I: IconoLista },
+  { href: "/panel/derivaciones", t: "Derivaciones", I: IconoDerivar },
+  { href: "/panel/indicadores", t: "Indicadores", I: IconoBarras },
   { href: "/panel/perfil", t: "Mi perfil", I: IconoPerfil },
 ];
 

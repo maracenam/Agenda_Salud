@@ -54,7 +54,7 @@ export function CalculadoraFur() {
           {r ? (
             <>
               {r.semanas}
-              <span className="text-slate-400">+</span>
+              <span className="text-slate-500">+</span>
               {r.dias}
             </>
           ) : (

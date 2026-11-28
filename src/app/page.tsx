@@ -2,11 +2,12 @@ import Link from "next/link";
 import { CalculadoraFur } from "@/components/calculadora-fur";
 import { ReservaDemo } from "@/components/reserva-demo";
 import { Ubicacion } from "@/components/marca";
+import { cargarEspecialidades } from "@/lib/consultas";
 
 /*
   Portada con la identidad "Cinta lustre". Cada sección muestra una pieza real del producto:
-  la reserva (se puede usar), el día de la matrona en su grilla de tiempo,
-  la cuenta de la ficha (FUR, edad gestacional, FPP) y el recordatorio por email.
+  la reserva (se puede usar), el día de una profesional en su grilla de tiempo,
+  la ficha que cambia según la especialidad (con la cuenta de FUR de matronería) y el recordatorio.
 */
 
 // Día de muestra del panel. Minutos desde las 09:00; 1 hora = 56 px.
@@ -38,7 +39,7 @@ function Buscador({ id }: { id: string }) {
         placeholder="Tu comuna, ej. Ñuñoa"
         className="min-w-0 flex-1 bg-transparent py-2 text-[17px] text-tinta placeholder:text-slate-500 focus:outline-none"
       />
-      <button className="btn-acento min-h-12 shrink-0 px-5 text-[16px]"><span>Buscar<span className="hidden sm:inline"> matrona</span></span></button>
+      <button className="btn-acento min-h-12 shrink-0 px-5 text-[16px]"><span>Buscar<span className="hidden sm:inline"> hora</span></span></button>
     </form>
   );
 }
@@ -125,7 +126,16 @@ function CorreoRecordatorio() {
   );
 }
 
-export default function Inicio() {
+const FICHAS = [
+  { esp: "Matronería", campos: "FUR, edad gestacional, fórmula obstétrica y último PAP" },
+  { esp: "Nutrición", campos: "Peso por control, IMC y avance hacia la meta" },
+  { esp: "Kinesiología", campos: "Dolor EVA por sesión y sesiones indicadas" },
+  { esp: "Psicología", campos: "Ánimo y riesgo de cada sesión, enfoque del proceso" },
+  { esp: "Medicina general", campos: "Presión arterial, IMC y enfermedades crónicas" },
+];
+
+export default async function Inicio() {
+  const especialidades = await cargarEspecialidades();
   return (
     <>
       {/* Portada: la reserva misma, usable, en tiras de papel. */}
@@ -133,21 +143,26 @@ export default function Inicio() {
         <div className="contenedor grid grid-cols-1 items-center gap-12 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_31rem] lg:gap-14 lg:py-20">
           <div className="min-w-0">
             <h1 className="max-w-[12ch] text-[46px] text-balance sm:text-[72px] lg:text-[84px]">
-              Toma hora con tu matrona.
+              Toma hora con tu profesional de salud.
             </h1>
             <p className="mt-6 max-w-[44ch] text-lg leading-relaxed text-slate-700 sm:text-xl">
-              Matronas y matrones independientes publican aquí sus horas libres. Eliges día y hora en la tira, y tu reserva queda impresa en una cinta, como la pulsera de la maternidad.
+              Matronas, psicólogas, nutricionistas, kinesiólogos y más profesionales independientes publican aquí sus horas libres. Eliges día y hora en la tira, y tu reserva queda impresa en una cinta.
             </p>
             <div className="mt-9">
               <Buscador id="comuna" />
             </div>
+            <nav aria-label="Especialidades" className="mt-6 flex max-w-xl flex-wrap gap-2">
+              {especialidades.map((e) => (
+                <Link key={e.slug} href={`/profesionales?especialidad=${e.slug}`} className="chip">{e.nombre}</Link>
+              ))}
+            </nav>
             <p className="mt-5 max-w-[52ch] text-[15px] text-slate-600">
               El día antes te llega un recordatorio por email. Si no puedes ir, cambias o cancelas en línea.
             </p>
           </div>
           <div>
             <ReservaDemo />
-            <p className="mt-3 text-center text-sm text-slate-600">Matrona y horas de ejemplo. Prueba elegir otra hora.</p>
+            <p className="mt-3 text-center text-sm text-slate-600">Profesional y horas de muestra. Prueba elegir otra hora.</p>
           </div>
         </div>
       </section>
@@ -157,7 +172,7 @@ export default function Inicio() {
         <div className="contenedor">
           <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
             <h2 id="pro" className="max-w-[16ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
-              Para matronas: tu día completo en una pantalla.
+              Para profesionales: tu día completo en una pantalla.
             </h2>
             <p className="max-w-[50ch] text-lg text-slate-700 lg:justify-self-end">
               Cada cita en su hora, la que sigue marcada y lo que falta por cerrar a la vista. Publicas tus horarios una vez y las pacientes reservan solas, sin dobles citas.
@@ -173,16 +188,24 @@ export default function Inicio() {
         </div>
       </section>
 
-      {/* Ficha: la cuenta que una matrona hace en cada control. */}
+      {/* Ficha: cambia según la especialidad. La muestra es la cuenta de matronería. */}
       <section aria-labelledby="ficha" className="border-y border-slate-200 bg-white py-20 sm:py-28">
         <div className="contenedor grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <h2 id="ficha" className="max-w-[15ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
-              Una ficha escrita en lenguaje de matrona.
+              Una ficha que habla el idioma de tu especialidad.
             </h2>
             <p className="mt-5 max-w-[46ch] text-lg text-slate-700">
-              Gestas, partos, abortos y cesáreas; FUR, último PAP, método anticonceptivo y el historial de cada control. La edad gestacional se calcula sola.
+              Cada especialidad trae sus propios campos y su resumen clínico, además de diagnóstico, alergias e historial de atenciones.
             </p>
+            <dl className="mt-6 divide-y divide-slate-200 border-y border-slate-200">
+              {FICHAS.map((x) => (
+                <div key={x.esp} className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
+                  <dt className="font-semibold">{x.esp}</dt>
+                  <dd className="text-[15px] text-slate-700">{x.campos}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
           <div className="space-y-4">
             <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-xl bg-rosa-claro px-5 py-4">
@@ -191,7 +214,7 @@ export default function Inicio() {
               <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-alerta">Alergia: penicilina</span>
             </div>
             <CalculadoraFur />
-            <p className="text-sm text-slate-600">Cambia la FUR para probar la cuenta.</p>
+            <p className="text-sm text-slate-600">Así se ve en matronería: cambia la FUR para probar la cuenta.</p>
           </div>
         </div>
       </section>
@@ -222,8 +245,8 @@ export default function Inicio() {
             </div>
           </div>
           <div className="bg-marca-700 p-8 text-white sm:p-12">
-            <h2 className="text-4xl sm:text-5xl">Atiendo como matrona</h2>
-            <p className="mt-3 max-w-[40ch] text-lg text-marca-100">Publica tus horas, recibe reservas y lleva la ficha de cada paciente.</p>
+            <h2 className="text-4xl sm:text-5xl">Atiendo pacientes</h2>
+            <p className="mt-3 max-w-[40ch] text-lg text-white">Publica tus horas, recibe reservas, lleva la ficha de cada paciente y deriva a colegas de otras especialidades.</p>
             <Link href="/registro?rol=profesional" className="mt-8 inline-flex min-h-13 items-center rounded-full bg-white px-6 text-[17px] font-semibold text-tinta transition-colors hover:bg-amarillo">
               Crear mi agenda
             </Link>

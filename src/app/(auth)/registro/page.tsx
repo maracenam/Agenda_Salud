@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Aviso } from "@/components/aviso";
+import { cargarEspecialidades } from "@/lib/consultas";
 import { registrar } from "../acciones";
 
 export const metadata = { title: "Crear cuenta" };
@@ -8,6 +9,8 @@ export default async function Registro({ searchParams }: PageProps<"/registro">)
   const sp = await searchParams;
   const rol = sp.rol === "profesional" ? "profesional" : "paciente";
   const siguiente = typeof sp.siguiente === "string" ? sp.siguiente : "";
+  const especialidades = await cargarEspecialidades();
+  const elegida = typeof sp.especialidad === "string" ? sp.especialidad : "";
   return (
     <div className="contenedor flex justify-center py-12 sm:py-16">
       <div className="w-full max-w-[30rem]">
@@ -21,7 +24,7 @@ export default async function Registro({ searchParams }: PageProps<"/registro">)
             <div className="grid grid-cols-2 gap-2">
               {[
                 { v: "paciente", t: "Reservar horas", d: "Soy paciente" },
-                { v: "profesional", t: "Recibir reservas", d: "Soy matrona o matrón" },
+                { v: "profesional", t: "Recibir reservas", d: "Soy profesional de la salud" },
               ].map((o) => (
                 <label
                   key={o.v}
@@ -34,6 +37,17 @@ export default async function Registro({ searchParams }: PageProps<"/registro">)
               ))}
             </div>
           </fieldset>
+          {/* Solo se muestra si eligió "Recibir reservas" (CSS :has, sin JavaScript). */}
+          <div className="solo-pro">
+            <label className="etiqueta" htmlFor="especialidad">Tu especialidad</label>
+            <select className="campo" id="especialidad" name="especialidad" defaultValue={elegida}>
+              <option value="">Elige tu especialidad</option>
+              {especialidades.map((e) => (
+                <option key={e.slug} value={e.slug}>{e.nombre}</option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-sm text-slate-600">Define los campos de tu ficha clínica y las prestaciones sugeridas. Puedes cambiarla después.</p>
+          </div>
           <div>
             <label className="etiqueta" htmlFor="nombre">Nombre completo</label>
             <input className="campo" id="nombre" name="nombre" required autoComplete="name" />
