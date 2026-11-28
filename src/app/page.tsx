@@ -131,7 +131,7 @@ const BITACORA = [
   { h: "10:32", quien: "Camila Rojas, matrona", que: "abrió la ficha" },
   { h: "10:41", quien: "Camila Rojas, matrona", que: "registró una atención" },
   { h: "10:44", quien: "Camila Rojas, matrona", que: "corrigió alergias (la versión anterior se guarda)" },
-  { h: "16:05", quien: "Tomás Vidal, kinesiólogo", que: "recibió una derivación" },
+  { h: "16:05", quien: "Camila Rojas, matrona", que: "derivó a Tomás Vidal, kinesiólogo" },
 ];
 
 function Bitacora() {
@@ -153,6 +153,15 @@ function Bitacora() {
     </div>
   );
 }
+
+// Seguridad, en el lenguaje de la profesional: lo que pasa hoy y lo que pasa aquí.
+const SEGURIDAD_PRO = [
+  { tema: "Quién la ve", antes: "Quien tome tu celular, tu computador o el archivo compartido.", ahora: "Solo tú. Ni otras profesionales ni otras pacientes pueden abrirla." },
+  { tema: "Si se pierde", antes: "Se pierde con el equipo o con un archivo borrado.", ahora: "Queda en la nube y no se puede borrar, como pide la Ley 20.584 por 15 años." },
+  { tema: "Si se corrige", antes: "El dato anterior desaparece.", ahora: "La versión anterior queda guardada, con fecha." },
+  { tema: "Quién la abrió", antes: "No hay forma de saberlo.", ahora: "Cada apertura y cambio queda en una bitácora que nadie puede editar." },
+  { tema: "En tránsito", antes: "Viaja por chats y correos personales.", ahora: "Viaja cifrada por HTTPS y se guarda cifrada." },
+];
 
 const FICHAS = [
   { esp: "Matronería", campos: "FUR, edad gestacional, fórmula obstétrica y último PAP" },
@@ -262,39 +271,47 @@ export default async function Inicio() {
         </div>
       </section>
 
-      {/* Seguridad de los datos: la bitácora real de una ficha. */}
+      {/* Seguridad para la profesional: lo que cambia frente a la planilla y WhatsApp, con la bitácora real de una ficha. */}
       <section aria-labelledby="seguridad" className="border-t border-slate-200 bg-white py-20 sm:py-28">
-        <div className="contenedor grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <h2 id="seguridad" className="max-w-[15ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
-              Tu ficha la ve tu profesional. Nadie más.
+        <div className="contenedor">
+          <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+            <h2 id="seguridad" className="max-w-[16ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
+              Las fichas de tus pacientes, bajo llave.
             </h2>
-            <p className="mt-5 max-w-[46ch] text-lg text-slate-700">
-              Los datos de salud son datos sensibles, y así los tratamos: cada profesional ve solo a sus pacientes, cada acceso queda registrado y la ficha se conserva como exige la ley.
+            <p className="max-w-[50ch] text-lg text-slate-700 lg:justify-self-end">
+              Eres responsable de los datos de salud de tus pacientes. Agenda Salud los resguarda como pide la ley chilena, para que no dependa de una planilla, un cuaderno o un chat.
             </p>
-            <dl className="mt-6 divide-y divide-slate-200 border-y border-slate-200">
-              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
-                <dt className="font-semibold">Acceso</dt>
-                <dd className="text-[15px] text-slate-700">Reglas en la base de datos impiden que una cuenta lea fichas, citas o datos de contacto que no le corresponden.</dd>
-              </div>
-              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
-                <dt className="font-semibold">Historial</dt>
-                <dd className="text-[15px] text-slate-700">Las atenciones no se sobrescriben. Si se corrige la ficha, la versión anterior queda guardada.</dd>
-              </div>
-              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
-                <dt className="font-semibold">Conservación</dt>
-                <dd className="text-[15px] text-slate-700">La ficha no se puede borrar, para cumplir los 15 años que pide la Ley 20.584.</dd>
-              </div>
-              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
-                <dt className="font-semibold">Conexión</dt>
-                <dd className="text-[15px] text-slate-700">Todo viaja cifrado por HTTPS y los datos se guardan cifrados.</dd>
-              </div>
-            </dl>
-            <Link href="/seguridad" className="btn-sec mt-8 min-h-12 px-5 text-base">Cómo protegemos tus datos</Link>
           </div>
-          <div className="space-y-3">
-            <Bitacora />
-            <p className="text-sm text-slate-600">Nombres y horas de muestra.</p>
+          <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[34rem] text-left text-[15px]">
+                <caption className="sr-only">Comparación entre llevar fichas en planilla o WhatsApp y llevarlas en Agenda Salud</caption>
+                <thead>
+                  <tr className="border-b-2 border-tinta">
+                    <th scope="col" className="py-3 pr-4 font-semibold"><span className="sr-only">Tema</span></th>
+                    <th scope="col" className="py-3 pr-4 font-semibold text-slate-600">Planilla, cuaderno o WhatsApp</th>
+                    <th scope="col" className="py-3 font-semibold text-marca-700">Agenda Salud</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {SEGURIDAD_PRO.map((f) => (
+                    <tr key={f.tema} className="align-top">
+                      <th scope="row" className="w-32 py-3.5 pr-4 font-semibold whitespace-nowrap">{f.tema}</th>
+                      <td className="py-3.5 pr-4 text-slate-600">{f.antes}</td>
+                      <td className="py-3.5 text-tinta">{f.ahora}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="space-y-3">
+              <Bitacora />
+              <p className="text-sm text-slate-600">Nombres y horas de muestra.</p>
+            </div>
+          </div>
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link href="/seguridad" className="btn-sec min-h-12 px-5 text-base">Cómo protegemos los datos</Link>
+            <p className="text-[15px] text-slate-600">Probada con 26 ataques del OWASP Top 10: todos rechazados.</p>
           </div>
         </div>
       </section>
