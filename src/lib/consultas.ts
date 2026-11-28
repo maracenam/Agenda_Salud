@@ -23,7 +23,8 @@ export type Pro = {
   bio: string | null;
   direccion: string | null;
   comuna: string | null;
-  perfil: { nombre: string } | null;
+  nombre: string;
+  telefono_consulta: string | null;
   especialidad: Especialidad | null;
   servicios: { id: string; nombre: string; descripcion: string | null; duracion_min: number; precio: number | null; activo: boolean }[];
   horarios: { dia_semana: number; hora_inicio: string; hora_fin: string }[];
@@ -34,7 +35,7 @@ export async function cargarProfesional(id: string) {
   const supabase = await crearClienteServidor();
   const { data } = await supabase
     .from("profesionales")
-    .select("id, titulo, registro_sis, bio, direccion, comuna, perfil:perfiles!profesionales_id_fkey(nombre), especialidad:especialidades(id, nombre, slug, profesion, descripcion), servicios(id, nombre, descripcion, duracion_min, precio, activo), horarios(dia_semana, hora_inicio, hora_fin)")
+    .select("id, nombre, telefono_consulta, titulo, registro_sis, bio, direccion, comuna, especialidad:especialidades(id, nombre, slug, profesion, descripcion), servicios(id, nombre, descripcion, duracion_min, precio, activo), horarios(dia_semana, hora_inicio, hora_fin)")
     .eq("id", id)
     .maybeSingle();
   return data as unknown as Pro | null;

@@ -25,15 +25,15 @@ export default async function Reservar({ params, searchParams }: PageProps<"/pro
 
   return (
     <div className="contenedor py-8 sm:py-10">
-      <Link href={`/profesionales/${id}`} className="enlace inline-flex items-center gap-1 text-[15px]"><FlechaAtras className="size-4" />{pro.perfil?.nombre}</Link>
+      <Link href={`/profesionales/${id}`} className="enlace inline-flex items-center gap-1 text-[15px]"><FlechaAtras className="size-4" />{pro.nombre}</Link>
       <h1 className="titulo mt-3">Reserva tu hora</h1>
 
       <div className="mt-6 grid items-start gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <aside className="rounded-xl border border-slate-200 bg-white lg:sticky lg:top-24">
           <div className="flex items-center gap-3 border-b border-slate-200 p-5">
-            <span className="insignia size-11 text-base">{iniciales(pro.perfil?.nombre)}</span>
+            <span className="insignia size-11 text-base">{iniciales(pro.nombre)}</span>
             <div className="min-w-0">
-              <p className="truncate font-bold">{pro.perfil?.nombre}</p>
+              <p className="truncate font-bold">{pro.nombre}</p>
               <p className="truncate text-sm text-slate-600">{pro.titulo || pro.especialidad?.profesion}</p>
             </div>
           </div>

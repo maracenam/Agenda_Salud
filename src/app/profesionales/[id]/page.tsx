@@ -21,9 +21,9 @@ export default async function PerfilProfesional({ params }: PageProps<"/profesio
     <>
       <div className="border-b border-slate-200 bg-white">
         <div className="contenedor flex flex-wrap items-center gap-5 py-8 sm:py-10">
-          <span className="insignia size-16 text-xl sm:size-20 sm:text-2xl">{iniciales(pro.perfil?.nombre)}</span>
+          <span className="insignia size-16 text-xl sm:size-20 sm:text-2xl">{iniciales(pro.nombre)}</span>
           <div className="min-w-0">
-            <h1 className="titulo sm:text-[40px] sm:leading-[1.05]">{pro.perfil?.nombre}</h1>
+            <h1 className="titulo sm:text-[40px] sm:leading-[1.05]">{pro.nombre}</h1>
             <p className="mt-1 text-lg text-slate-700">{pro.especialidad?.profesion}{pro.titulo ? `, ${pro.titulo}` : ""}</p>
             <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[15px] text-slate-600">
               {pro.comuna && <span className="flex items-center gap-1 font-medium"><Ubicacion className="size-4" />{pro.comuna}</span>}
@@ -61,7 +61,7 @@ export default async function PerfilProfesional({ params }: PageProps<"/profesio
           </section>
           {pro.bio && (
             <section>
-              <h2 className="subtitulo text-xl">Sobre {pro.perfil?.nombre.split(" ")[0]}</h2>
+              <h2 className="subtitulo text-xl">Sobre {pro.nombre.split(" ")[0]}</h2>
               <p className="mt-3 max-w-[65ch] text-[17px] leading-relaxed whitespace-pre-line text-slate-700">{pro.bio}</p>
             </section>
           )}

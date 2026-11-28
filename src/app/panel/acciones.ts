@@ -1,6 +1,8 @@
 "use server";
 
+import { after } from "next/server";
 import { revalidatePath } from "next/cache";
+import { avisarDerivacion } from "@/lib/email";
 import { mensajeError } from "@/lib/errores";
 import { rutaSegura, volver } from "@/lib/redir";
 import { requerirProfesional } from "@/lib/sesion";
@@ -29,11 +31,12 @@ export async function guardarPerfil(formData: FormData) {
     .from("profesionales")
     .update({
       ...(especialidad && Number.isInteger(especialidad) ? { especialidad_id: especialidad } : {}),
-      titulo: txt(formData, "titulo"),
-      registro_sis: txt(formData, "registro_sis"),
-      bio: txt(formData, "bio"),
-      direccion: txt(formData, "direccion"),
-      comuna: txt(formData, "comuna"),
+      titulo: txt(formData, "titulo")?.slice(0, 120) ?? null,
+      registro_sis: txt(formData, "registro_sis")?.slice(0, 30) ?? null,
+      bio: txt(formData, "bio")?.slice(0, 2000) ?? null,
+      direccion: txt(formData, "direccion")?.slice(0, 200) ?? null,
+      comuna: txt(formData, "comuna")?.slice(0, 80) ?? null,
+      telefono_consulta: txt(formData, "telefono_consulta")?.slice(0, 30) ?? null,
       horas_min_cambio: Math.min(72, Math.max(0, num(formData, "horas_min_cambio") ?? 2)),
       publicado: publicar,
     })
@@ -225,4 +228,38 @@ export async function registrarAtencion(formData: FormData) {
   revalidatePath(ruta);
   revalidatePath("/panel");
   volver(ruta, "ok", "Atención registrada en el historial.");
+}
+
+// Derivaciones (CU-11) ----------------------------------------------------------
+export async function derivarPaciente(formData: FormData) {
+  const { supabase } = await requerirProfesional();
+  const paciente = String(formData.get("paciente") ?? "");
+  if (!UUID.test(paciente)) volver("/panel/pacientes", "error", "Paciente no válido.");
+  const ruta = `/panel/pacientes/${paciente}`;
+  const destino = String(formData.get("a_profesional") ?? "");
+  const motivo = txt(formData, "motivo_derivacion");
+  if (!UUID.test(destino)) volver(ruta, "error", "Elige a la colega a quien derivas.");
+  if (!motivo || motivo.length < 3) volver(ruta, "error", "Escribe el motivo de la derivación.");
+  const resumen = formData.get("compartir") === "on" ? txt(formData, "resumen") : null;
+  const { data, error } = await supabase.rpc("derivar_paciente", {
+    p_paciente: paciente,
+    p_a_profesional: destino,
+    p_motivo: motivo.slice(0, 1000),
+    p_resumen: resumen?.slice(0, 4000) ?? null,
+  });
+  if (error || !data) volver(ruta, "error", mensajeError(error));
+  const derivacion = (data as { id: string }).id;
+  after(() => avisarDerivacion(supabase, derivacion));
+  revalidatePath("/panel/derivaciones");
+  volver(ruta, "ok", "Derivación enviada. Avisamos por email a la paciente y a tu colega.");
+}
+
+export async function responderDerivacion(formData: FormData) {
+  const { supabase } = await requerirProfesional();
+  const id = String(formData.get("derivacion") ?? "");
+  const aceptar = formData.get("respuesta") === "aceptar";
+  const { error } = await supabase.rpc("responder_derivacion", { p_derivacion: UUID.test(id) ? id : null, p_aceptar: aceptar });
+  if (error) volver("/panel/derivaciones", "error", mensajeError(error));
+  revalidatePath("/panel/derivaciones");
+  volver("/panel/derivaciones", "ok", aceptar ? "Derivación aceptada. La paciente ya puede reservar contigo." : "Derivación rechazada.");
 }

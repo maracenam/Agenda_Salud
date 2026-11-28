@@ -12,7 +12,7 @@ type Cita = {
   estado: string;
   motivo: string | null;
   servicio: { nombre: string } | null;
-  profesional: { id: string; direccion: string | null; comuna: string | null; horas_min_cambio: number; perfil: { nombre: string; telefono: string | null } | null } | null;
+  profesional: { id: string; direccion: string | null; comuna: string | null; horas_min_cambio: number; nombre: string; telefono_consulta: string | null } | null;
 };
 
 function Acciones({ c, ahora }: { c: Cita; ahora: number }) {
@@ -29,7 +29,7 @@ function Acciones({ c, ahora }: { c: Cita; ahora: number }) {
     </div>
   ) : (
     <p className="max-w-64 text-sm text-slate-600">
-      Faltan menos de {horas} horas. Para moverla, llama a tu profesional{c.profesional?.perfil?.telefono ? ` al ${c.profesional.perfil.telefono}` : ""}.
+      Faltan menos de {horas} horas. Para moverla, llama a tu profesional{c.profesional?.telefono_consulta ? ` al ${c.profesional.telefono_consulta}` : ""}.
     </p>
   );
 }
@@ -39,11 +39,23 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
   const { id, supabase, perfil } = await requerirSesion();
   const { data } = await supabase
     .from("citas")
-    .select("id, inicio, estado, motivo, servicio:servicios(nombre), profesional:profesionales(id, direccion, comuna, horas_min_cambio, perfil:perfiles!profesionales_id_fkey(nombre, telefono))")
+    .select("id, inicio, estado, motivo, servicio:servicios(nombre), profesional:profesionales(id, direccion, comuna, horas_min_cambio, nombre, telefono_consulta)")
     .eq("paciente_id", id)
     .order("inicio", { ascending: false })
     .limit(100);
   const citas = (data ?? []) as unknown as Cita[];
+  // CU-11: derivaciones que recibió como paciente (aún no reservadas con la colega).
+  const { data: derivs } = await supabase
+    .from("derivaciones")
+    .select("id, motivo, estado, a_profesional, de:profesionales!derivaciones_de_profesional_fkey(nombre), a:profesionales!derivaciones_a_profesional_fkey(nombre, especialidad:especialidades(nombre))")
+    .eq("paciente_id", id)
+    .neq("estado", "rechazada")
+    .order("creado_en", { ascending: false })
+    .limit(10);
+  const conCita = new Set(citas.filter((c) => c.estado !== "cancelada").map((c) => c.profesional?.id));
+  const derivaciones = ((derivs ?? []) as unknown as {
+    id: string; motivo: string; a_profesional: string; de: { nombre: string } | null; a: { nombre: string; especialidad: { nombre: string } | null } | null;
+  }[]).filter((d) => !conCita.has(d.a_profesional));
   const ahora = instanteActual();
   const proximas = citas.filter((c) => new Date(c.inicio).getTime() >= ahora && c.estado === "confirmada").reverse();
   const pasadas = citas.filter((c) => !proximas.includes(c));
@@ -62,6 +74,23 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
       </div>
       <Aviso error={sp.error} ok={sp.ok} />
 
+      {derivaciones.length > 0 && (
+        <section aria-labelledby="derivaciones" className="rounded-xl border border-marca-200 bg-marca-50 p-5">
+          <h2 id="derivaciones" className="subtitulo">Te derivaron</h2>
+          <ul className="mt-3 space-y-3">
+            {derivaciones.map((d) => (
+              <li key={d.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-white px-4 py-3">
+                <div className="min-w-0">
+                  <p className="font-semibold">{d.a?.nombre}{d.a?.especialidad ? `, ${d.a.especialidad.nombre}` : ""}</p>
+                  <p className="text-sm text-slate-600">Te recomienda {d.de?.nombre}: {d.motivo}</p>
+                </div>
+                <Link href={`/profesionales/${d.a_profesional}`} className="btn">Reservar hora</Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {primera ? (
         <section aria-labelledby="proxima" className="grid overflow-hidden rounded-[20px] bg-marca-700 text-white md:grid-cols-[13rem_minmax(0,1fr)]">
           <div className="flex flex-row items-baseline gap-4 bg-noche px-6 py-5 md:flex-col md:items-start md:justify-center md:gap-1 md:py-8">
@@ -73,7 +102,7 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
             <div>
               <h2 id="proxima" className="text-[15px] font-semibold text-marca-200">Tu próxima hora</h2>
               <p className="cifra mt-1 text-[40px] leading-none tracking-[-0.03em]">{formatoHora(primera.inicio)}</p>
-              <p className="mt-3 text-lg font-semibold">{primera.servicio?.nombre} con {primera.profesional?.perfil?.nombre}</p>
+              <p className="mt-3 text-lg font-semibold">{primera.servicio?.nombre} con {primera.profesional?.nombre}</p>
               {(primera.profesional?.direccion || primera.profesional?.comuna) && (
                 <p className="text-[15px] text-marca-100">{[primera.profesional?.direccion, primera.profesional?.comuna].filter(Boolean).join(", ")}</p>
               )}
@@ -99,7 +128,7 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
               <li key={c.id} className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
                 <div>
                   <p className="font-semibold"><span className="mayus">{formatoFecha(c.inicio)}</span>, <span className="cifra">{formatoHora(c.inicio)}</span></p>
-                  <p className="text-[15px] text-slate-600">{c.servicio?.nombre} con {c.profesional?.perfil?.nombre}</p>
+                  <p className="text-[15px] text-slate-600">{c.servicio?.nombre} con {c.profesional?.nombre}</p>
                 </div>
                 <Acciones c={c} ahora={ahora} />
               </li>
@@ -126,7 +155,7 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
                   <tr key={c.id}>
                     <td className="py-3 pr-4 pl-5 whitespace-nowrap"><span className="mayus">{formatoFechaCorta(c.inicio)}</span></td>
                     <td className="px-4 py-3">{c.servicio?.nombre}</td>
-                    <td className="px-4 py-3 text-slate-700">{c.profesional?.perfil?.nombre}</td>
+                    <td className="px-4 py-3 text-slate-700">{c.profesional?.nombre}</td>
                     <td className="py-3 pr-5 pl-4 text-right"><EstadoCita estado={c.estado} /></td>
                   </tr>
                 ))}

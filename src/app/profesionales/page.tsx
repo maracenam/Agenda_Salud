@@ -12,7 +12,7 @@ type Fila = {
   titulo: string | null;
   comuna: string | null;
   bio: string | null;
-  perfil: { nombre: string } | null;
+  nombre: string;
   especialidad: { nombre: string; slug: string; profesion: string } | null;
   servicios: { id: string; nombre: string; precio: number | null }[];
 };
@@ -27,7 +27,7 @@ export default async function Profesionales({ searchParams }: PageProps<"/profes
   let consulta = supabase
     .from("profesionales")
     .select(
-      `id, titulo, comuna, bio, perfil:perfiles!profesionales_id_fkey(nombre), especialidad:especialidades${esp ? "!inner" : ""}(nombre, slug, profesion), servicios(id, nombre, precio)`,
+      `id, nombre, titulo, comuna, bio, especialidad:especialidades${esp ? "!inner" : ""}(nombre, slug, profesion), servicios(id, nombre, precio)`,
     )
     .eq("publicado", true)
     .eq("servicios.activo", true)
@@ -96,10 +96,10 @@ export default async function Profesionales({ searchParams }: PageProps<"/profes
               return (
                 <li key={p.id} className="group relative grid gap-x-8 gap-y-4 p-5 transition-colors hover:bg-marca-50/50 sm:p-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-center">
                   <div className="flex items-start gap-4">
-                    <span className="insignia size-14 text-lg">{iniciales(p.perfil?.nombre)}</span>
+                    <span className="insignia size-14 text-lg">{iniciales(p.nombre)}</span>
                     <div className="min-w-0">
                       <h2 className="text-xl leading-tight font-bold">
-                        <Link href={`/profesionales/${p.id}`} className="after:absolute after:inset-0 group-hover:text-marca-700">{p.perfil?.nombre}</Link>
+                        <Link href={`/profesionales/${p.id}`} className="after:absolute after:inset-0 group-hover:text-marca-700">{p.nombre}</Link>
                       </h2>
                       <p className="mt-0.5 text-[15px] text-slate-700">{p.especialidad?.nombre}{p.titulo ? `, ${p.titulo}` : ""}</p>
                       {p.comuna && (

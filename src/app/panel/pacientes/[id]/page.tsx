@@ -6,7 +6,7 @@ import { formatoFechaCorta, formatoFechaHora, hoyChile } from "@/lib/fechas";
 import { edadAnios } from "@/lib/calculos";
 import { datosDelModulo, moduloDe, type Campo, type Datos } from "@/lib/especialidades";
 import { requerirProfesional } from "@/lib/sesion";
-import { guardarFicha, registrarAtencion } from "../../acciones";
+import { derivarPaciente, guardarFicha, registrarAtencion } from "../../acciones";
 
 export const metadata = { title: "Ficha clínica" };
 
@@ -63,14 +63,17 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
   if (!/^[0-9a-f-]{36}$/i.test(pacienteId)) notFound();
   const { id, supabase } = await requerirProfesional();
 
-  const [{ data: paciente }, { data: ficha }, { data: atenciones }, { data: citas }, { data: pro }] = await Promise.all([
+  const [{ data: paciente }, { data: ficha }, { data: atenciones }, { data: citas }, { data: pro }, { data: colegas }] = await Promise.all([
     supabase.from("perfiles").select("id, nombre, email, rut, telefono, fecha_nacimiento").eq("id", pacienteId).maybeSingle(),
     supabase.from("fichas").select("*").eq("profesional_id", id).eq("paciente_id", pacienteId).maybeSingle(),
     supabase.from("atenciones").select("*").eq("profesional_id", id).eq("paciente_id", pacienteId).order("fecha", { ascending: false }),
     supabase.from("citas").select("id, inicio, estado, servicio:servicios(nombre)").eq("profesional_id", id).eq("paciente_id", pacienteId).order("inicio", { ascending: false }),
     supabase.from("profesionales").select("especialidad:especialidades(slug, nombre)").eq("id", id).single(),
+    supabase.from("profesionales").select("id, nombre, especialidad:especialidades(nombre)").eq("publicado", true).neq("id", id).order("nombre").limit(300),
   ]);
   if (!paciente || !citas?.length) notFound();
+  // RNF-28: cada apertura de la ficha queda en la bitácora de auditoría.
+  await supabase.rpc("registrar_lectura_ficha", { p_paciente: pacienteId });
 
   const f = ficha as Ficha | null;
   const esp = pro?.especialidad as unknown as { slug: string; nombre: string } | null;
@@ -226,6 +229,40 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
               <button className="btn w-full">Guardar ficha</button>
             </div>
           </form>
+
+          <details className="group rounded-xl border border-slate-200 bg-white">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+              <h2 className="subtitulo">Derivar a una colega</h2>
+              <span className="text-sm font-semibold text-marca-700 group-open:hidden">Abrir</span>
+              <span className="hidden text-sm font-semibold text-slate-600 group-open:inline">Cerrar</span>
+            </summary>
+            <form action={derivarPaciente} className="space-y-4 border-t border-slate-200 p-5">
+              <input type="hidden" name="paciente" value={pacienteId} />
+              <div>
+                <label className="etiqueta" htmlFor="a_profesional">Colega</label>
+                <select className="campo" id="a_profesional" name="a_profesional" required defaultValue="">
+                  <option value="" disabled>Elige a quién derivas</option>
+                  {((colegas ?? []) as unknown as { id: string; nombre: string; especialidad: { nombre: string } | null }[]).map((c) => (
+                    <option key={c.id} value={c.id}>{c.nombre}{c.especialidad ? `, ${c.especialidad.nombre}` : ""}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="etiqueta" htmlFor="motivo_derivacion">Motivo</label>
+                <textarea className="campo" id="motivo_derivacion" name="motivo_derivacion" rows={2} required minLength={3} maxLength={1000} />
+              </div>
+              <label className="flex items-start gap-3 text-[15px]">
+                <input type="checkbox" name="compartir" className="mt-1 size-4 accent-marca-700" />
+                <span>Compartir un resumen clínico con mi colega</span>
+              </label>
+              <div>
+                <label className="etiqueta" htmlFor="resumen">Resumen <span className="font-normal text-slate-500">(solo se envía si marcas la casilla)</span></label>
+                <textarea className="campo" id="resumen" name="resumen" rows={3} maxLength={4000} defaultValue={[f?.diagnostico, alergias ? `Alergias: ${alergias}` : null].filter(Boolean).join("\n")} />
+              </div>
+              <button className="btn w-full">Enviar derivación</button>
+              <p className="text-sm text-slate-600">La paciente recibe un email con el enlace para reservar con tu colega.</p>
+            </form>
+          </details>
 
           <section className="rounded-xl border border-slate-200 bg-white">
             <h2 className="subtitulo border-b border-slate-200 px-5 py-4">Sus citas</h2>

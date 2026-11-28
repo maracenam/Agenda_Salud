@@ -24,7 +24,7 @@ export default async function PerfilPro({ searchParams }: PageProps<"/panel/perf
       <div>
         <h1 className="titulo">Mi perfil profesional</h1>
         <p className="mt-1 max-w-[62ch] text-[15px] text-slate-600">
-          Es lo que ven tus pacientes antes de reservar. Tu nombre y teléfono se cambian en{" "}
+          Es lo que ven tus pacientes antes de reservar. Tu nombre se cambia en{" "}
           <Link className="enlace" href="/cuenta">Mis datos</Link>.
         </p>
       </div>
@@ -77,7 +77,12 @@ export default async function PerfilPro({ searchParams }: PageProps<"/panel/perf
               </div>
               <div>
                 <label className="etiqueta" htmlFor="comuna">Comuna</label>
-                <input className="campo" id="comuna" name="comuna" defaultValue={pro?.comuna ?? ""} placeholder="Providencia" />
+                <input className="campo" id="comuna" name="comuna" maxLength={80} defaultValue={pro?.comuna ?? ""} placeholder="Providencia" />
+              </div>
+              <div>
+                <label className="etiqueta" htmlFor="telefono_consulta">Teléfono de la consulta <span className="font-normal text-slate-500">(opcional)</span></label>
+                <input className="campo" id="telefono_consulta" name="telefono_consulta" type="tel" maxLength={30} defaultValue={pro?.telefono_consulta ?? ""} placeholder="+56 2 2345 6789" aria-describedby="tel-ayuda" />
+                <p id="tel-ayuda" className="mt-1.5 text-sm text-slate-600">Lo ven tus pacientes cuando ya no pueden cambiar la hora por la web.</p>
               </div>
               </div>
             </fieldset>
