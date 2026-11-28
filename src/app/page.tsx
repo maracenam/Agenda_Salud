@@ -160,7 +160,6 @@ const SEGURIDAD_PRO = [
   { tema: "Si se pierde", antes: "Se pierde con el equipo o con un archivo borrado.", ahora: "Queda en la nube y no se puede borrar, como pide la Ley 20.584 por 15 años." },
   { tema: "Si se corrige", antes: "El dato anterior desaparece.", ahora: "La versión anterior queda guardada, con fecha." },
   { tema: "Quién la abrió", antes: "No hay forma de saberlo.", ahora: "Cada apertura y cambio queda en una bitácora que nadie puede editar." },
-  { tema: "En tránsito", antes: "Viaja por chats y correos personales.", ahora: "Viaja cifrada por HTTPS y se guarda cifrada." },
 ];
 
 const FICHAS = [
@@ -309,10 +308,7 @@ export default async function Inicio() {
               <p className="text-sm text-slate-600">Nombres y horas de muestra.</p>
             </div>
           </div>
-          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link href="/seguridad" className="btn-sec min-h-12 px-5 text-base">Cómo protegemos los datos</Link>
-            <p className="text-[15px] text-slate-600">Probada con 26 ataques del OWASP Top 10: todos rechazados.</p>
-          </div>
+          <Link href="/seguridad" className="btn-sec mt-10 min-h-12 px-5 text-base">Cómo protegemos los datos</Link>
         </div>
       </section>
 

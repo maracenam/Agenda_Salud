@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Seguridad de los datos",
-  description: "Cómo Agenda Salud protege los datos clínicos de tus pacientes: acceso exclusivo, bitácora, conservación por 15 años, cifrado, pruebas de seguridad y cumplimiento de la ley chilena.",
+  description: "Cómo Agenda Salud protege los datos clínicos de tus pacientes: acceso exclusivo, bitácora, conservación por 15 años y cumplimiento de la ley chilena.",
 };
 
 /*
@@ -24,18 +24,6 @@ const LEYES = [
   { ley: "Ley 20.584", pide: "Que la ficha sea reservada y se conserve al menos 15 años.", hace: "Solo tú accedes a tus fichas, y la plataforma no permite borrar fichas ni atenciones, ni siquiera al eliminar una cuenta." },
   { ley: "Decreto 41 de 2012", pide: "Que cada registro tenga autor y fecha, y que una corrección no borre lo anterior.", hace: "La base de datos pone tu identidad y la hora en cada registro. Las atenciones no se sobrescriben y cada corrección de la ficha guarda la versión anterior." },
   { ley: "Ley 21.719", pide: "Medidas de seguridad para los datos sensibles, y que quien los procesa por ti lo haga solo para ese fin.", hace: "Tú eres responsable de los datos; Agenda Salud los procesa por cuenta tuya, solo para darte el servicio." },
-];
-
-const PRUEBAS = [
-  { cifra: "26", texto: "ataques basados en el OWASP Top 10 lanzados contra la plataforma. Todos rechazados." },
-  { cifra: "12", texto: "hallazgos encontrados en esas pruebas y corregidos antes de abrir la plataforma." },
-  { cifra: "0", texto: "vulnerabilidades conocidas en las dependencias del código." },
-];
-
-const PROVEEDORES = [
-  { nombre: "Supabase", uso: "Base de datos y cuentas", donde: "São Paulo, Brasil" },
-  { nombre: "Vercel", uso: "Servidores de la página", donde: "São Paulo, Brasil" },
-  { nombre: "Resend", uso: "Emails de confirmación y recordatorio", donde: "Estados Unidos" },
 ];
 
 function Bloque({ id, titulo, children }: { id: string; titulo: string; children: React.ReactNode }) {
@@ -68,15 +56,6 @@ export default function Seguridad() {
         Una ficha clínica es un dato sensible, y como profesional respondes por ella. Aquí está, sin letra chica, cómo la resguarda Agenda Salud y qué parte de la ley cubre por ti.
       </p>
 
-      <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-3">
-        {PRUEBAS.map((p) => (
-          <li key={p.texto} className="bg-white p-6">
-            <p className="cifra text-[44px] leading-none tracking-[-0.03em] text-marca-700">{p.cifra}</p>
-            <p className="mt-3 text-[15px] text-slate-700">{p.texto}</p>
-          </li>
-        ))}
-      </ul>
-
       <div className="mt-12">
         <Bloque id="quien" titulo="Solo tú ves tus fichas">
           <Filas filas={QUIEN_VE.map((x) => ({ a: x.quien, b: x.ve }))} />
@@ -105,45 +84,6 @@ export default function Seguridad() {
             Cada vez que se abre una ficha, se registra una atención, se corrige un dato, se cambia una cita o se deriva a una paciente, queda una línea en la bitácora con quién lo hizo y a qué hora.
           </p>
           <p>Esa bitácora solo crece: nadie puede editarla ni borrar líneas desde la plataforma.</p>
-        </Bloque>
-
-        <Bloque id="cifrado" titulo="Cifrado y página protegida">
-          <p>
-            Todo viaja cifrado por HTTPS y la base de datos guarda la información cifrada en sus discos.
-          </p>
-          <p>
-            La página usa cabeceras de seguridad que impiden ejecutar código de terceros, incrustarla en otros sitios o engañar al navegador. No hay publicidad ni rastreadores en las pantallas con datos de pacientes.
-          </p>
-        </Bloque>
-
-        <Bloque id="pruebas" titulo="Probada como lo haría un atacante">
-          <p>
-            Antes de abrir la plataforma la atacamos nosotros mismos, siguiendo el OWASP Top 10, la lista de fallas de seguridad web más comunes: intentamos leer fichas ajenas, hacernos pasar por otra cuenta, falsificar sesiones, inyectar código y acaparar horas. Además, cada regla de acceso de la base de datos tiene pruebas automáticas por cada tipo de usuario.
-          </p>
-        </Bloque>
-
-        <Bloque id="donde" titulo="Dónde se guardan los datos">
-          <p>Estos son los proveedores que usamos. Cada uno procesa los datos solo para prestar su servicio.</p>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[28rem] border-y border-slate-200 text-left text-[16px]">
-              <thead>
-                <tr className="border-b border-slate-200 text-sm text-slate-600">
-                  <th scope="col" className="py-2 pr-4 font-semibold">Proveedor</th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">Para qué</th>
-                  <th scope="col" className="py-2 font-semibold">Dónde</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {PROVEEDORES.map((p) => (
-                  <tr key={p.nombre}>
-                    <th scope="row" className="py-2.5 pr-4 font-semibold text-tinta">{p.nombre}</th>
-                    <td className="py-2.5 pr-4">{p.uso}</td>
-                    <td className="py-2.5">{p.donde}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </Bloque>
 
         <Bloque id="pacientes" titulo="Si eres paciente">
