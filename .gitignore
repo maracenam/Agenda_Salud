@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .taste-skill/
+
+# pruebas
+/test-results/
+/playwright-report/

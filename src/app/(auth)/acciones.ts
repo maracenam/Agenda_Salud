@@ -52,7 +52,14 @@ export async function registrar(formData: FormData) {
     },
   });
   if (error) {
-    const msg = error.code === "user_already_exists" ? "Ya existe una cuenta con ese email." : error.message;
+    const msg =
+      error.code === "user_already_exists"
+        ? "Ya existe una cuenta con ese email."
+        : error.code === "weak_password"
+          ? "Elige una contraseña más segura: al menos 8 caracteres, que no sea fácil de adivinar."
+          : error.code === "over_email_send_rate_limit" || error.status === 429
+            ? "Demasiados intentos. Espera unos minutos e intenta de nuevo."
+            : "No pudimos crear la cuenta. Revisa los datos e intenta de nuevo.";
     volver(base, "error", msg);
   }
   if (!data.session) {
