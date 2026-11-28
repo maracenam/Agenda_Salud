@@ -177,18 +177,20 @@ export default async function FichaPaciente({ params, searchParams }: PageProps<
                       <p className="mayus font-semibold">{formatoFechaCorta(a.fecha)}</p>
                       {a.motivo && <p className="text-sm text-slate-600">{a.motivo}</p>}
                     </div>
-                    <dl className="space-y-2 text-[15px]">
-                      {modulo.atencion.some((c) => datosAtenciones[i][c.clave] != null) && (
-                        <div className="flex flex-wrap gap-x-5 gap-y-1">
-                          {modulo.atencion.filter((c) => datosAtenciones[i][c.clave] != null).map((c) => (
-                            <div key={c.clave} className="flex gap-1.5"><dt className="text-sm font-semibold text-slate-600">{c.etiqueta}</dt><dd className="cifra">{valorLegible(c, datosAtenciones[i][c.clave])}</dd></div>
-                          ))}
-                        </div>
-                      )}
+                    <div className="space-y-2 text-[15px]">
+                    {modulo.atencion.some((c) => datosAtenciones[i][c.clave] != null) && (
+                      <dl className="flex flex-wrap gap-x-5 gap-y-1">
+                        {modulo.atencion.filter((c) => datosAtenciones[i][c.clave] != null).map((c) => (
+                          <div key={c.clave} className="flex gap-1.5"><dt className="text-sm font-semibold text-slate-600">{c.etiqueta}</dt><dd className="cifra">{valorLegible(c, datosAtenciones[i][c.clave])}</dd></div>
+                        ))}
+                      </dl>
+                    )}
+                    <dl className="space-y-2">
                       {a.diagnostico && <div><dt className="text-sm font-semibold text-slate-600">Diagnóstico</dt><dd>{a.diagnostico}</dd></div>}
                       {a.indicaciones && <div><dt className="text-sm font-semibold text-slate-600">Indicaciones</dt><dd className="whitespace-pre-line">{a.indicaciones}</dd></div>}
                       {a.notas && <div><dt className="text-sm font-semibold text-slate-600">Evolución</dt><dd className="whitespace-pre-line text-slate-700">{a.notas}</dd></div>}
                     </dl>
+                    </div>
                   </li>
                 ))}
               </ol>

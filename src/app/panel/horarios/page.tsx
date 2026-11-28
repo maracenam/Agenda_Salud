@@ -54,12 +54,12 @@ export default async function Horarios({ searchParams }: PageProps<"/panel/horar
                   const delDia = lista.filter((h) => h.dia_semana === d);
                   return (
                     <li key={d} className="flex items-center border-t border-slate-200 first:border-t-0">
-                      <span className={`w-24 shrink-0 py-3 text-[15px] font-semibold ${delDia.length ? "" : "text-slate-400"}`}>{DIAS[d]}</span>
+                      <span className={`w-24 shrink-0 py-3 text-[15px] font-semibold ${delDia.length ? "" : "text-slate-500"}`}>{DIAS[d]}</span>
                       <div
                         className="relative h-12 flex-1"
                         style={{ backgroundImage: `repeating-linear-gradient(to right, var(--color-slate-200) 0 1px, transparent 1px ${100 / (marcas.length - 1)}%)` }}
                       >
-                        {delDia.length === 0 && <span className="absolute inset-y-0 left-3 flex items-center text-sm text-slate-400">No atiende</span>}
+                        {delDia.length === 0 && <span className="absolute inset-y-0 left-3 flex items-center text-sm text-slate-500">No atiende</span>}
                         {delDia.map((h) => (
                           <form
                             key={h.id}

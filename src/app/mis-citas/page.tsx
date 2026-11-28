@@ -100,14 +100,14 @@ export default async function MisCitas({ searchParams }: PageProps<"/mis-citas">
           </div>
           <div className="flex flex-col gap-5 px-6 py-6 sm:px-8 md:py-8">
             <div>
-              <h2 id="proxima" className="text-[15px] font-semibold text-marca-200">Tu próxima hora</h2>
+              <h2 id="proxima" className="text-[15px] font-semibold text-white">Tu próxima hora</h2>
               <p className="cifra mt-1 text-[40px] leading-none tracking-[-0.03em]">{formatoHora(primera.inicio)}</p>
               <p className="mt-3 text-lg font-semibold">{primera.servicio?.nombre} con {primera.profesional?.nombre}</p>
               {(primera.profesional?.direccion || primera.profesional?.comuna) && (
-                <p className="text-[15px] text-marca-100">{[primera.profesional?.direccion, primera.profesional?.comuna].filter(Boolean).join(", ")}</p>
+                <p className="text-[15px] text-white">{[primera.profesional?.direccion, primera.profesional?.comuna].filter(Boolean).join(", ")}</p>
               )}
             </div>
-            <div className="[&_.btn-peligro]:text-[#ffb4a8] [&_.btn-peligro]:hover:bg-white/10 [&_.btn-sec]:border-white/30 [&_.btn-sec]:bg-transparent [&_.btn-sec]:text-white [&_.btn-sec]:hover:bg-white/10 [&_p]:text-marca-100">
+            <div className="[&_.btn-peligro]:text-white [&_.btn-peligro]:underline [&_.btn-peligro]:hover:bg-white/10 [&_.btn-sec]:border-white/30 [&_.btn-sec]:bg-transparent [&_.btn-sec]:text-white [&_.btn-sec]:hover:bg-white/10 [&_p]:text-white">
               <Acciones c={primera} ahora={ahora} />
             </div>
           </div>

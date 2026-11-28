@@ -246,7 +246,7 @@ export default async function Inicio() {
           </div>
           <div className="bg-marca-700 p-8 text-white sm:p-12">
             <h2 className="text-4xl sm:text-5xl">Atiendo pacientes</h2>
-            <p className="mt-3 max-w-[40ch] text-lg text-marca-100">Publica tus horas, recibe reservas, lleva la ficha de cada paciente y deriva a colegas de otras especialidades.</p>
+            <p className="mt-3 max-w-[40ch] text-lg text-white">Publica tus horas, recibe reservas, lleva la ficha de cada paciente y deriva a colegas de otras especialidades.</p>
             <Link href="/registro?rol=profesional" className="mt-8 inline-flex min-h-13 items-center rounded-full bg-white px-6 text-[17px] font-semibold text-tinta transition-colors hover:bg-amarillo">
               Crear mi agenda
             </Link>

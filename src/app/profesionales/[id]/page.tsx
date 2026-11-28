@@ -82,8 +82,8 @@ export default async function PerfilProfesional({ params }: PageProps<"/profesio
               <dl className="mt-2 divide-y divide-slate-200 border-y border-slate-200 text-[15px]">
                 {dias.map((d) => (
                   <div key={d} className="flex justify-between gap-4 py-2">
-                    <dt className={porDia.has(d) ? "font-medium" : "text-slate-400"}>{DIAS[d]}</dt>
-                    <dd className={`text-right ${porDia.has(d) ? "" : "text-slate-400"}`}>
+                    <dt className={porDia.has(d) ? "font-medium" : "text-slate-500"}>{DIAS[d]}</dt>
+                    <dd className={`text-right ${porDia.has(d) ? "" : "text-slate-500"}`}>
                       {porDia.has(d) ? porDia.get(d)!.map((t) => <span key={t} className="block">{t}</span>) : "No atiende"}
                     </dd>
                   </div>

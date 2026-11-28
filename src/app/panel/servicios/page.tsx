@@ -69,7 +69,7 @@ export default async function Servicios({ searchParams }: PageProps<"/panel/serv
                     {s.descripcion && <span className="block truncate text-sm text-slate-600">{s.descripcion}</span>}
                   </span>
                   <span className="cifra text-[15px] text-slate-700 max-sm:hidden">{s.duracion_min} min</span>
-                  <span className="cifra text-right text-[15px] max-sm:hidden">{s.precio != null ? formatoPrecio(s.precio) : <span className="font-normal text-slate-400">Sin precio</span>}</span>
+                  <span className="cifra text-right text-[15px] max-sm:hidden">{s.precio != null ? formatoPrecio(s.precio) : <span className="font-normal text-slate-500">Sin precio</span>}</span>
                   <span className="text-right text-sm font-semibold">
                     {s.activo ? <span className="text-marca-700 group-open:hidden">Editar</span> : <span className="rounded-md bg-slate-100 px-2 py-1 text-slate-600 group-open:hidden">Oculta</span>}
                     <span className="hidden text-slate-600 group-open:inline">Cerrar</span>

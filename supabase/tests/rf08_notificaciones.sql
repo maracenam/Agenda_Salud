@@ -21,7 +21,7 @@ select lives_ok(format($$ select reprogramar_cita(%L, %L) $$, :'cita', (:'l9'::t
 select is((select recordatorio_enviado_en from citas where id = :'cita'), null, 'al cambiar la hora, el recordatorio se vuelve a enviar');
 
 select pg_temp.como_admin();
-select is((select count(*)::int from citas where estado = 'confirmada' and recordatorio_enviado_en is null and inicio > now()), 1, 'el cron encuentra la cita pendiente de recordatorio');
+select ok(exists(select 1 from citas where id = :'cita' and estado = 'confirmada' and recordatorio_enviado_en is null and inicio > now()), 'el cron encuentra la cita pendiente de recordatorio');
 
 select * from finish();
 rollback;

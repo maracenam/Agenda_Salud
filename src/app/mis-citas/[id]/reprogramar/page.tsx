@@ -50,7 +50,7 @@ export default async function Reprogramar({ params, searchParams }: PageProps<"/
         <aside className="rounded-xl border border-slate-200 bg-white p-5">
           <p className="text-sm font-semibold text-slate-600">Hora actual</p>
           <p className="mayus mt-1 font-semibold">{formatoFecha(cita.inicio)}</p>
-          <p className="cifra text-[32px] leading-tight text-slate-400 line-through decoration-2">{formatoHora(cita.inicio)}</p>
+          <p className="cifra text-[32px] leading-tight text-slate-500 line-through decoration-2">{formatoHora(cita.inicio)}</p>
           <dl className="mt-4 space-y-3 border-t border-slate-200 pt-4 text-[15px]">
             <div>
               <dt className="text-sm font-semibold text-slate-600">Prestación</dt>
