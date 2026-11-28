@@ -78,7 +78,7 @@ function Pie() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <p className="contenedor py-4 text-sm text-marca-200">Datos clínicos protegidos conforme a la Ley 21.719.</p>
+        <p className="contenedor py-4 text-sm text-marca-200"><Link className="hover:text-white hover:underline" href="/seguridad">Seguridad y privacidad de tus datos</Link></p>
       </div>
     </footer>
   );

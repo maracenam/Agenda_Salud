@@ -126,6 +126,34 @@ function CorreoRecordatorio() {
   );
 }
 
+// Muestra de la bitácora: cada acceso y cambio en una ficha queda registrado y no se puede borrar.
+const BITACORA = [
+  { h: "10:32", quien: "Camila Rojas, matrona", que: "abrió la ficha" },
+  { h: "10:41", quien: "Camila Rojas, matrona", que: "registró una atención" },
+  { h: "10:44", quien: "Camila Rojas, matrona", que: "corrigió alergias (la versión anterior se guarda)" },
+  { h: "16:05", quien: "Tomás Vidal, kinesiólogo", que: "recibió una derivación" },
+];
+
+function Bitacora() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white" role="img" aria-label="Bitácora de una ficha clínica con datos de ejemplo: quién la abrió, qué cambió y a qué hora">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-5 py-3.5">
+        <p className="font-titulo text-xl">Bitácora de la ficha</p>
+        <p className="cifra text-sm text-slate-600">Lun 30 nov</p>
+      </div>
+      <ol className="divide-y divide-slate-200">
+        {BITACORA.map((b) => (
+          <li key={b.h} className="grid grid-cols-[3.5rem_minmax(0,1fr)] gap-3 px-5 py-3.5 text-[15px]">
+            <span className="cifra font-semibold text-marca-700">{b.h}</span>
+            <span><span className="font-semibold">{b.quien}</span> {b.que}</span>
+          </li>
+        ))}
+      </ol>
+      <p className="border-t border-slate-200 bg-marca-50 px-5 py-3 text-sm text-slate-700">Solo se agrega. Nadie puede editar ni borrar estas líneas.</p>
+    </div>
+  );
+}
+
 const FICHAS = [
   { esp: "Matronería", campos: "FUR, edad gestacional, fórmula obstétrica y último PAP" },
   { esp: "Nutrición", campos: "Peso por control, IMC y avance hacia la meta" },
@@ -230,6 +258,43 @@ export default async function Inicio() {
             <p className="mt-5 max-w-[44ch] text-lg text-slate-700">
               Con la hora, el lugar y un enlace para cambiarla. Si cancela, la hora vuelve a quedar libre en tu agenda.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Seguridad de los datos: la bitácora real de una ficha. */}
+      <section aria-labelledby="seguridad" className="border-t border-slate-200 bg-white py-20 sm:py-28">
+        <div className="contenedor grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <h2 id="seguridad" className="max-w-[15ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
+              Tu ficha la ve tu profesional. Nadie más.
+            </h2>
+            <p className="mt-5 max-w-[46ch] text-lg text-slate-700">
+              Los datos de salud son datos sensibles, y así los tratamos: cada profesional ve solo a sus pacientes, cada acceso queda registrado y la ficha se conserva como exige la ley.
+            </p>
+            <dl className="mt-6 divide-y divide-slate-200 border-y border-slate-200">
+              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
+                <dt className="font-semibold">Acceso</dt>
+                <dd className="text-[15px] text-slate-700">Reglas en la base de datos impiden que una cuenta lea fichas, citas o datos de contacto que no le corresponden.</dd>
+              </div>
+              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
+                <dt className="font-semibold">Historial</dt>
+                <dd className="text-[15px] text-slate-700">Las atenciones no se sobrescriben. Si se corrige la ficha, la versión anterior queda guardada.</dd>
+              </div>
+              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
+                <dt className="font-semibold">Conservación</dt>
+                <dd className="text-[15px] text-slate-700">La ficha no se puede borrar, para cumplir los 15 años que pide la Ley 20.584.</dd>
+              </div>
+              <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
+                <dt className="font-semibold">Conexión</dt>
+                <dd className="text-[15px] text-slate-700">Todo viaja cifrado por HTTPS y los datos se guardan cifrados.</dd>
+              </div>
+            </dl>
+            <Link href="/seguridad" className="btn-sec mt-8 min-h-12 px-5 text-base">Cómo protegemos tus datos</Link>
+          </div>
+          <div className="space-y-3">
+            <Bitacora />
+            <p className="text-sm text-slate-600">Nombres y horas de muestra.</p>
           </div>
         </div>
       </section>
