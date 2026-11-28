@@ -117,3 +117,8 @@ export function minutosChile(d: Date | string): number {
   const m = Number(partes.find((p) => p.type === "minute")?.value ?? 0);
   return h * 60 + m;
 }
+
+/** Instante actual en milisegundos. Los Server Components se renderizan una vez por request. */
+export function instanteActual(): number {
+  return Date.now();
+}

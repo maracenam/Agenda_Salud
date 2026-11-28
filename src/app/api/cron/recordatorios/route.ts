@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { crearClienteAdmin } from "@/lib/supabase/admin";
 import { enviarAvisos, SELECT_CITA, type CitaAviso } from "@/lib/email";
+import { autorizacionValida } from "@/lib/secreto";
 
 export const maxDuration = 60;
 
@@ -9,12 +10,11 @@ export const maxDuration = 60;
  * que aún no lo haya recibido. Vercel Cron lo llama una vez al día (ver vercel.json).
  */
 export async function GET(request: NextRequest) {
-  const secreto = process.env.CRON_SECRET;
-  if (!secreto || request.headers.get("authorization") !== `Bearer ${secreto}`) {
+  if (!autorizacionValida(request.headers.get("authorization"), process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
   const admin = crearClienteAdmin();
-  if (!admin) return NextResponse.json({ error: "Falta SUPABASE_SECRET_KEY" }, { status: 500 });
+  if (!admin) return NextResponse.json({ error: "Servicio no configurado" }, { status: 500 });
 
   const ahora = new Date();
   const limite = new Date(ahora.getTime() + 36 * 3600_000);
@@ -26,7 +26,10 @@ export async function GET(request: NextRequest) {
     .gt("inicio", new Date(ahora.getTime() + 2 * 3600_000).toISOString())
     .lte("inicio", limite.toISOString())
     .limit(500);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("Cron de recordatorios", error);
+    return NextResponse.json({ error: "No se pudieron leer las citas" }, { status: 500 });
+  }
 
   let enviados = 0;
   for (const cita of (data ?? []) as unknown as CitaAviso[]) {

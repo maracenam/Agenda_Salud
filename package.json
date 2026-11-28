@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run tests/unit",
+    "test:db": "npx supabase test db",
+    "test:integracion": "vitest run tests/integracion",
+    "test:seguridad": "vitest run tests/seguridad",
+    "test:e2e": "next build && playwright test",
+    "test:todo": "npm run lint && npm run typecheck && npm test && npm run test:db && npm run test:integracion && npm run test:seguridad && npm run test:e2e"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -17,13 +24,17 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/turbopack": "4.3.3",
-    "@types/node": "^20",
+    "@types/node": "^22.20.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^5.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.1.2"
   }
 }

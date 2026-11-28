@@ -7,16 +7,16 @@
 web
 
 ## Users
-- **Matronas y matrones independientes en Chile** (usuaria de referencia: Paula Verdugo, matrona independiente y cofundadora). Usan la vista profesional: agenda del día y de la semana, fichas clínicas, horarios y prestaciones. La revisan entre consultas, a menudo desde el celular o un computador de consulta.
-- **Pacientes** (mujeres y personas gestantes que buscan control ginecológico, de embarazo, PAP, anticoncepción). Usan la vista de paciente: buscan matrona, reservan, reprograman o cancelan, casi siempre desde el celular.
+- **Profesionales de la salud independientes en Chile** (desde 2026-11-28, por decisión de Matías): matronería, medicina general, psicología, nutrición, kinesiología, odontología, fonoaudiología, terapia ocupacional, enfermería y podología. Usuaria de referencia: Paula Verdugo, matrona independiente y cofundadora. Usan la vista profesional: agenda del día y de la semana, fichas clínicas, horarios y prestaciones. La revisan entre consultas, a menudo desde el celular o un computador de consulta.
+- **Pacientes** de cualquier edad que buscan una profesional independiente (control de embarazo, psicoterapia, kinesiología, nutrición, etc.). Usan la vista de paciente: buscan profesional, reservan, reprograman o cancelan, casi siempre desde el celular.
 
 Dos vistas confirmadas por Matías (2026-11-26): vista de paciente y vista de profesional de la salud.
 
 ## Product Purpose
-Reemplazar la libreta, el Excel y el WhatsApp de ida y vuelta de una consulta independiente por una agenda online, ficha clínica digital y recordatorios automáticos. Éxito: la matrona deja de coordinar horas a mano, no tiene dobles citas y baja la inasistencia; la paciente reserva sola en minutos.
+Reemplazar la libreta, el Excel y el WhatsApp de ida y vuelta de una consulta independiente por una agenda online, ficha clínica digital y recordatorios automáticos. Éxito: la profesional deja de coordinar horas a mano, no tiene dobles citas y baja la inasistencia; la paciente reserva sola en minutos.
 
 ## Positioning
-Propuesto por Claude y delegado por Matías (pendiente de validar): es la agenda hecha para matronas independientes en Chile, no un software médico genérico adaptado. Su ficha habla el idioma de la especialidad (antecedentes gineco-obstétricos, FUR, PAP, controles) y la reserva es tan simple como pedir hora por mensaje. Más adelante: red de derivación entre colegas y multi-especialidad.
+Propuesto por Claude y delegado por Matías (pendiente de validar): es la agenda para profesionales de la salud independientes en Chile donde cada ficha habla el idioma de su especialidad (FUR y PAP en matronería, IMC en nutrición, EVA en kinesiología) en vez de un formulario médico genérico, con una red de derivación entre colegas de distintas profesiones. La reserva es tan simple como pedir hora por mensaje.
 
 ## Operating Context
 - Consulta independiente o centro pequeño (<10 profesionales), en Chile, horario de Chile (America/Santiago).
@@ -25,8 +25,8 @@ Propuesto por Claude y delegado por Matías (pendiente de validar): es la agenda
 - Datos clínicos protegidos conforme a la Ley 21.719.
 
 ## Capabilities and Constraints
-- MVP construido: RF-01 a RF-08 (registro y roles, perfil público, horarios, prestaciones con duración y precio, reserva sin dobles citas, reprogramar y cancelar, ficha clínica, recordatorios).
-- Fuera del MVP: indicadores (RF-09), red de derivación, pacientes sin cuenta, migración desde Excel.
+- Construido: RF-01 a RF-09 (registro y roles, perfil público, horarios, prestaciones, reserva sin dobles citas, reprogramar y cancelar, ficha clínica con módulo por especialidad, recordatorios, indicadores) y red de derivación entre colegas.
+- Pendiente: pacientes sin cuenta, migración desde Excel, 2FA, CAPTCHA.
 - Stack existente: Next.js 16 + Supabase + Vercel, Tailwind 4.
 - Idioma: español de Chile.
 
@@ -39,11 +39,11 @@ Nombre: Agenda Salud. No hay logo, colores ni tono previos; Matías pidió crear
 - Planes de precio aparecen en documentos de 2025 ($9.990 / $19.990 / $24.990 CLP) pero no están confirmados para la web.
 
 ## Product Principles
-1. Hecha para la especialidad: vocabulario y campos de matronería, no de software médico genérico.
+1. Hecha para cada especialidad: vocabulario y campos propios de cada profesión, no un formulario médico genérico.
 2. La paciente reserva sola, desde el celular, sin crear fricción.
-3. La matrona ve su día de un vistazo, entre una consulta y otra.
+3. La profesional ve su día de un vistazo, entre una consulta y otra.
 4. Confianza clínica: datos protegidos, información verificable de la profesional.
-5. Calidez sin infantilizar: es salud de mujeres adultas, no una app de bebés.
+5. Calidez sin infantilizar: es salud de personas adultas, no una app de juguete.
 
 ## Accessibility & Inclusion
-Uso frecuente en celular y por pacientes de todas las edades: contraste AA, objetivos táctiles amplios, lenguaje claro. Lenguaje inclusivo donde aplique ("matronas y matrones", "personas gestantes").
+Uso frecuente en celular y por pacientes de todas las edades: contraste AA, objetivos táctiles amplios, lenguaje claro. Lenguaje inclusivo donde aplique ("matronas y matrones", "personas gestantes"). Textos neutros a la profesión fuera de cada módulo.

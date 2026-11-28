@@ -13,7 +13,7 @@ const instrument = Instrument_Sans({ variable: "--font-instrument", subsets: ["l
 
 export const metadata: Metadata = {
   title: { default: "Agenda Salud", template: "%s | Agenda Salud" },
-  description: "Agenda online, ficha clínica y recordatorios para matronas y matrones independientes en Chile.",
+  description: "Agenda online, ficha clínica por especialidad y recordatorios para profesionales de la salud independientes en Chile.",
 };
 
 const enlaceNav = "rounded-full px-3 py-2 font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-tinta";
@@ -28,7 +28,7 @@ async function Encabezado() {
           <Marca />
         </Link>
         <nav className="-mr-3 flex flex-wrap items-center gap-0.5 text-[15px]">
-          <Link href="/profesionales" className={enlaceNav}>Buscar matrona</Link>
+          <Link href="/profesionales" className={enlaceNav}>Buscar profesional</Link>
           {sesion ? (
             <>
               {esPro ? (
@@ -43,7 +43,7 @@ async function Encabezado() {
             </>
           ) : (
             <>
-              <Link href="/registro?rol=profesional" className={`${enlaceNav} hidden sm:block`}>Soy matrona</Link>
+              <Link href="/registro?rol=profesional" className={`${enlaceNav} hidden sm:block`}>Soy profesional</Link>
               <Link href="/ingresar" className={enlaceNav}>Ingresar</Link>
               <Link href="/registro" className="btn mr-3 ml-2 min-h-10">Crear cuenta</Link>
             </>
@@ -60,17 +60,17 @@ function Pie() {
       <div className="contenedor grid gap-8 py-10 text-[15px] sm:grid-cols-[1.4fr_1fr_1fr]">
         <div className="space-y-3">
           <Marca claro />
-          <p className="max-w-[36ch] text-marca-100">Agenda, ficha clínica y recordatorios para matronas y matrones independientes en Chile.</p>
+          <p className="max-w-[36ch] text-marca-100">Agenda, ficha clínica y recordatorios para profesionales de la salud independientes en Chile.</p>
         </div>
         <div>
           <p className="font-semibold">Pacientes</p>
           <ul className="mt-2 space-y-1.5 text-marca-100">
-            <li><Link className="hover:text-white hover:underline" href="/profesionales">Buscar matrona</Link></li>
+            <li><Link className="hover:text-white hover:underline" href="/profesionales">Buscar profesional</Link></li>
             <li><Link className="hover:text-white hover:underline" href="/mis-citas">Mis citas</Link></li>
           </ul>
         </div>
         <div>
-          <p className="font-semibold">Matronas</p>
+          <p className="font-semibold">Profesionales</p>
           <ul className="mt-2 space-y-1.5 text-marca-100">
             <li><Link className="hover:text-white hover:underline" href="/registro?rol=profesional">Crear mi agenda</Link></li>
             <li><Link className="hover:text-white hover:underline" href="/ingresar">Ingresar al panel</Link></li>

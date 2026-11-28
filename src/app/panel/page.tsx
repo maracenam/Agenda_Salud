@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Aviso, EstadoCita } from "@/components/aviso";
 import { cancelarCita } from "@/lib/acciones-citas";
-import { esFechaValida, fechaISO, formatoDia, formatoHora, hoyChile, inicioDiaChile, inicioSemana, minutosChile, sumarDias } from "@/lib/fechas";
+import { esFechaValida, fechaISO, formatoDia, formatoHora, hoyChile, inicioDiaChile, inicioSemana, minutosChile, sumarDias, instanteActual } from "@/lib/fechas";
 import { requerirProfesional } from "@/lib/sesion";
 import { marcarCita } from "./acciones";
 import { Flecha, FlechaAtras } from "@/components/marca";
@@ -60,7 +60,7 @@ export default async function Agenda({ searchParams }: PageProps<"/panel">) {
   const citas = (data ?? []) as unknown as Cita[];
   const activas = citas.filter((c) => c.estado !== "cancelada");
 
-  const ahora = Date.now();
+  const ahora = instanteActual();
   const siguiente = activas.find((c) => c.estado === "confirmada" && new Date(c.fin).getTime() > ahora)?.id;
   const porCerrar = activas.filter((c) => c.estado === "confirmada" && new Date(c.fin).getTime() <= ahora);
   const elegidaId = typeof sp.cita === "string" ? sp.cita : siguiente ?? activas[0]?.id;

@@ -18,7 +18,7 @@ type Cita = {
   profesional_id: string;
   servicio: { nombre: string } | null;
   paciente: { nombre: string } | null;
-  profesional: { perfil: { nombre: string } | null; horarios: { dia_semana: number }[] } | null;
+  profesional: { nombre: string; horarios: { dia_semana: number }[] } | null;
 };
 
 /** Página para cambiar la hora de una cita. La usa la paciente y también la profesional (?volver=/panel). */
@@ -29,7 +29,7 @@ export default async function Reprogramar({ params, searchParams }: PageProps<"/
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const { data } = await supabase
     .from("citas")
-    .select("id, inicio, estado, servicio_id, paciente_id, profesional_id, servicio:servicios(nombre), paciente:perfiles!citas_paciente_id_fkey(nombre), profesional:profesionales(perfil:perfiles!profesionales_id_fkey(nombre), horarios(dia_semana))")
+    .select("id, inicio, estado, servicio_id, paciente_id, profesional_id, servicio:servicios(nombre), paciente:perfiles!citas_paciente_id_fkey(nombre), profesional:profesionales(nombre, horarios(dia_semana))")
     .eq("id", id)
     .maybeSingle();
   const cita = data as unknown as Cita | null;
@@ -40,7 +40,7 @@ export default async function Reprogramar({ params, searchParams }: PageProps<"/
   const fecha = esFechaValida(sp.fecha as string) ? (sp.fecha as string) : fechaDefecto;
   const rutaBase = `/mis-citas/${id}/reprogramar${volverA === "/panel" ? "?volver=/panel" : ""}`;
 
-  const conQuien = volverA === "/panel" ? cita.paciente?.nombre : cita.profesional?.perfil?.nombre;
+  const conQuien = volverA === "/panel" ? cita.paciente?.nombre : cita.profesional?.nombre;
 
   return (
     <div className="contenedor py-8 sm:py-10">
@@ -50,14 +50,14 @@ export default async function Reprogramar({ params, searchParams }: PageProps<"/
         <aside className="rounded-xl border border-slate-200 bg-white p-5">
           <p className="text-sm font-semibold text-slate-600">Hora actual</p>
           <p className="mayus mt-1 font-semibold">{formatoFecha(cita.inicio)}</p>
-          <p className="cifra text-[32px] leading-tight text-slate-400 line-through decoration-2">{formatoHora(cita.inicio)}</p>
+          <p className="cifra text-[32px] leading-tight text-slate-500 line-through decoration-2">{formatoHora(cita.inicio)}</p>
           <dl className="mt-4 space-y-3 border-t border-slate-200 pt-4 text-[15px]">
             <div>
               <dt className="text-sm font-semibold text-slate-600">Prestación</dt>
               <dd>{cita.servicio?.nombre}</dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold text-slate-600">{volverA === "/panel" ? "Paciente" : "Matrona"}</dt>
+              <dt className="text-sm font-semibold text-slate-600">{volverA === "/panel" ? "Paciente" : "Profesional"}</dt>
               <dd>{conQuien}</dd>
             </div>
           </dl>
