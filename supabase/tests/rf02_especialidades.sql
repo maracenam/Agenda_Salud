@@ -15,9 +15,11 @@ select is((select count(*)::int from especialidades), 10, 'sin sesión se ve el 
 select is((select count(*)::int from profesionales where id = :'kine'), 1, 'sin sesión se ve a la profesional publicada');
 select is((select count(*)::int from profesionales where id = :'nutri'), 0, 'sin sesión no se ve a una profesional sin publicar');
 select is((select count(*)::int from servicios where profesional_id = :'kine'), 1, 'se ven las prestaciones de la profesional publicada');
+-- Filtra solo sobre las profesionales de esta prueba: la base local puede traer datos de otras suites.
 select is(
-  (select count(*)::int from profesionales p join especialidades e on e.id = p.especialidad_id where e.slug = 'kinesiologia'),
-  1, 'el directorio filtra por especialidad');
+  (select count(*)::int from profesionales p join especialidades e on e.id = p.especialidad_id
+   where p.id = :'kine' and e.slug = 'nutricion'),
+  0, 'el directorio filtra por especialidad: la kinesióloga no aparece en nutrición');
 
 select pg_temp.como(:'nutri');
 select lives_ok($$ update profesionales set especialidad_id = (select id from especialidades where slug = 'medicina-general') where id = auth.uid() $$,

@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run tests/unit",
-    "test:db": "supabase test db",
+    "test:db": "npx supabase test db",
     "test:integracion": "vitest run tests/integracion",
     "test:seguridad": "vitest run tests/seguridad",
     "test:e2e": "next build && playwright test",
