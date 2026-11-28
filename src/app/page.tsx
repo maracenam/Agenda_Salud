@@ -126,6 +126,42 @@ function CorreoRecordatorio() {
   );
 }
 
+// Muestra de la bitácora: cada acceso y cambio en una ficha queda registrado y no se puede borrar.
+const BITACORA = [
+  { h: "10:32", quien: "Camila Rojas, matrona", que: "abrió la ficha" },
+  { h: "10:41", quien: "Camila Rojas, matrona", que: "registró una atención" },
+  { h: "10:44", quien: "Camila Rojas, matrona", que: "corrigió alergias (la versión anterior se guarda)" },
+  { h: "16:05", quien: "Camila Rojas, matrona", que: "derivó a Tomás Vidal, kinesiólogo" },
+];
+
+function Bitacora() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white" role="img" aria-label="Bitácora de una ficha clínica con datos de ejemplo: quién la abrió, qué cambió y a qué hora">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-5 py-3.5">
+        <p className="font-titulo text-xl">Bitácora de la ficha</p>
+        <p className="cifra text-sm text-slate-600">Lun 30 nov</p>
+      </div>
+      <ol className="divide-y divide-slate-200">
+        {BITACORA.map((b) => (
+          <li key={b.h} className="grid grid-cols-[3.5rem_minmax(0,1fr)] gap-3 px-5 py-3.5 text-[15px]">
+            <span className="cifra font-semibold text-marca-700">{b.h}</span>
+            <span><span className="font-semibold">{b.quien}</span> {b.que}</span>
+          </li>
+        ))}
+      </ol>
+      <p className="border-t border-slate-200 bg-marca-50 px-5 py-3 text-sm text-slate-700">Solo se agrega. Nadie puede editar ni borrar estas líneas.</p>
+    </div>
+  );
+}
+
+// Seguridad, en el lenguaje de la profesional: lo que pasa hoy y lo que pasa aquí.
+const SEGURIDAD_PRO = [
+  { tema: "Quién la ve", antes: "Quien tome tu celular, tu computador o el archivo compartido.", ahora: "Solo tú. Ni otras profesionales ni otras pacientes pueden abrirla." },
+  { tema: "Si se pierde", antes: "Se pierde con el equipo o con un archivo borrado.", ahora: "Queda en la nube y no se puede borrar, como pide la Ley 20.584 por 15 años." },
+  { tema: "Si se corrige", antes: "El dato anterior desaparece.", ahora: "La versión anterior queda guardada, con fecha." },
+  { tema: "Quién la abrió", antes: "No hay forma de saberlo.", ahora: "Cada apertura y cambio queda en una bitácora que nadie puede editar." },
+];
+
 const FICHAS = [
   { esp: "Matronería", campos: "FUR, edad gestacional, fórmula obstétrica y último PAP" },
   { esp: "Nutrición", campos: "Peso por control, IMC y avance hacia la meta" },
@@ -231,6 +267,48 @@ export default async function Inicio() {
               Con la hora, el lugar y un enlace para cambiarla. Si cancela, la hora vuelve a quedar libre en tu agenda.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Seguridad para la profesional: lo que cambia frente a la planilla y WhatsApp, con la bitácora real de una ficha. */}
+      <section aria-labelledby="seguridad" className="border-t border-slate-200 bg-white py-20 sm:py-28">
+        <div className="contenedor">
+          <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
+            <h2 id="seguridad" className="max-w-[16ch] text-[34px] leading-[1.05] text-balance sm:text-[52px]">
+              Las fichas de tus pacientes, bajo llave.
+            </h2>
+            <p className="max-w-[50ch] text-lg text-slate-700 lg:justify-self-end">
+              Eres responsable de los datos de salud de tus pacientes. Agenda Salud los resguarda como pide la ley chilena, para que no dependa de una planilla, un cuaderno o un chat.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[34rem] text-left text-[15px]">
+                <caption className="sr-only">Comparación entre llevar fichas en planilla o WhatsApp y llevarlas en Agenda Salud</caption>
+                <thead>
+                  <tr className="border-b-2 border-tinta">
+                    <th scope="col" className="py-3 pr-4 font-semibold"><span className="sr-only">Tema</span></th>
+                    <th scope="col" className="py-3 pr-4 font-semibold text-slate-600">Planilla, cuaderno o WhatsApp</th>
+                    <th scope="col" className="py-3 font-semibold text-marca-700">Agenda Salud</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {SEGURIDAD_PRO.map((f) => (
+                    <tr key={f.tema} className="align-top">
+                      <th scope="row" className="w-32 py-3.5 pr-4 font-semibold whitespace-nowrap">{f.tema}</th>
+                      <td className="py-3.5 pr-4 text-slate-600">{f.antes}</td>
+                      <td className="py-3.5 text-tinta">{f.ahora}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="space-y-3">
+              <Bitacora />
+              <p className="text-sm text-slate-600">Nombres y horas de muestra.</p>
+            </div>
+          </div>
+          <Link href="/seguridad" className="btn-sec mt-10 min-h-12 px-5 text-base">Cómo protegemos los datos</Link>
         </div>
       </section>
 
